@@ -6,5 +6,6 @@ CREATE TABLE `user`
     `nickname`  varchar(45) NOT NULL COMMENT 'User Nickname',
     `create_at` datetime DEFAULT NULL COMMENT 'Created Time',
     `update_at` datetime DEFAULT NULL COMMENT 'Updated Time',
+    `lucky` datetime DEFAULT NULL COMMENT 'Updated Time',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

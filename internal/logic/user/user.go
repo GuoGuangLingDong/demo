@@ -6,11 +6,11 @@ import (
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
 
-	"github.com/gogf/gf-demo-user/v2/internal/dao"
-	"github.com/gogf/gf-demo-user/v2/internal/model"
-	"github.com/gogf/gf-demo-user/v2/internal/model/do"
-	"github.com/gogf/gf-demo-user/v2/internal/model/entity"
-	"github.com/gogf/gf-demo-user/v2/internal/service"
+	"demo/internal/dao"
+	"demo/internal/model"
+	"demo/internal/model/do"
+	"demo/internal/model/entity"
+	"demo/internal/service"
 )
 
 type (

@@ -1,4 +1,4 @@
-module github.com/gogf/gf-demo-user/v2
+module demo
 
 go 1.15
 

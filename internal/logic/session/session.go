@@ -3,9 +3,9 @@ package session
 import (
 	"context"
 
-	"github.com/gogf/gf-demo-user/v2/internal/consts"
-	"github.com/gogf/gf-demo-user/v2/internal/model/entity"
-	"github.com/gogf/gf-demo-user/v2/internal/service"
+	"demo/internal/consts"
+	"demo/internal/model/entity"
+	"demo/internal/service"
 )
 
 type (

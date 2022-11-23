@@ -8,9 +8,9 @@ import (
 	"github.com/gogf/gf/v2/net/goai"
 	"github.com/gogf/gf/v2/os/gcmd"
 
-	"github.com/gogf/gf-demo-user/v2/internal/consts"
-	"github.com/gogf/gf-demo-user/v2/internal/controller"
-	"github.com/gogf/gf-demo-user/v2/internal/service"
+	"demo/internal/consts"
+	"demo/internal/controller"
+	"demo/internal/service"
 )
 
 var (

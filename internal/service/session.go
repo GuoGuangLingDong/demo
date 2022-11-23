@@ -7,7 +7,7 @@ package service
 import (
 	"context"
 
-	"github.com/gogf/gf-demo-user/v2/internal/model/entity"
+	"demo/internal/model/entity"
 )
 
 type ISession interface {
