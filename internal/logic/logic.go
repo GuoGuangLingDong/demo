@@ -5,8 +5,8 @@
 package logic
 
 import (
-	_ "github.com/gogf/gf-demo-user/v2/internal/logic/bizctx"
-	_ "github.com/gogf/gf-demo-user/v2/internal/logic/middleware"
-	_ "github.com/gogf/gf-demo-user/v2/internal/logic/session"
-	_ "github.com/gogf/gf-demo-user/v2/internal/logic/user"
+	_ "demo/internal/logic/bizctx"
+	_ "demo/internal/logic/middleware"
+	_ "demo/internal/logic/session"
+	_ "demo/internal/logic/user"
 )

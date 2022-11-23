@@ -27,23 +27,23 @@ git clone https://github.com/gogf/gf-demo-user
 ----------|--------|----------------------|----------------------------------------------------------------------------|------------------------------
   :8199   | ALL    | /swagger/*           | github.com/gogf/gf/v2/net/ghttp.(*Server).swaggerUI                        | HOOK_BEFORE_SERVE            
 ----------|--------|----------------------|----------------------------------------------------------------------------|------------------------------
-  :8199   | POST   | /user/check-passport | github.com/gogf/gf-demo-user/v2/internal/controller.(*cUser).CheckPassport | service.(*sMiddleware).Ctx   
+  :8199   | POST   | /user/check-passport | demo/internal/controller.(*cUser).CheckPassport | service.(*sMiddleware).Ctx   
           |        |                      |                                                                            | service.(*sMiddleware).CORS  
 ----------|--------|----------------------|----------------------------------------------------------------------------|------------------------------
-  :8199   | POST   | /user/is-signed-in   | github.com/gogf/gf-demo-user/v2/internal/controller.(*cUser).IsSignedIn    | service.(*sMiddleware).Ctx   
+  :8199   | POST   | /user/is-signed-in   | demo/internal/controller.(*cUser).IsSignedIn    | service.(*sMiddleware).Ctx   
           |        |                      |                                                                            | service.(*sMiddleware).CORS  
 ----------|--------|----------------------|----------------------------------------------------------------------------|------------------------------
-  :8199   | GET    | /user/profile        | github.com/gogf/gf-demo-user/v2/internal/controller.(*cUser).Profile       | service.(*sMiddleware).Ctx   
+  :8199   | GET    | /user/profile        | demo/internal/controller.(*cUser).Profile       | service.(*sMiddleware).Ctx   
           |        |                      |                                                                            | service.(*sMiddleware).CORS  
           |        |                      |                                                                            | service.(*sMiddleware).Auth  
 ----------|--------|----------------------|----------------------------------------------------------------------------|------------------------------
-  :8199   | POST   | /user/sign-in        | github.com/gogf/gf-demo-user/v2/internal/controller.(*cUser).SignIn        | service.(*sMiddleware).Ctx   
+  :8199   | POST   | /user/sign-in        | demo/internal/controller.(*cUser).SignIn        | service.(*sMiddleware).Ctx   
           |        |                      |                                                                            | service.(*sMiddleware).CORS  
 ----------|--------|----------------------|----------------------------------------------------------------------------|------------------------------
-  :8199   | POST   | /user/sign-out       | github.com/gogf/gf-demo-user/v2/internal/controller.(*cUser).SignOut       | service.(*sMiddleware).Ctx   
+  :8199   | POST   | /user/sign-out       | demo/internal/controller.(*cUser).SignOut       | service.(*sMiddleware).Ctx   
           |        |                      |                                                                            | service.(*sMiddleware).CORS  
 ----------|--------|----------------------|----------------------------------------------------------------------------|------------------------------
-  :8199   | POST   | /user/sign-up        | github.com/gogf/gf-demo-user/v2/internal/controller.(*cUser).SignUp        | service.(*sMiddleware).Ctx   
+  :8199   | POST   | /user/sign-up        | demo/internal/controller.(*cUser).SignUp        | service.(*sMiddleware).Ctx   
           |        |                      |                                                                            | service.(*sMiddleware).CORS  
 ----------|--------|----------------------|----------------------------------------------------------------------------|------------------------------
 ```

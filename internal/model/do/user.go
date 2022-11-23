@@ -18,4 +18,5 @@ type User struct {
 	Nickname interface{} // User Nickname
 	CreateAt *gtime.Time // Created Time
 	UpdateAt *gtime.Time // Updated Time
+	Lucky    *gtime.Time // Updated Time
 }
