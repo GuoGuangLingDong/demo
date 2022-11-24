@@ -14,17 +14,18 @@ type UserProfileRes struct {
 }
 
 type UserSignUpReq struct {
-	g.Meta    `path:"/user/sign-up" method:"post" tags:"UserService" summary:"Sign up a new user account"`
-	Passport  string `v:"required|length:6,16"`
-	Password  string `v:"required|length:6,16"`
-	Password2 string `v:"required|length:6,16|same:Password"`
-	Nickname  string
+	g.Meta      `path:"/user/sign-up" method:"post" tags:"UserService" summary:"Sign up a new user account"`
+	Username    string `v:"required|length:6,16"`
+	Password    string `v:"required|length:6,16"`
+	Password2   string `v:"required|length:6,16|same:Password"`
+	Nickname    string
+	PhoneNumber string
 }
 type UserSignUpRes struct{}
 
 type UserSignInReq struct {
 	g.Meta   `path:"/user/sign-in" method:"post" tags:"UserService" summary:"Sign in with exist account"`
-	Passport string `v:"required"`
+	Username string `v:"required"`
 	Password string `v:"required"`
 }
 type UserSignInRes struct{}
