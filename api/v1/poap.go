@@ -9,7 +9,7 @@ type MyPoapReq struct {
 	g.Meta `path:"/poap/my_list" method:"get" tags:"PoapService" summary:"Get the poap of me"`
 }
 type MyPoapRes struct {
-	res []*entity.Poap
+	Res []*entity.Poap
 }
 
 type MainPagePoapReq struct {
@@ -17,7 +17,7 @@ type MainPagePoapReq struct {
 }
 
 type MainPagePoapRes struct {
-	res []*entity.Poap
+	Res []*entity.Poap
 }
 
 type PoapDetailReq struct {
