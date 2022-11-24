@@ -79,3 +79,11 @@ func (c *cUser) Profile(ctx context.Context, req *v1.UserProfileReq) (res *v1.Us
 	}
 	return
 }
+
+// Profile returns the user profile.
+func (c *cUser) AProfile(ctx context.Context, req *v1.UserProfileReq) (res *v1.UserProfileRes, err error) {
+	res = &v1.UserProfileRes{
+		User: service.User().GetProfile(ctx),
+	}
+	return
+}

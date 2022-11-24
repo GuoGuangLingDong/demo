@@ -11,12 +11,18 @@ import (
 
 // User is the golang structure of table user for DAO operations like Where/Data.
 type User struct {
-	g.Meta   `orm:"table:user, do:true"`
-	Id       interface{} // User ID
-	Passport interface{} // User Passport
-	Password interface{} // User Password
-	Nickname interface{} // User Nickname
-	CreateAt *gtime.Time // Created Time
-	UpdateAt *gtime.Time // Updated Time
-	Lucky    *gtime.Time // Updated Time
+	g.Meta       `orm:"table:user, do:true"`
+	Id           interface{} // pk
+	Uid          interface{} // User ID
+	Password     interface{} // User Password
+	Username     interface{} // User Name
+	Nickname     interface{} // User Nickname
+	CreateAt     *gtime.Time // Created Time
+	UpdateAt     *gtime.Time // Updated Time
+	PhoneNumber  interface{} // Phone Number
+	WechatNumber interface{} // Wechat Number
+	InviteCode   interface{} // Invite Code
+	Introduction interface{} // Introduction
+	Avatar       []byte      // 头像
+	Scores       interface{} // Scores
 }

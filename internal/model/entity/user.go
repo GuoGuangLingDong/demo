@@ -10,11 +10,17 @@ import (
 
 // User is the golang structure for table user.
 type User struct {
-	Id       uint        `json:"id"       ` // User ID
-	Passport string      `json:"passport" ` // User Passport
-	Password string      `json:"password" ` // User Password
-	Nickname string      `json:"nickname" ` // User Nickname
-	CreateAt *gtime.Time `json:"createAt" ` // Created Time
-	UpdateAt *gtime.Time `json:"updateAt" ` // Updated Time
-	Lucky    *gtime.Time `json:"lucky"    ` // Updated Time
+	Id           uint        `json:"id"           ` // pk
+	Uid          string      `json:"uid"          ` // User ID
+	Password     string      `json:"password"     ` // User Password
+	Username     string      `json:"username"     ` // User Name
+	Nickname     string      `json:"nickname"     ` // User Nickname
+	CreateAt     *gtime.Time `json:"createAt"     ` // Created Time
+	UpdateAt     *gtime.Time `json:"updateAt"     ` // Updated Time
+	PhoneNumber  string      `json:"phoneNumber"  ` // Phone Number
+	WechatNumber string      `json:"wechatNumber" ` // Wechat Number
+	InviteCode   string      `json:"inviteCode"   ` // Invite Code
+	Introduction string      `json:"introduction" ` // Introduction
+	Avatar       []byte      `json:"avatar"       ` // 头像
+	Scores       uint        `json:"scores"       ` // Scores
 }

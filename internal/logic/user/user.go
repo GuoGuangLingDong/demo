@@ -72,7 +72,6 @@ func (s *sUser) IsSignedIn(ctx context.Context) bool {
 func (s *sUser) SignIn(ctx context.Context, in model.UserSignInInput) (err error) {
 	var user *entity.User
 	err = dao.User.Ctx(ctx).Where(do.User{
-		Passport: in.Passport,
 		Password: in.Password,
 	}).Scan(&user)
 	if err != nil {
