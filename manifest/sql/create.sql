@@ -13,21 +13,18 @@ CREATE TABLE if not exists `user`
     `invite_code`   varchar(45) COMMENT 'Invite Code',
     `introduction`  varchar(200)     NOT NULL COMMENT 'Introduction',
     `avatar` blob DEFAULT NULL COMMENT '头像',
-    `tiktok_link`   varchar(45) COMMENT 'Tiktok link',
-    `sina_link`     varchar(45) COMMENT 'Sina link',
-    `red_link`      varchar(45) COMMENT 'Red link',
-    `wechat_link`   varchar(45) COMMENT 'Wechat link',
-    `tel_link`      varchar(45) COMMENT 'Tel link',
-    `ins_link`      varchar(45) COMMENT 'Ins link',
-    `tweet_link`    varchar(45) COMMENT 'Tweet link',
-    `facebook_link` varchar(45) COMMENT 'Facebook link',
-    `linkedin_link` varchar(45) COMMENT 'Linkedin link',
-    `other_link`    varchar(45) COMMENT 'Other link',
     `scores`        int(32) unsigned NOT NULL default (0) COMMENT 'Scores',
     PRIMARY KEY (`id`),
     UNIQUE KEY(`uid`)
     ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+    DEFAULT CHARSET = utf8;
+
+CREATE TABLE if not exists `user`(
+    `uid`           varchar(32) NOT NULL COMMENT 'User ID',
+    `link`  varchar(32) NOT NULL COMMENT 'Link',
+    `link_type` int(32) NOT NULL COMMENT 'Link type'
+    ) ENGINE = InnoDB
+    DEFAULT CHARSET = utf8;
 
 create table if not exists `poap`
 (
