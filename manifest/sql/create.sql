@@ -1,15 +1,18 @@
 use wesoul;
 CREATE TABLE if not exists `user`
 (
-    `uid`           int(64) unsigned NOT NULL AUTO_INCREMENT COMMENT 'User ID',
+    `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'pk',
+    `uid`           varchar(32) NOT NULL COMMENT 'User ID',
     `password`      varchar(45)      NOT NULL COMMENT 'User Password',
     `username`      varchar(45)      NOT NULL COMMENT 'User Name',
-    `create_time`   datetime                  DEFAULT NULL COMMENT 'Created Time',
+    `nickname`  varchar(40) NOT NULL COMMENT 'User Nickname',
+    `create_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created Time',
+    `update_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated Time',
     `phone_number`  varchar(20)      NOT NULL COMMENT 'Phone Number',
     `wechat_number` varchar(45) COMMENT 'Wechat Number',
     `invite_code`   varchar(45) COMMENT 'Invite Code',
     `introduction`  varchar(200)     NOT NULL COMMENT 'Introduction',
-    `picture`       varchar(400)     NOT NULL COMMENT 'Picture',
+    `avatar` blob DEFAULT NULL COMMENT '头像',
     `tiktok_link`   varchar(45) COMMENT 'Tiktok link',
     `sina_link`     varchar(45) COMMENT 'Sina link',
     `red_link`      varchar(45) COMMENT 'Red link',
@@ -21,8 +24,9 @@ CREATE TABLE if not exists `user`
     `linkedin_link` varchar(45) COMMENT 'Linkedin link',
     `other_link`    varchar(45) COMMENT 'Other link',
     `scores`        int(32) unsigned NOT NULL default (0) COMMENT 'Scores',
-    PRIMARY KEY (`uid`)
-) ENGINE = InnoDB
+    PRIMARY KEY (`id`),
+    UNIQUE KEY(`uid`)
+    ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
 create table if not exists `poap`
