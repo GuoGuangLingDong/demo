@@ -16,8 +16,7 @@ type IUser interface {
 	IsSignedIn(ctx context.Context) bool
 	SignIn(ctx context.Context, in model.UserSignInInput) (err error)
 	SignOut(ctx context.Context) error
-	IsPassportAvailable(ctx context.Context, passport string) (bool, error)
-	IsNicknameAvailable(ctx context.Context, nickname string) (bool, error)
+	UsernameLegalCheck(ctx context.Context, nickname string) (bool, error)
 	GetProfile(ctx context.Context) *entity.User
 }
 

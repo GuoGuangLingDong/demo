@@ -2,6 +2,8 @@ package controller
 
 import (
 	"context"
+	"github.com/google/uuid"
+	"strings"
 
 	"github.com/gogf/gf/v2/errors/gerror"
 
@@ -17,10 +19,19 @@ type cUser struct{}
 
 // SignUp is the API for user sign up.
 func (c *cUser) SignUp(ctx context.Context, req *v1.UserSignUpReq) (res *v1.UserSignUpRes, err error) {
+	uid := uuid.NewString()
+	uid = strings.Replace(uid, "-", "", -1)
+
+	if err = legalCheck(ctx, req.PhoneNumber); err != nil {
+		return
+	}
+
 	err = service.User().Create(ctx, model.UserCreateInput{
-		Passport: req.Passport,
-		Password: req.Password,
-		Nickname: req.Nickname,
+		UId:         uid,
+		Username:    req.Username,
+		Password:    req.Password,
+		Nickname:    req.Nickname,
+		PhoneNumebr: req.PhoneNumber,
 	})
 	return
 }
@@ -28,7 +39,7 @@ func (c *cUser) SignUp(ctx context.Context, req *v1.UserSignUpReq) (res *v1.User
 // SignIn is the API for user sign in.
 func (c *cUser) SignIn(ctx context.Context, req *v1.UserSignInReq) (res *v1.UserSignInRes, err error) {
 	err = service.User().SignIn(ctx, model.UserSignInInput{
-		Passport: req.Passport,
+		Username: req.Username,
 		Password: req.Password,
 	})
 	return
@@ -48,21 +59,9 @@ func (c *cUser) SignOut(ctx context.Context, req *v1.UserSignOutReq) (res *v1.Us
 	return
 }
 
-// CheckPassport checks and returns whether the user passport is available.
-func (c *cUser) CheckPassport(ctx context.Context, req *v1.UserCheckPassportReq) (res *v1.UserCheckPassportRes, err error) {
-	available, err := service.User().IsPassportAvailable(ctx, req.Passport)
-	if err != nil {
-		return nil, err
-	}
-	if !available {
-		return nil, gerror.Newf(`Passport "%s" is already token by others`, req.Passport)
-	}
-	return
-}
-
-// CheckNickName checks and returns whether the user nickname is available.
-func (c *cUser) CheckNickName(ctx context.Context, req *v1.UserCheckNickNameReq) (res *v1.UserCheckNickNameRes, err error) {
-	available, err := service.User().IsNicknameAvailable(ctx, req.Nickname)
+// CheckUserName checks and returns whether the user nickname is available.
+func (c *cUser) CheckUserName(ctx context.Context, req *v1.UserCheckNickNameReq) (res *v1.UserCheckNickNameRes, err error) {
+	available, err := service.User().UsernameLegalCheck(ctx, req.Nickname)
 	if err != nil {
 		return nil, err
 	}
@@ -78,4 +77,12 @@ func (c *cUser) Profile(ctx context.Context, req *v1.UserProfileReq) (res *v1.Us
 		User: service.User().GetProfile(ctx),
 	}
 	return
+}
+
+func legalCheck(ctx context.Context, phoneNumber string) error {
+	if len(phoneNumber) == 0 {
+		return gerror.New("phone number is empty")
+	}
+	//TODO phone number check
+	return nil
 }
