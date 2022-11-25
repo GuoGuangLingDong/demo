@@ -10,7 +10,7 @@
 git clone https://github.com/gogf/gf-demo-user
 ```
 
-### 3. Import `manifest/sql/create.sql` to your database.
+### 3. Import `manifest/sql/user.sql` to your database.
 
 ### 4. Update `manifest/config/config.yaml` according to your local configurations if necessary.
 
