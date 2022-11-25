@@ -13,7 +13,9 @@ type MyPoapRes struct {
 }
 
 type MainPagePoapReq struct {
-	g.Meta `path:"/poap/mainpage_list" method:"get" tags:"PoapService" summary:"Get the poap of main page"`
+	g.Meta `path:"/poap/mainpage_list" method:"post" tags:"PoapService" summary:"Get the poap of main page"`
+	From   int64
+	Count  int64
 }
 
 type MainPagePoapRes struct {

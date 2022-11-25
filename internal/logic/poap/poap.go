@@ -31,9 +31,10 @@ func (S SPoap) GetMyPoap(ctx context.Context, in model.GetMyPoapInput) []*entity
 	return res
 }
 
-func (S SPoap) GetMainPagePoap(ctx context.Context) []*entity.Poap {
-	//TODO implement me
-	panic("implement me")
+func (S SPoap) GetMainPagePoap(ctx context.Context, in model.GetMainPagePoap) []*entity.Poap {
+	res := ([]*entity.Poap)(nil)
+	dao.Poap.Ctx(ctx).Order("favour_number desc").Limit((int)(in.From), int(in.Count)).Scan(&res)
+	return res
 }
 
 func (S SPoap) GetPoapDetails(ctx context.Context, in model.GetPoapDetailsInput) *entity.Poap {
