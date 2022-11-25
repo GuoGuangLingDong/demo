@@ -23,7 +23,8 @@ type MainPagePoapRes struct {
 }
 
 type PoapDetailReq struct {
-	g.Meta `path:"/poap/details" method:"get" tags:"PoapService" summary:"Get the detail of poap"`
+	g.Meta `path:"/poap/details" method:"post" tags:"PoapService" summary:"Get the detail of poap"`
+	PoapId int64 `p:poapid`
 }
 
 type PoapDetailPoapRes struct {

@@ -39,7 +39,10 @@ func (S SPoap) GetMainPagePoap(ctx context.Context, in model.GetMainPagePoap) []
 
 func (S SPoap) GetPoapDetails(ctx context.Context, in model.GetPoapDetailsInput) *entity.Poap {
 	//TODO implement me
-	panic("implement me")
+	poapId := in.PoapId
+	res := (*entity.Poap)(nil)
+	dao.Poap.Ctx(ctx).Where("poap_id", poapId).Scan(&res)
+	return res
 }
 
 func init() {
