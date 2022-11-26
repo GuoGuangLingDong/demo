@@ -19,7 +19,7 @@ type MainPagePoapReq struct {
 }
 
 type MainPagePoapRes struct {
-	Res []*entity.Poap
+	Res []*PoapDetailPoapRes
 }
 
 type PoapDetailReq struct {
@@ -29,4 +29,7 @@ type PoapDetailReq struct {
 
 type PoapDetailPoapRes struct {
 	*entity.Poap
+	LikeNumber int64
+	Uid        int64
+	Username   string
 }
