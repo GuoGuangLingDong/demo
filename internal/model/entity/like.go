@@ -8,12 +8,11 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// Userlink is the golang structure for table userlink.
-type Userlink struct {
+// Like is the golang structure for table like.
+type Like struct {
 	Id       uint        `json:"id"       ` // pk
 	Uid      uint        `json:"uid"      ` // User ID
-	Link     string      `json:"link"     ` // Link
-	LinkType int         `json:"linkType" ` // Link type
+	PoapId   uint        `json:"poapId"   ` // Poap id
 	CreateAt *gtime.Time `json:"createAt" ` // Created Time
 	UpdateAt *gtime.Time `json:"updateAt" ` // Updated Time
 }

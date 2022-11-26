@@ -20,14 +20,20 @@ type HoldDao struct {
 
 // HoldColumns defines and stores column names for table hold.
 type HoldColumns struct {
-	Uid    string // User ID
-	PoapId string // Poap id
+	Id       string // pk
+	Uid      string // User ID
+	PoapId   string // Poap id
+	CreateAt string // Created Time
+	UpdateAt string // Updated Time
 }
 
 // holdColumns holds the columns for table hold.
 var holdColumns = HoldColumns{
-	Uid:    "uid",
-	PoapId: "poap_id",
+	Id:       "id",
+	Uid:      "uid",
+	PoapId:   "poap_id",
+	CreateAt: "create_at",
+	UpdateAt: "update_at",
 }
 
 // NewHoldDao creates and returns a new DAO object for table data access.

@@ -9,9 +9,9 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// Hold is the golang structure of table hold for DAO operations like Where/Data.
-type Hold struct {
-	g.Meta   `orm:"table:hold, do:true"`
+// Like is the golang structure of table like for DAO operations like Where/Data.
+type Like struct {
+	g.Meta   `orm:"table:like, do:true"`
 	Id       interface{} // pk
 	Uid      interface{} // User ID
 	PoapId   interface{} // Poap id

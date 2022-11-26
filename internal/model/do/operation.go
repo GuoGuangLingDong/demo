@@ -12,8 +12,11 @@ import (
 // Operation is the golang structure of table operation for DAO operations like Where/Data.
 type Operation struct {
 	g.Meta      `orm:"table:operation, do:true"`
+	Id          interface{} // pk
 	Uid         interface{} // User ID
-	OperateCode interface{} // Operate Code
+	OptType     interface{} // Operate Type
 	OperateTime *gtime.Time // Operate Time
 	Score       interface{} // Score
+	CreateAt    *gtime.Time // Created Time
+	UpdateAt    *gtime.Time // Updated Time
 }

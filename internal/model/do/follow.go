@@ -11,8 +11,10 @@ import (
 
 // Follow is the golang structure of table follow for DAO operations like Where/Data.
 type Follow struct {
-	g.Meta     `orm:"table:follow, do:true"`
-	Followee   interface{} // Followee ID
-	Follower   interface{} // Follower id
-	FollowTime *gtime.Time // Follow Time
+	g.Meta   `orm:"table:follow, do:true"`
+	Id       interface{} // pk
+	Followee interface{} // Followee ID
+	Follower interface{} // Follower id
+	CreateAt *gtime.Time // Created Time
+	UpdateAt *gtime.Time // Updated Time
 }

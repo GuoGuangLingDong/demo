@@ -1,7 +1,7 @@
 package model
 
 type GetMyPoapInput struct {
-	UId string
+	UId int64
 }
 
 type GetPoapDetailsInput struct {
