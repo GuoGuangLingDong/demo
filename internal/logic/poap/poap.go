@@ -2,6 +2,7 @@ package poap
 
 import (
 	"context"
+	v1 "demo/api/v1"
 	"demo/internal/dao"
 	"demo/internal/model"
 	"demo/internal/model/do"
@@ -39,11 +40,26 @@ func (S SPoap) GetMainPagePoap(ctx context.Context, in model.GetMainPagePoap) []
 	return res
 }
 
-func (S SPoap) GetPoapDetails(ctx context.Context, in model.GetPoapDetailsInput) *entity.Poap {
+func (S SPoap) GetPoapDetails(ctx context.Context, in model.GetPoapDetailsInput) *v1.PoapDetailPoapRes {
 	//TODO implement me
 	poapId := in.PoapId
-	res := (*entity.Poap)(nil)
-	dao.Poap.Ctx(ctx).Where("poap_id", poapId).Scan(&res)
+	res := &v1.PoapDetailPoapRes{}
+	dao.Poap.Ctx(ctx).Where("poap_id", poapId).Scan(&res.Poap)
+	likeNum, err := dao.Like.Ctx(ctx).Where("poap_id", poapId).Count()
+	if err != nil {
+		panic(err)
+	}
+	res.LikeNum = likeNum
+	holderRes, _ := dao.Hold.Ctx(ctx).Fields("DISTINCT uid").Where("poap_id", poapId).All()
+
+	holders := ([]*v1.UserInfo)(nil)
+	holderIds := ([]int64)(nil)
+	for _, holder := range holderRes {
+		holderId, _ := holder.Map()["uid"]
+		holderIds = append(holderIds, int64(holderId.(int)))
+	}
+	dao.User.Ctx(ctx).Where("uid in (?)", holderIds).Scan(&holders)
+	res.Holders = holders
 	return res
 }
 

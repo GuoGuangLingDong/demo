@@ -27,6 +27,12 @@ type PoapDetailReq struct {
 	PoapId int64 `p:poapid`
 }
 
+type UserInfo struct {
+	Uid      string
+	Username string
+}
 type PoapDetailPoapRes struct {
 	*entity.Poap
+	LikeNum int
+	Holders []*UserInfo
 }
