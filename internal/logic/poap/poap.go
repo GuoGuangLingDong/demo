@@ -32,8 +32,10 @@ func (S SPoap) GetMyPoap(ctx context.Context, in model.GetMyPoapInput) []*entity
 }
 
 func (S SPoap) GetMainPagePoap(ctx context.Context, in model.GetMainPagePoap) []*entity.Poap {
+	likes := ([]int64)(nil)
 	res := ([]*entity.Poap)(nil)
-	dao.Poap.Ctx(ctx).Order("favour_number desc").Limit((int)(in.From), int(in.Count)).Scan(&res)
+	dao.Like.Ctx(ctx).Fields("poapId").Group("poap_id").Order("count(`uid`) desc").Limit((int)(in.From), int(in.Count)).Scan(&res)
+	dao.Poap.Ctx(ctx).Where("poap_id in(?)", likes).Scan(&res)
 	return res
 }
 

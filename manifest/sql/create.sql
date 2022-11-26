@@ -101,7 +101,6 @@ create table if not exists `operation`
     `id`           int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'pk',
     `uid`          int(64) unsigned NOT NULL COMMENT 'User ID',
     `opt_type`     int(32) unsigned NOT NULL COMMENT 'Operate Type',
-    `operate_time` datetime                  DEFAULT NULL COMMENT 'Operate Time',
     `score`        int(64) unsigned NOT NULL COMMENT 'Score',
     `create_at`    datetime         NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created Time',
     `update_at`    datetime                  DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated Time',

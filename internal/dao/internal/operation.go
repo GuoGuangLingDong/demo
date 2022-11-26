@@ -20,24 +20,22 @@ type OperationDao struct {
 
 // OperationColumns defines and stores column names for table operation.
 type OperationColumns struct {
-	Id          string // pk
-	Uid         string // User ID
-	OptType     string // Operate Type
-	OperateTime string // Operate Time
-	Score       string // Score
-	CreateAt    string // Created Time
-	UpdateAt    string // Updated Time
+	Id       string // pk
+	Uid      string // User ID
+	OptType  string // Operate Type
+	Score    string // Score
+	CreateAt string // Created Time
+	UpdateAt string // Updated Time
 }
 
 // operationColumns holds the columns for table operation.
 var operationColumns = OperationColumns{
-	Id:          "id",
-	Uid:         "uid",
-	OptType:     "opt_type",
-	OperateTime: "operate_time",
-	Score:       "score",
-	CreateAt:    "create_at",
-	UpdateAt:    "update_at",
+	Id:       "id",
+	Uid:      "uid",
+	OptType:  "opt_type",
+	Score:    "score",
+	CreateAt: "create_at",
+	UpdateAt: "update_at",
 }
 
 // NewOperationDao creates and returns a new DAO object for table data access.
