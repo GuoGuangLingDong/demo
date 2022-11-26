@@ -19,7 +19,7 @@ type MainPagePoapReq struct {
 }
 
 type MainPagePoapRes struct {
-	Res []*entity.Poap
+	Res []*PoapDetailPoapRes
 }
 
 type PoapDetailReq struct {
@@ -28,11 +28,11 @@ type PoapDetailReq struct {
 }
 
 type UserInfo struct {
-	Uid      string
-	Username string
+	Uid      string `json:"uid,omitempty"`
+	Username string `json:"username,omitempty"`
 }
 type PoapDetailPoapRes struct {
-	*entity.Poap
-	LikeNum int
-	Holders []*UserInfo
+	*entity.Poap `json:"poap,omitempty"`
+	LikeNum      int         `json:"like_num,omitempty"`
+	Holders      []*UserInfo `json:"holders,omitempty"`
 }

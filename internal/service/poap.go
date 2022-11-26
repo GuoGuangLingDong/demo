@@ -9,7 +9,7 @@ import (
 
 type IPoap interface {
 	GetMyPoap(ctx context.Context, in model.GetMyPoapInput) []*entity.Poap
-	GetMainPagePoap(ctx context.Context, in model.GetMainPagePoap) []*entity.Poap
+	GetMainPagePoap(ctx context.Context, in model.GetMainPagePoap) []*v1.PoapDetailPoapRes
 	GetPoapDetails(ctx context.Context, in model.GetPoapDetailsInput) *v1.PoapDetailPoapRes
 }
 
