@@ -292,3 +292,14 @@ func (s *SUser) UnfollowUser(ctx context.Context, req *v1.UnfollowUserReq) (err 
 	_, err = dao.Follow.Ctx(ctx).Where("followee", req.Uid).Where("follower", user.Uid).Delete()
 	return
 }
+
+func (s *SUser) GetUserScore(ctx context.Context, req *v1.GetUserScoreReq) *v1.GetUserScoreRes {
+	user := service.Session().GetUser(ctx)
+	sum, _ := dao.Operation.Ctx(ctx).Where("uid", user.Uid).Sum("score")
+	opts := ([]*entity.Operation)(nil)
+	dao.Operation.Ctx(ctx).Where("uid", user.Uid).Scan(&opts)
+	return &v1.GetUserScoreRes{
+		Score:     int64(sum),
+		Oprations: opts,
+	}
+}

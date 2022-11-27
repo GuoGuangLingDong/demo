@@ -103,6 +103,11 @@ func (c *cUser) UnfollowUser(ctx context.Context, req *v1.UnfollowUserReq) (res 
 	return
 }
 
+func (c *cUser) GetUserScore(ctx context.Context, req *v1.GetUserScoreReq) (res *v1.GetUserScoreRes, err error) {
+	res = service.User().GetUserScore(ctx, req)
+	return
+}
+
 func legalCheck(ctx context.Context, phoneNumber string) error {
 	if len(phoneNumber) == 0 {
 		return gerror.New("phone number is empty")

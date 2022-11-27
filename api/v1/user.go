@@ -107,9 +107,18 @@ type FollowUserRes struct {
 }
 
 type UnfollowUserReq struct {
-	g.Meta `path:"/user/unfollow" method:"post" tags:"UserService" summary:"Follow current user"`
+	g.Meta `path:"/user/unfollow" method:"post" tags:"UserService" summary:"Unfollow current user"`
 	Uid    uint `json:"uid,omitempty"`
 }
 
 type UnfollowUserRes struct {
+}
+
+type GetUserScoreReq struct {
+	g.Meta `path:"/user/score" method:"get" tags:"UserService" summary:"Get the score of current user"`
+}
+
+type GetUserScoreRes struct {
+	Score     int64               `json:"score,omitempty"`
+	Oprations []*entity.Operation `json:"oprations,omitempty"`
 }

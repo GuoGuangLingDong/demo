@@ -27,6 +27,7 @@ type (
 		GetUserFollow(ctx context.Context, in *v1.GetUserFollowReq) *v1.GetUserFollowRes
 		FollowUser(ctx context.Context, in *v1.FollowUserReq) (err error)
 		UnfollowUser(ctx context.Context, in *v1.UnfollowUserReq) (err error)
+		GetUserScore(ctx context.Context, req *v1.GetUserScoreReq) *v1.GetUserScoreRes
 	}
 )
 
