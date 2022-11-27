@@ -32,7 +32,6 @@ type UserColumns struct {
 	InviteCode   string // Invite Code
 	Introduction string // Introduction
 	Avatar       string // 头像
-	Scores       string // Scores
 }
 
 // userColumns holds the columns for table user.
@@ -49,7 +48,6 @@ var userColumns = UserColumns{
 	InviteCode:   "invite_code",
 	Introduction: "introduction",
 	Avatar:       "avatar",
-	Scores:       "scores",
 }
 
 // NewUserDao creates and returns a new DAO object for table data access.

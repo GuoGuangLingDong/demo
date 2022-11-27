@@ -20,26 +20,30 @@ type PoapDao struct {
 
 // PoapColumns defines and stores column names for table poap.
 type PoapColumns struct {
-	PoapId           string // Poap id
-	Miner            string // Miner
-	PoapName         string // Poap name
-	PoapNumber       string // Poap number
-	ReceiveCondition string // Receive condition
-	CoverPic         string // Cover picture
-	PoapIntro        string // Poap introduction
-	FavourNumber     string // Favour_number
+	Id          string // pk
+	PoapId      string // Poap id
+	Miner       string // Miner
+	PoapName    string // Poap name
+	PoapSum     string // Poap sum
+	ReceiveCond string // Receive condition
+	CoverImg    string // Cover picture
+	PoapIntro   string // Poap introduction
+	CreateAt    string // Created Time
+	UpdateAt    string // Updated Time
 }
 
 // poapColumns holds the columns for table poap.
 var poapColumns = PoapColumns{
-	PoapId:           "poap_id",
-	Miner:            "miner",
-	PoapName:         "poap_name",
-	PoapNumber:       "poap_number",
-	ReceiveCondition: "receive_condition",
-	CoverPic:         "cover_pic",
-	PoapIntro:        "poap_intro",
-	FavourNumber:     "favour_number",
+	Id:          "id",
+	PoapId:      "poap_id",
+	Miner:       "miner",
+	PoapName:    "poap_name",
+	PoapSum:     "poap_sum",
+	ReceiveCond: "receive_cond",
+	CoverImg:    "cover_img",
+	PoapIntro:   "poap_intro",
+	CreateAt:    "create_at",
+	UpdateAt:    "update_at",
 }
 
 // NewPoapDao creates and returns a new DAO object for table data access.

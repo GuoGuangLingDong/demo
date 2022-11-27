@@ -4,8 +4,15 @@
 
 package entity
 
+import (
+	"github.com/gogf/gf/v2/os/gtime"
+)
+
 // Hold is the golang structure for table hold.
 type Hold struct {
-	Uid    string `json:"uid"    ` // User ID
-	PoapId uint   `json:"poapId" ` // Poap id
+	Id       uint        `json:"id"       ` // pk
+	Uid      uint        `json:"uid"      ` // User ID
+	PoapId   uint        `json:"poapId"   ` // Poap id
+	CreateAt *gtime.Time `json:"createAt" ` // Created Time
+	UpdateAt *gtime.Time `json:"updateAt" ` // Updated Time
 }

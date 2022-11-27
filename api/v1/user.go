@@ -9,8 +9,36 @@ import (
 type UserProfileReq struct {
 	g.Meta `path:"/user/profile" method:"get" tags:"UserService" summary:"Get the profile of current user"`
 }
+type poapsDetail []*PoapDetailPoapRes
 type UserProfileRes struct {
 	*entity.User
+	FollowCount int64
+	PoapCount   int64
+	Links       *Link
+	poapsDetail
+}
+
+type EditUserProfileReq struct {
+	g.Meta       `path:"/user/profile" method:"post" tags:"UserService" summary:"Edit the profile of current user"`
+	UserName     string `json:"user_name,omitempty" json:"user_name,omitempty"`
+	Introduction string `json:"introduction,omitempty" json:"introduction,omitempty"`
+	Links        *Link  `json:"links,omitempty"`
+	Avatar       string `json:"avatar,omitempty" json:"avatar,omitempty"`
+}
+
+type EditUserProfileRes struct {
+}
+
+type Link struct {
+	TiktokLink   string `json:"tiktok_link,omitempty"`
+	InsLink      string `json:"ins_link,omitempty"`
+	WeiboLink    string `json:"weibo_link,omitempty"`
+	RedLink      string `json:"red_link,omitempty"`
+	WechatLink   string `json:"wechat_link,omitempty"`
+	TelLink      string `json:"tel_link,omitempty"`
+	TweetLink    string `json:"tweet_link,omitempty"`
+	FacebookLink string `json:"facebook_link,omitempty"`
+	LinkedinLink string `json:"linkedin_link,omitempty"`
 }
 
 type UserSignUpReq struct {
@@ -53,3 +81,35 @@ type UserSignOutReq struct {
 	g.Meta `path:"/user/sign-out" method:"post" tags:"UserService" summary:"Sign out current user"`
 }
 type UserSignOutRes struct{}
+
+type GetUserFollowReq struct {
+	g.Meta `path:"/user/follow" method:"get" tags:"UserService" summary:"Get the follow information of current user"`
+}
+
+type GetUserFollowRes struct {
+	Followee []*FollowInformation `json:"followee,omitempty"`
+	Follower []*FollowInformation `json:"follower,omitempty"`
+}
+
+type FollowInformation struct {
+	Username    string `json:"username,omitempty"`
+	Uid         uint   `json:"uid,omitempty"`
+	FollowCount int    `json:"follow_count,omitempty"`
+	PoapCount   int    `json:"poap_count,omitempty"`
+}
+
+type FollowUserReq struct {
+	g.Meta `path:"/user/follow" method:"post" tags:"UserService" summary:"Follow current user"`
+	Uid    uint `json:"uid,omitempty"`
+}
+
+type FollowUserRes struct {
+}
+
+type UnfollowUserReq struct {
+	g.Meta `path:"/user/unfollow" method:"post" tags:"UserService" summary:"Follow current user"`
+	Uid    uint `json:"uid,omitempty"`
+}
+
+type UnfollowUserRes struct {
+}

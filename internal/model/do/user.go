@@ -23,6 +23,5 @@ type User struct {
 	WechatNumber interface{} // Wechat Number
 	InviteCode   interface{} // Invite Code
 	Introduction interface{} // Introduction
-	Avatar       []byte      // 头像
-	Scores       interface{} // Scores
+	Avatar       interface{} // 头像
 }

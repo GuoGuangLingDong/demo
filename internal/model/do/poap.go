@@ -6,17 +6,20 @@ package do
 
 import (
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/os/gtime"
 )
 
 // Poap is the golang structure of table poap for DAO operations like Where/Data.
 type Poap struct {
-	g.Meta           `orm:"table:poap, do:true"`
-	PoapId           interface{} // Poap id
-	Miner            interface{} // Miner
-	PoapName         interface{} // Poap name
-	PoapNumber       interface{} // Poap number
-	ReceiveCondition interface{} // Receive condition
-	CoverPic         interface{} // Cover picture
-	PoapIntro        interface{} // Poap introduction
-	FavourNumber     interface{} // Favour_number
+	g.Meta      `orm:"table:poap, do:true"`
+	Id          interface{} // pk
+	PoapId      interface{} // Poap id
+	Miner       interface{} // Miner
+	PoapName    interface{} // Poap name
+	PoapSum     interface{} // Poap sum
+	ReceiveCond interface{} // Receive condition
+	CoverImg    interface{} // Cover picture
+	PoapIntro   interface{} // Poap introduction
+	CreateAt    *gtime.Time // Created Time
+	UpdateAt    *gtime.Time // Updated Time
 }

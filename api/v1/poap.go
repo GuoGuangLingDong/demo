@@ -19,13 +19,20 @@ type MainPagePoapReq struct {
 }
 
 type MainPagePoapRes struct {
-	Res []*entity.Poap
+	Res []*PoapDetailPoapRes
 }
 
 type PoapDetailReq struct {
-	g.Meta `path:"/poap/details" method:"get" tags:"PoapService" summary:"Get the detail of poap"`
+	g.Meta `path:"/poap/details" method:"post" tags:"PoapService" summary:"Get the detail of poap"`
+	PoapId int64 `p:poapid`
 }
 
+type UserInfo struct {
+	Uid      string `json:"uid,omitempty"`
+	Username string `json:"username,omitempty"`
+}
 type PoapDetailPoapRes struct {
-	*entity.Poap
+	*entity.Poap `json:"poap,omitempty"`
+	LikeNum      int         `json:"like_num,omitempty"`
+	Holders      []*UserInfo `json:"holders,omitempty"`
 }

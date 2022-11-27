@@ -4,14 +4,20 @@
 
 package entity
 
+import (
+	"github.com/gogf/gf/v2/os/gtime"
+)
+
 // Poap is the golang structure for table poap.
 type Poap struct {
-	PoapId           uint   `json:"poapId"           ` // Poap id
-	Miner            string `json:"miner"            ` // Miner
-	PoapName         string `json:"poapName"         ` // Poap name
-	PoapNumber       int    `json:"poapNumber"       ` // Poap number
-	ReceiveCondition int    `json:"receiveCondition" ` // Receive condition
-	CoverPic         string `json:"coverPic"         ` // Cover picture
-	PoapIntro        string `json:"poapIntro"        ` // Poap introduction
-	FavourNumber     uint   `json:"favourNumber"     ` // Favour_number
+	Id          uint        `json:"id"          ` // pk
+	PoapId      uint        `json:"poapId"      ` // Poap id
+	Miner       uint        `json:"miner"       ` // Miner
+	PoapName    string      `json:"poapName"    ` // Poap name
+	PoapSum     int         `json:"poapSum"     ` // Poap sum
+	ReceiveCond int         `json:"receiveCond" ` // Receive condition
+	CoverImg    string      `json:"coverImg"    ` // Cover picture
+	PoapIntro   string      `json:"poapIntro"   ` // Poap introduction
+	CreateAt    *gtime.Time `json:"createAt"    ` // Created Time
+	UpdateAt    *gtime.Time `json:"updateAt"    ` // Updated Time
 }
