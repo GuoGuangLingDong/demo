@@ -76,7 +76,7 @@ func (c *cUser) Profile(ctx context.Context, req *v1.UserProfileReq) (res *v1.Us
 	user := service.User().GetProfile(ctx)
 	res = &v1.UserProfileRes{
 		User:        user,
-		FollowCount: service.User().GetFollow(ctx, user.Uid),
+		FollowCount: service.User().GetFollower(ctx, user.Uid),
 		PoapCount:   service.User().GetPoapCount(ctx, user.Uid),
 		Links:       service.User().GetLink(ctx, user.Uid),
 	}
@@ -85,6 +85,11 @@ func (c *cUser) Profile(ctx context.Context, req *v1.UserProfileReq) (res *v1.Us
 
 func (c *cUser) EditProfile(ctx context.Context, req *v1.EditUserProfileReq) (res *v1.EditUserProfileRes, err error) {
 	err = service.User().EditUserProfile(ctx, req)
+	return
+}
+
+func (c *cUser) GetUserFollow(ctx context.Context, req *v1.GetUserFollowReq) (res *v1.GetUserFollowRes, err error) {
+	res = service.User().GetUserFollow(ctx, req)
 	return
 }
 

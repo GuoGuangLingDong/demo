@@ -21,9 +21,10 @@ type (
 		UsernameLegalCheck(ctx context.Context, username string) (bool, error)
         GetProfile(ctx context.Context) *entity.User
 		GetLink(ctx context.Context, uid uint) *v1.Link
-		GetFollow(ctx context.Context, uid uint) int64
+		GetFollower(ctx context.Context, uid uint) int64
 		GetPoapCount(ctx context.Context, uid uint) int64
 		EditUserProfile(ctx context.Context, in *v1.EditUserProfileReq) (err error)
+		GetUserFollow(ctx context.Context, in *v1.GetUserFollowReq) *v1.GetUserFollowRes
 	}
 )
 

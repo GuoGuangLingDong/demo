@@ -145,8 +145,16 @@ func (s *SUser) GetLink(ctx context.Context, uid uint) *v1.Link {
 	return res
 }
 
-func (s *SUser) GetFollow(ctx context.Context, uid uint) int64 {
+func (s *SUser) GetFollower(ctx context.Context, uid uint) int64 {
 	count, err := dao.Follow.Ctx(ctx).Where("followee", uid).Count()
+	if err != nil {
+		return 0
+	}
+	return int64(count)
+}
+
+func (s *SUser) GetFollowee(ctx context.Context, uid uint) int64 {
+	count, err := dao.Follow.Ctx(ctx).Where("follower", uid).Count()
 	if err != nil {
 		return 0
 	}
@@ -230,4 +238,42 @@ func (s *SUser) EditUserProfile(ctx context.Context, in *v1.EditUserProfileReq) 
 		}
 	}
 	return nil
+}
+
+func (s *SUser) GetUserFollow(ctx context.Context, in *v1.GetUserFollowReq) *v1.GetUserFollowRes {
+	user := service.Session().GetUser(ctx)
+	followees := []*v1.FollowInformation{}
+	followers := []*v1.FollowInformation{}
+	followee := ([]*entity.Follow)(nil)
+	follower := ([]*entity.Follow)(nil)
+	dao.Follow.Ctx(ctx).Where("follower", user.Uid).Scan(&followee)
+	dao.Follow.Ctx(ctx).Where("followee", user.Uid).Scan(&follower)
+	for _, f := range followee {
+		followees = append(followees, &v1.FollowInformation{
+			Username:    s.GetUserInfo(ctx, f.Followee).Username,
+			Uid:         f.Followee,
+			FollowCount: int(s.GetFollowee(ctx, f.Followee)),
+			PoapCount:   int(s.GetPoapCount(ctx, f.Followee)),
+		})
+	}
+
+	for _, f := range follower {
+		followers = append(followers, &v1.FollowInformation{
+			Username:    s.GetUserInfo(ctx, f.Follower).Username,
+			Uid:         f.Followee,
+			FollowCount: int(s.GetFollowee(ctx, f.Follower)),
+			PoapCount:   int(s.GetPoapCount(ctx, f.Follower)),
+		})
+	}
+
+	return &v1.GetUserFollowRes{
+		Followee: followees,
+		Follower: followers,
+	}
+}
+
+func (s *SUser) GetUserInfo(ctx context.Context, uid uint) *entity.User {
+	var user *entity.User
+	dao.User.Ctx(ctx).Where("uid", uid).Scan(&user)
+	return user
 }
