@@ -9,8 +9,36 @@ import (
 type UserProfileReq struct {
 	g.Meta `path:"/user/profile" method:"get" tags:"UserService" summary:"Get the profile of current user"`
 }
+type poapsDetail []*PoapDetailPoapRes
 type UserProfileRes struct {
 	*entity.User
+	FollowCount int64
+	PoapCount   int64
+	Links       *Link
+	poapsDetail
+}
+
+type EditUserProfileReq struct {
+	g.Meta       `path:"/user/profile" method:"post" tags:"UserService" summary:"Edit the profile of current user"`
+	UserName     string `json:"user_name,omitempty" json:"user_name,omitempty"`
+	Introduction string `json:"introduction,omitempty" json:"introduction,omitempty"`
+	Links        *Link  `json:"links,omitempty"`
+	Avatar       string `json:"avatar,omitempty" json:"avatar,omitempty"`
+}
+
+type EditUserProfileRes struct {
+}
+
+type Link struct {
+	TiktokLink   string `json:"tiktok_link,omitempty"`
+	InsLink      string `json:"ins_link,omitempty"`
+	WeiboLink    string `json:"weibo_link,omitempty"`
+	RedLink      string `json:"red_link,omitempty"`
+	WechatLink   string `json:"wechat_link,omitempty"`
+	TelLink      string `json:"tel_link,omitempty"`
+	TweetLink    string `json:"tweet_link,omitempty"`
+	FacebookLink string `json:"facebook_link,omitempty"`
+	LinkedinLink string `json:"linkedin_link,omitempty"`
 }
 
 type UserSignUpReq struct {

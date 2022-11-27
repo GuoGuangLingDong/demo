@@ -73,9 +73,18 @@ func (c *cUser) CheckUserName(ctx context.Context, req *v1.UserCheckNickNameReq)
 
 // Profile returns the user profile.
 func (c *cUser) Profile(ctx context.Context, req *v1.UserProfileReq) (res *v1.UserProfileRes, err error) {
+	user := service.User().GetProfile(ctx)
 	res = &v1.UserProfileRes{
-		User: service.User().GetProfile(ctx),
+		User:        user,
+		FollowCount: service.User().GetFollow(ctx, user.Uid),
+		PoapCount:   service.User().GetPoapCount(ctx, user.Uid),
+		Links:       service.User().GetLink(ctx, user.Uid),
 	}
+	return
+}
+
+func (c *cUser) EditProfile(ctx context.Context, req *v1.EditUserProfileReq) (res *v1.EditUserProfileRes, err error) {
+	err = service.User().EditUserProfile(ctx, req)
 	return
 }
 
