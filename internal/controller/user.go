@@ -93,6 +93,16 @@ func (c *cUser) GetUserFollow(ctx context.Context, req *v1.GetUserFollowReq) (re
 	return
 }
 
+func (c *cUser) FollowUser(ctx context.Context, req *v1.FollowUserReq) (res *v1.FollowUserRes, err error) {
+	err = service.User().FollowUser(ctx, req)
+	return
+}
+
+func (c *cUser) UnfollowUser(ctx context.Context, req *v1.UnfollowUserReq) (res *v1.UnfollowUserRes, err error) {
+	err = service.User().UnfollowUser(ctx, req)
+	return
+}
+
 func legalCheck(ctx context.Context, phoneNumber string) error {
 	if len(phoneNumber) == 0 {
 		return gerror.New("phone number is empty")

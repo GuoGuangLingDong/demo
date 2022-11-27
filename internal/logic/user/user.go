@@ -246,8 +246,8 @@ func (s *SUser) GetUserFollow(ctx context.Context, in *v1.GetUserFollowReq) *v1.
 	followers := []*v1.FollowInformation{}
 	followee := ([]*entity.Follow)(nil)
 	follower := ([]*entity.Follow)(nil)
-	dao.Follow.Ctx(ctx).Where("follower", user.Uid).Scan(&followee)
-	dao.Follow.Ctx(ctx).Where("followee", user.Uid).Scan(&follower)
+	dao.Follow.Ctx(ctx).Where("follower", user.Uid).Scan(&followee) //关注的人
+	dao.Follow.Ctx(ctx).Where("followee", user.Uid).Scan(&follower) //粉丝
 	for _, f := range followee {
 		followees = append(followees, &v1.FollowInformation{
 			Username:    s.GetUserInfo(ctx, f.Followee).Username,
@@ -260,7 +260,7 @@ func (s *SUser) GetUserFollow(ctx context.Context, in *v1.GetUserFollowReq) *v1.
 	for _, f := range follower {
 		followers = append(followers, &v1.FollowInformation{
 			Username:    s.GetUserInfo(ctx, f.Follower).Username,
-			Uid:         f.Followee,
+			Uid:         f.Follower,
 			FollowCount: int(s.GetFollowee(ctx, f.Follower)),
 			PoapCount:   int(s.GetPoapCount(ctx, f.Follower)),
 		})
@@ -276,4 +276,19 @@ func (s *SUser) GetUserInfo(ctx context.Context, uid uint) *entity.User {
 	var user *entity.User
 	dao.User.Ctx(ctx).Where("uid", uid).Scan(&user)
 	return user
+}
+
+func (s *SUser) FollowUser(ctx context.Context, req *v1.FollowUserReq) (err error) {
+	user := service.Session().GetUser(ctx)
+	_, err = dao.Follow.Ctx(ctx).Data(g.Map{
+		"followee": req.Uid,
+		"follower": user.Uid,
+	}).Insert()
+	return
+}
+
+func (s *SUser) UnfollowUser(ctx context.Context, req *v1.UnfollowUserReq) (err error) {
+	user := service.Session().GetUser(ctx)
+	_, err = dao.Follow.Ctx(ctx).Where("followee", req.Uid).Where("follower", user.Uid).Delete()
+	return
 }

@@ -25,6 +25,8 @@ type (
 		GetPoapCount(ctx context.Context, uid uint) int64
 		EditUserProfile(ctx context.Context, in *v1.EditUserProfileReq) (err error)
 		GetUserFollow(ctx context.Context, in *v1.GetUserFollowReq) *v1.GetUserFollowRes
+		FollowUser(ctx context.Context, in *v1.FollowUserReq) (err error)
+		UnfollowUser(ctx context.Context, in *v1.UnfollowUserReq) (err error)
 	}
 )
 

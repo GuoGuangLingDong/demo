@@ -97,3 +97,19 @@ type FollowInformation struct {
 	FollowCount int    `json:"follow_count,omitempty"`
 	PoapCount   int    `json:"poap_count,omitempty"`
 }
+
+type FollowUserReq struct {
+	g.Meta `path:"/user/follow" method:"post" tags:"UserService" summary:"Follow current user"`
+	Uid    uint `json:"uid,omitempty"`
+}
+
+type FollowUserRes struct {
+}
+
+type UnfollowUserReq struct {
+	g.Meta `path:"/user/unfollow" method:"post" tags:"UserService" summary:"Follow current user"`
+	Uid    uint `json:"uid,omitempty"`
+}
+
+type UnfollowUserRes struct {
+}
