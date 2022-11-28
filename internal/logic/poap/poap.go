@@ -8,6 +8,7 @@ import (
 	"demo/internal/model/do"
 	"demo/internal/model/entity"
 	"demo/internal/service"
+	"fmt"
 )
 
 type (
@@ -62,10 +63,12 @@ func (S SPoap) GetMainPagePoap(ctx context.Context, in model.GetMainPagePoap) []
 		for _, poap := range poapRes {
 			if uint(like.poapId) == poap.PoapId {
 				holders := S.getPoapUser(ctx, int64(poap.PoapId))
+				collectable := S.isCollectable(ctx, int64(poap.PoapId))
 				res = append(res, &v1.PoapDetailPoapRes{
 					poap,
 					int(like.number),
 					holders,
+					collectable,
 				})
 			}
 		}
@@ -74,7 +77,6 @@ func (S SPoap) GetMainPagePoap(ctx context.Context, in model.GetMainPagePoap) []
 }
 
 func (S SPoap) GetPoapDetails(ctx context.Context, in model.GetPoapDetailsInput) *v1.PoapDetailPoapRes {
-
 	poapId := in.PoapId
 	res := &v1.PoapDetailPoapRes{}
 	dao.Poap.Ctx(ctx).Where("poap_id", poapId).Scan(&res.Poap)
@@ -84,7 +86,26 @@ func (S SPoap) GetPoapDetails(ctx context.Context, in model.GetPoapDetailsInput)
 	}
 	res.LikeNum = likeNum
 	res.Holders = S.getPoapUser(ctx, poapId)
+	res.Collectable = S.isCollectable(ctx, poapId)
 	return res
+}
+
+func (S SPoap) isCollectable(ctx context.Context, poapId int64) bool {
+	uid := service.Session().GetUser(ctx).Uid
+	holdNum, _ := dao.Hold.Ctx(ctx).Where("uid", uid).Where("poap_id", poapId).Count()
+	if holdNum != 0 {
+		return false
+	}
+	poapSum, _ := dao.Poap.Ctx(ctx).Fields("poap_sum").Where("poap_id", poapId).Value()
+	poapHold, _ := dao.Hold.Ctx(ctx).Where("poap_id", poapId).Count()
+	fmt.Println("poapSum: ", poapSum)
+	fmt.Println("poapHold: ", poapHold)
+
+	if poapSum.Int() <= poapHold {
+		return false
+	}
+
+	return true
 }
 
 func (S SPoap) getPoapUser(ctx context.Context, poapId int64) []*v1.UserInfo {
@@ -98,6 +119,33 @@ func (S SPoap) getPoapUser(ctx context.Context, poapId int64) []*v1.UserInfo {
 	}
 	dao.User.Ctx(ctx).Where("uid in (?)", holderIds).Scan(&holders)
 	return holders
+}
+
+func (S SPoap) CollectPoap(ctx context.Context, in model.CollectPoapInput) (err error) {
+	collect := &entity.Hold{
+		Uid:    service.Session().GetUser(ctx).Uid,
+		PoapId: uint(in.PoapId),
+	}
+	_, err = dao.Hold.Ctx(ctx).Insert(collect)
+	return err
+}
+
+func (S SPoap) MintPoap(ctx context.Context, in model.MintPoapInput) (err error) {
+	newPoap := &entity.Poap{
+		PoapId:      S.generatePoapId(ctx),
+		Miner:       service.Session().GetUser(ctx).Uid,
+		PoapName:    in.PoapName,
+		PoapSum:     int(in.PoapSum),
+		ReceiveCond: int(in.ReceiveCond),
+		CoverImg:    in.CoverImg,
+		PoapIntro:   in.PoapIntro,
+	}
+	_, err = dao.Poap.Ctx(ctx).Insert(newPoap)
+
+	return
+}
+func (S SPoap) generatePoapId(ctx context.Context) uint {
+	return 0
 }
 
 func init() {

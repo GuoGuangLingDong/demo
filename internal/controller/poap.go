@@ -36,7 +36,18 @@ func (c *cPoap) GetMainPagePoap(ctx context.Context, req *v1.MainPagePoapReq) (r
 
 // Get poap info
 func (c *cPoap) GetPoapDetails(ctx context.Context, req *v1.PoapDetailReq) (res *v1.PoapDetailPoapRes, err error) {
-	res = &v1.PoapDetailPoapRes{nil, 0, nil}
+	res = &v1.PoapDetailPoapRes{nil, 0, nil, false}
 	res = service.Poap().GetPoapDetails(ctx, model.GetPoapDetailsInput{PoapId: req.PoapId})
+	return
+}
+
+func (c *cPoap) CollectPoap(ctx context.Context, req *v1.PoapCollectReq) (res *v1.PoapCollectRes, err error) {
+	res = &v1.PoapCollectRes{}
+	service.Poap().CollectPoap(ctx, model.CollectPoapInput{PoapId: req.PoapId})
+	return
+}
+
+func (c *cPoap) MintPoap(ctx context.Context, req *v1.PoapMintReq) (res *v1.PoapMintRes, err error) {
+	res = &v1.PoapMintRes{}
 	return
 }

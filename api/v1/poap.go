@@ -24,7 +24,7 @@ type MainPagePoapRes struct {
 
 type PoapDetailReq struct {
 	g.Meta `path:"/poap/details" method:"post" tags:"PoapService" summary:"Get the detail of poap"`
-	PoapId int64 `p:poapid`
+	PoapId int64 `p:poap_id`
 }
 
 type UserInfo struct {
@@ -35,4 +35,23 @@ type PoapDetailPoapRes struct {
 	*entity.Poap `json:"poap,omitempty"`
 	LikeNum      int         `json:"like_num,omitempty"`
 	Holders      []*UserInfo `json:"holders,omitempty"`
+	Collectable  bool        `json:"collectable"`
 }
+
+type PoapCollectReq struct {
+	g.Meta `path:"/poap/collect" method:"post" tags:"PoapService" summary:"Collect a poap"`
+	PoapId int64 `p:poap_id`
+}
+
+type PoapCollectRes struct{}
+
+type PoapMintReq struct {
+	g.Meta      `path:"/poap/mint" method:"post" tags:"PoapService" summary:"Mint a poap"`
+	PoapName    string
+	PoaoSum     int64
+	ReceiveCond int64
+	CoverImg    string
+	PoapIntro   string
+}
+
+type PoapMintRes struct{}
