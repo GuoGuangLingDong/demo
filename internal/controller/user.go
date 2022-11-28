@@ -73,9 +73,38 @@ func (c *cUser) CheckUserName(ctx context.Context, req *v1.UserCheckNickNameReq)
 
 // Profile returns the user profile.
 func (c *cUser) Profile(ctx context.Context, req *v1.UserProfileReq) (res *v1.UserProfileRes, err error) {
+	user := service.User().GetProfile(ctx)
 	res = &v1.UserProfileRes{
-		User: service.User().GetProfile(ctx),
+		User:        user,
+		FollowCount: service.User().GetFollower(ctx, user.Uid),
+		PoapCount:   service.User().GetPoapCount(ctx, user.Uid),
+		Links:       service.User().GetLink(ctx, user.Uid),
 	}
+	return
+}
+
+func (c *cUser) EditProfile(ctx context.Context, req *v1.EditUserProfileReq) (res *v1.EditUserProfileRes, err error) {
+	err = service.User().EditUserProfile(ctx, req)
+	return
+}
+
+func (c *cUser) GetUserFollow(ctx context.Context, req *v1.GetUserFollowReq) (res *v1.GetUserFollowRes, err error) {
+	res = service.User().GetUserFollow(ctx, req)
+	return
+}
+
+func (c *cUser) FollowUser(ctx context.Context, req *v1.FollowUserReq) (res *v1.FollowUserRes, err error) {
+	err = service.User().FollowUser(ctx, req)
+	return
+}
+
+func (c *cUser) UnfollowUser(ctx context.Context, req *v1.UnfollowUserReq) (res *v1.UnfollowUserRes, err error) {
+	err = service.User().UnfollowUser(ctx, req)
+	return
+}
+
+func (c *cUser) GetUserScore(ctx context.Context, req *v1.GetUserScoreReq) (res *v1.GetUserScoreRes, err error) {
+	res = service.User().GetUserScore(ctx, req)
 	return
 }
 

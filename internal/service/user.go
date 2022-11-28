@@ -7,6 +7,7 @@ package service
 
 import (
 	"context"
+	v1 "demo/api/v1"
 	"demo/internal/model"
 	"demo/internal/model/entity"
 )
@@ -19,6 +20,14 @@ type (
 		SignOut(ctx context.Context) error
 		UsernameLegalCheck(ctx context.Context, username string) (bool, error)
         GetProfile(ctx context.Context) *entity.User
+		GetLink(ctx context.Context, uid uint) *v1.Link
+		GetFollower(ctx context.Context, uid uint) int64
+		GetPoapCount(ctx context.Context, uid uint) int64
+		EditUserProfile(ctx context.Context, in *v1.EditUserProfileReq) (err error)
+		GetUserFollow(ctx context.Context, in *v1.GetUserFollowReq) *v1.GetUserFollowRes
+		FollowUser(ctx context.Context, in *v1.FollowUserReq) (err error)
+		UnfollowUser(ctx context.Context, in *v1.UnfollowUserReq) (err error)
+		GetUserScore(ctx context.Context, req *v1.GetUserScoreReq) *v1.GetUserScoreRes
 	}
 )
 
