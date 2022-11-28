@@ -13,6 +13,7 @@ type Hold struct {
 	Id       uint        `json:"id"       ` // pk
 	Uid      uint        `json:"uid"      ` // User ID
 	PoapId   uint        `json:"poapId"   ` // Poap id
+	TokenId  string      `json:"tokenId"  ` // Poap tokenId
 	CreateAt *gtime.Time `json:"createAt" ` // Created Time
 	UpdateAt *gtime.Time `json:"updateAt" ` // Updated Time
 }

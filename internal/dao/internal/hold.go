@@ -23,6 +23,7 @@ type HoldColumns struct {
 	Id       string // pk
 	Uid      string // User ID
 	PoapId   string // Poap id
+	TokenId  string // Poap tokenId
 	CreateAt string // Created Time
 	UpdateAt string // Updated Time
 }
@@ -32,6 +33,7 @@ var holdColumns = HoldColumns{
 	Id:       "id",
 	Uid:      "uid",
 	PoapId:   "poap_id",
+	TokenId:  "token_id",
 	CreateAt: "create_at",
 	UpdateAt: "update_at",
 }
