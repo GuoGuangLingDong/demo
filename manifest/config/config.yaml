@@ -22,3 +22,10 @@ database:
     link: "mysql:root:123456@tcp(118.195.238.77:3306)/wesoul"
     debug: true
 
+# redis
+redis:
+  default:
+    host: 127.0.0.1:6379
+    password:
+    database: 0
+

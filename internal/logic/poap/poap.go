@@ -3,6 +3,7 @@ package poap
 import (
 	"context"
 	v1 "demo/api/v1"
+	"demo/internal/consts"
 	"demo/internal/dao"
 	"demo/internal/model"
 	"demo/internal/model/do"
@@ -141,11 +142,56 @@ func (S SPoap) MintPoap(ctx context.Context, in model.MintPoapInput) (err error)
 		PoapIntro:   in.PoapIntro,
 	}
 	_, err = dao.Poap.Ctx(ctx).Insert(newPoap)
+	if err != nil {
+		return
+	}
 
+	_ = S.generate(ctx, model.GenerateTokenReq{
+		PoapId: 1,
+		Num:    uint(in.PoapSum),
+	})
 	return
 }
 func (S SPoap) generatePoapId(ctx context.Context) uint {
 	return 0
+}
+
+// Generate poap铸造发行
+func (S SPoap) generate(ctx context.Context, req model.GenerateTokenReq) (err error) {
+	// 生成token
+	tokens, err := generateToken(ctx, req)
+	if err != nil {
+		return
+	}
+	lockFlag := uint(1)
+	unlockFlag := uint(0)
+	var publish []*entity.Publish
+	for _, v := range tokens {
+		if v.ErrorMessage != "" {
+			publish = append(publish, &entity.Publish{
+				PoapId:       req.PoapId,
+				TokenId:      v.TokenId,
+				No:           v.No,
+				ErrorMessage: v.ErrorMessage,
+				LockFlag:     unlockFlag,
+				Status:       consts.PublishStatusError,
+			})
+		} else {
+			publish = append(publish, &entity.Publish{
+				PoapId:   req.PoapId,
+				TokenId:  v.TokenId,
+				No:       v.No,
+				LockFlag: lockFlag,
+				Status:   consts.PublishStatusDisable,
+			})
+		}
+	}
+	// insert publish
+	_, err = dao.Publish.Ctx(ctx).Batch(5000).Data(publish).Insert()
+	if err != nil {
+		return
+	}
+	return
 }
 
 func init() {
