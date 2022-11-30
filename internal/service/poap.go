@@ -13,6 +13,7 @@ type IPoap interface {
 	GetPoapDetails(ctx context.Context, in model.GetPoapDetailsInput) *v1.PoapDetailPoapRes
 	CollectPoap(ctx context.Context, in model.CollectPoapInput) (err error)
 	MintPoap(ctx context.Context, in model.MintPoapInput) (err error)
+	ChainCallback(ctx context.Context, in *v1.ChainCallbackReq) (err error)
 }
 
 var (

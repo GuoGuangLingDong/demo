@@ -134,8 +134,9 @@ func (S SPoap) CollectPoap(ctx context.Context, in model.CollectPoapInput) (err 
 func (S SPoap) MintPoap(ctx context.Context, in model.MintPoapInput) (err error) {
 	poapId := S.generatePoapId(ctx)
 	newPoap := &entity.Poap{
-		PoapId:      poapId,
-		Miner:       service.Session().GetUser(ctx).Uid,
+		PoapId: poapId,
+		Miner:  service.Session().GetUser(ctx).Uid,
+		//Miner:       1,
 		PoapName:    in.PoapName,
 		PoapSum:     int(in.PoapSum),
 		ReceiveCond: int(in.ReceiveCond),
@@ -254,6 +255,9 @@ func (S SPoap) generate(ctx context.Context, req model.GenerateTokenReq) (err er
 	if err != nil {
 		return
 	}
+
+	// 上链
+	_ = upChain(req.PoapId)
 	return
 }
 

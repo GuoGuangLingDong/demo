@@ -29,3 +29,10 @@ redis:
     password:
     database: 0
 
+# 上链
+chain:
+  appId: 5
+  appSecret: eX3wKQtKuYrQItryXsjYUXhr
+  tokenUrl: https://localhost:8111/blockchain/metadata/%s/%s
+  upChainUrl: http://47.93.32.136:8881/api/batch/tokens
+  chainAddr: 0xc1dcca2d749a1e6ae916dde24fcf3b5742d64098

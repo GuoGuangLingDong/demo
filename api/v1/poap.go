@@ -55,3 +55,18 @@ type PoapMintReq struct {
 }
 
 type PoapMintRes struct{}
+
+// ChainCallbackReq 上链回调
+type ChainCallbackReq struct {
+	g.Meta    `path:"/poap/chain/callback" method:"post" tags:"PoapService" summary:"Poap chain callback"`
+	Code      int    `json:"code"`
+	Contract  string `json:"contract" v:"required"`
+	Hash      string `json:"hash" v:"required"`
+	OperateId string `json:"operateId" v:"required"`
+	Status    string `json:"status"`
+	TokenId   string `json:"tokenId" v:"required"`
+	Type      string `json:"type" v:"required"`
+	Msg       string `json:"msg"`
+}
+
+type ChainCallbackRes struct{}

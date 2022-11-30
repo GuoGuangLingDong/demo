@@ -41,12 +41,14 @@ func (c *cPoap) GetPoapDetails(ctx context.Context, req *v1.PoapDetailReq) (res 
 	return
 }
 
+// CollectPoap poap领取
 func (c *cPoap) CollectPoap(ctx context.Context, req *v1.PoapCollectReq) (res *v1.PoapCollectRes, err error) {
 	res = &v1.PoapCollectRes{}
 	err = service.Poap().CollectPoap(ctx, model.CollectPoapInput{PoapId: req.PoapId})
 	return
 }
 
+// MintPoap poap铸造
 func (c *cPoap) MintPoap(ctx context.Context, req *v1.PoapMintReq) (res *v1.PoapMintRes, err error) {
 	res = &v1.PoapMintRes{}
 	err = service.Poap().MintPoap(ctx, model.MintPoapInput{
@@ -56,5 +58,12 @@ func (c *cPoap) MintPoap(ctx context.Context, req *v1.PoapMintReq) (res *v1.Poap
 		CoverImg:    req.CoverImg,
 		PoapIntro:   req.PoapIntro,
 	})
+	return
+}
+
+// ChainCallback 上链回调
+func (c *cPoap) ChainCallback(ctx context.Context, req *v1.ChainCallbackReq) (res *v1.ChainCallbackRes, err error) {
+	res = &v1.ChainCallbackRes{}
+	err = service.Poap().ChainCallback(ctx, req)
 	return
 }

@@ -237,6 +237,9 @@ func (s *SUser) EditUserProfile(ctx context.Context, in *v1.EditUserProfileReq) 
 			}
 		}
 	}
+
+	// 铸造头像nft
+
 	return nil
 }
 
