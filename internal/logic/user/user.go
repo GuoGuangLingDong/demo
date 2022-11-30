@@ -3,16 +3,16 @@ package user
 import (
 	"context"
 	v1 "demo/api/v1"
-	"fmt"
-	"github.com/gogf/gf/v2/database/gdb"
-	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/frame/g"
-
 	"demo/internal/dao"
 	"demo/internal/model"
 	"demo/internal/model/do"
 	"demo/internal/model/entity"
 	"demo/internal/service"
+	"fmt"
+	"github.com/gogf/gf/v2/database/gdb"
+	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/frame/g"
+	"time"
 )
 
 type (
@@ -239,6 +239,15 @@ func (s *SUser) EditUserProfile(ctx context.Context, in *v1.EditUserProfileReq) 
 	}
 
 	// 铸造头像nft
+	if user.Avatar != in.Avatar {
+		_ = service.Poap().MintPoap(ctx, model.MintPoapInput{
+			PoapName:    fmt.Sprintf("%d.did Avatar PFP", user.Uid),
+			PoapSum:     1,
+			ReceiveCond: 1,
+			CoverImg:    in.Avatar,
+			PoapIntro:   fmt.Sprintf("%d.did于%s时间更新头像", user.Uid, time.Now().Format(time.RFC3339)),
+		})
+	}
 
 	return nil
 }

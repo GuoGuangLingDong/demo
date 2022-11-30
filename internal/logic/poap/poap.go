@@ -148,7 +148,7 @@ func (S SPoap) MintPoap(ctx context.Context, in model.MintPoapInput) (err error)
 		return
 	}
 
-	_ = S.generate(ctx, model.GenerateTokenReq{
+	_ = S.Generate(ctx, model.GenerateTokenReq{
 		PoapId: poapId,
 		Num:    uint(in.PoapSum),
 	})
@@ -221,7 +221,7 @@ func (S SPoap) publishPoap(ctx context.Context, userId uint, poapId int64, num i
 }
 
 // generate poap铸造发行
-func (S SPoap) generate(ctx context.Context, req model.GenerateTokenReq) (err error) {
+func (S SPoap) Generate(ctx context.Context, req model.GenerateTokenReq) (err error) {
 	// 生成token
 	tokens, err := generateToken(ctx, req)
 	if err != nil {
