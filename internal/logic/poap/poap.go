@@ -10,6 +10,8 @@ import (
 	"demo/internal/model/entity"
 	"demo/internal/service"
 	"fmt"
+	"github.com/gogf/gf/v2/database/gdb"
+	"github.com/gogf/gf/v2/frame/g"
 )
 
 type (
@@ -123,11 +125,8 @@ func (S SPoap) getPoapUser(ctx context.Context, poapId int64) []*v1.UserInfo {
 }
 
 func (S SPoap) CollectPoap(ctx context.Context, in model.CollectPoapInput) (err error) {
-	collect := &entity.Hold{
-		Uid:    service.Session().GetUser(ctx).Uid,
-		PoapId: uint(in.PoapId),
-	}
-	_, err = dao.Hold.Ctx(ctx).Insert(collect)
+	userId := service.Session().GetUser(ctx).Uid
+	err = S.publishPoap(ctx, userId, in.PoapId, 1)
 	return err
 }
 
@@ -156,7 +155,69 @@ func (S SPoap) generatePoapId(ctx context.Context) uint {
 	return 0
 }
 
-// Generate poap铸造发行
+// publishPoap 发放POAP
+func (S SPoap) publishPoap(ctx context.Context, userId uint, poapId int64, num int) (err error) {
+	var asset []entity.Publish
+	m := g.DB().Model("publish")
+	m.Where("poap_id", poapId)
+	m.Where("status", "disable")
+	m.Where("lock_flag", 1)
+	m.Order("no ASC")
+	m.Limit(num)
+	err = m.Scan(&asset)
+	if len(asset) == 0 {
+		g.Log().Errorf(ctx, "未查询可用资产：poapId:%s", poapId)
+		err = fmt.Errorf("出错了，请稍后再试")
+		return
+	}
+	if len(asset) != num {
+		g.Log().Errorf(ctx, "查询可用资产数量不足：poapId:%s", poapId)
+		err = fmt.Errorf("出错了，请稍后再试")
+		return
+	}
+
+	hold := g.Slice{}
+	ids := make([]int64, 0)
+	for _, v := range asset {
+		ids = append(ids, v.Id)
+		hold = append(hold, g.Map{
+			"uid":      userId,
+			"poap_id":  poapId,
+			"token_id": v.TokenId,
+		})
+	}
+
+	err = g.DB().Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+		result, err := tx.Model(dao.Publish.Table()).Data(g.Map{
+			"lock_flag": gdb.Raw("lock_flag - 1"),
+			"status":    "used",
+		}).WhereIn("id", ids).Update()
+		if err != nil {
+			return err
+		}
+		ra, err := result.RowsAffected()
+		if err != nil {
+			return err
+		}
+		if ra == 0 {
+			err = fmt.Errorf("RowsAffected = 0")
+			return err
+		}
+		_, err = tx.Model(dao.Hold.Table()).Insert(hold)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		g.Log().Errorf(ctx, "领取poap失败：poapId:%s, err:%v", poapId, err.Error())
+		err = fmt.Errorf("出错了，请稍后再试")
+		return
+	}
+	return
+}
+
+// generate poap铸造发行
 func (S SPoap) generate(ctx context.Context, req model.GenerateTokenReq) (err error) {
 	// 生成token
 	tokens, err := generateToken(ctx, req)
