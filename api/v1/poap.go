@@ -40,18 +40,18 @@ type PoapDetailPoapRes struct {
 
 type PoapCollectReq struct {
 	g.Meta `path:"/poap/collect" method:"post" tags:"PoapService" summary:"Collect a poap"`
-	PoapId int64 `p:poap_id`
+	PoapId int64 `json:"poap_id" v:"required"`
 }
 
 type PoapCollectRes struct{}
 
 type PoapMintReq struct {
 	g.Meta      `path:"/poap/mint" method:"post" tags:"PoapService" summary:"Mint a poap"`
-	PoapName    string
-	PoaoSum     int64
-	ReceiveCond int64
-	CoverImg    string
-	PoapIntro   string
+	PoapName    string `json:"poap_name" v:"required|length:2,30"`
+	PoapSum     int64  `json:"poap_sum" v:"required|integer|between:1,10000"`
+	ReceiveCond int64  `json:"receive_cond" v:"required|integer"`
+	CoverImg    string `json:"cover_img" v:"required"`
+	PoapIntro   string `json:"poap_intro" v:"required"`
 }
 
 type PoapMintRes struct{}

@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/frame/g"
+	"time"
 )
 
 type (
@@ -131,8 +132,9 @@ func (S SPoap) CollectPoap(ctx context.Context, in model.CollectPoapInput) (err 
 }
 
 func (S SPoap) MintPoap(ctx context.Context, in model.MintPoapInput) (err error) {
+	poapId := S.generatePoapId(ctx)
 	newPoap := &entity.Poap{
-		PoapId:      S.generatePoapId(ctx),
+		PoapId:      poapId,
 		Miner:       service.Session().GetUser(ctx).Uid,
 		PoapName:    in.PoapName,
 		PoapSum:     int(in.PoapSum),
@@ -146,13 +148,13 @@ func (S SPoap) MintPoap(ctx context.Context, in model.MintPoapInput) (err error)
 	}
 
 	_ = S.generate(ctx, model.GenerateTokenReq{
-		PoapId: 1,
+		PoapId: poapId,
 		Num:    uint(in.PoapSum),
 	})
 	return
 }
 func (S SPoap) generatePoapId(ctx context.Context) uint {
-	return 0
+	return uint(time.Now().Unix())
 }
 
 // publishPoap 发放POAP
