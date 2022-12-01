@@ -123,3 +123,16 @@ type GetUserScoreRes struct {
 	Score     int64               `json:"score,omitempty"`
 	Oprations []*entity.Operation `json:"oprations,omitempty"`
 }
+
+type UserShareReq struct {
+	g.Meta `path:"/user/share" method:"get" tags:"UserService" summary:"User share info"`
+}
+
+type UserShareRes struct {
+	Uid         uint   `json:"uid"`
+	Username    string `json:"username"`
+	UserDesc    string `json:"user_desc"`
+	Avatar      string `json:"avatar"`
+	FollowCount int64  `json:"follow_count"`
+	NftCount    int64  `json:"nft_count"`
+}

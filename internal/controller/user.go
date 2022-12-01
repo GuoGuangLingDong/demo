@@ -98,6 +98,20 @@ func (c *cUser) Profile(ctx context.Context, req *v1.UserProfileReq) (res *v1.Us
 	return
 }
 
+// ShareInfo is the API for user share info
+func (c *cUser) ShareInfo(ctx context.Context, req *v1.UserShareReq) (res *v1.UserShareRes, err error) {
+	user := service.User().GetProfile(ctx)
+	res = &v1.UserShareRes{
+		Uid:         user.Uid,
+		Username:    user.Username,
+		UserDesc:    user.Introduction,
+		Avatar:      user.Avatar,
+		FollowCount: service.User().GetFollower(ctx, user.Uid),
+		NftCount:    service.User().GetPoapCount(ctx, user.Uid),
+	}
+	return
+}
+
 func (c *cUser) EditProfile(ctx context.Context, req *v1.EditUserProfileReq) (res *v1.EditUserProfileRes, err error) {
 	err = service.User().EditUserProfile(ctx, req)
 	return
