@@ -32,6 +32,7 @@ var (
 				group.Bind(
 					controller.User,
 					controller.Poap,
+					controller.Code,
 				)
 				// Special handler that needs authentication.
 				group.Group("/", func(group *ghttp.RouterGroup) {

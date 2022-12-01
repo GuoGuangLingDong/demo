@@ -36,3 +36,15 @@ chain:
   tokenUrl: https://localhost:8111/blockchain/metadata/%s/%s
   upChainUrl: http://47.93.32.136:8881/api/batch/tokens
   chainAddr: 0xc1dcca2d749a1e6ae916dde24fcf3b5742d64098
+
+#sms配置
+sms:
+  url: "https://market.juncdt.com/smartmarket/msgService/sendMessage"
+  accessKey: "d0ad7a519058866cb5"
+  accessSecret: "f27ee1886f933516ffb01d4bb6407f"
+  classificationSecret: "2atbqWLP"
+  signCode: "jHq74VEp"
+  templateCode: "AqY0bsaM"
+
+system:
+  env: test

@@ -2,6 +2,8 @@ package controller
 
 import (
 	"context"
+	vcodeService "demo/internal/service/vcode"
+	"github.com/gogf/gf/v2/frame/g"
 	"github.com/google/uuid"
 	"strings"
 
@@ -26,6 +28,14 @@ func (c *cUser) SignUp(ctx context.Context, req *v1.UserSignUpReq) (res *v1.User
 		return
 	}
 
+	// check code
+	if env, _ := g.Cfg().Get(ctx, "system.env"); env.String() != "test" {
+		err = vcodeService.VerifyCode(req.PhoneNumber, req.VerifyCode, vcodeService.REGIST_CODE)
+		if err != nil {
+			return
+		}
+	}
+
 	err = service.User().Create(ctx, model.UserCreateInput{
 		UId:         uid,
 		Username:    req.Username,
@@ -33,6 +43,11 @@ func (c *cUser) SignUp(ctx context.Context, req *v1.UserSignUpReq) (res *v1.User
 		Nickname:    req.Nickname,
 		PhoneNumebr: req.PhoneNumber,
 	})
+
+	if err == nil {
+		vcodeService.DeleteVcode(req.PhoneNumber, vcodeService.REGIST_CODE)
+	}
+
 	return
 }
 
