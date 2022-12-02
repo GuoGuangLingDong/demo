@@ -11,8 +11,8 @@ import (
 // Follow is the golang structure for table follow.
 type Follow struct {
 	Id       uint        `json:"id"       ` // pk
-	Followee uint        `json:"followee" ` // Followee ID
-	Follower uint        `json:"follower" ` // Follower id
+	Followee string      `json:"followee" ` // Followee ID
+	Follower string      `json:"follower" ` // Follower id
 	CreateAt *gtime.Time `json:"createAt" ` // Created Time
 	UpdateAt *gtime.Time `json:"updateAt" ` // Updated Time
 }

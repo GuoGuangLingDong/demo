@@ -16,7 +16,7 @@ type cPoap struct{}
 func (c *cPoap) GetMyPoap(ctx context.Context, req *v1.MyPoapReq) (res *v1.MyPoapRes, err error) {
 	user := service.Session().GetUser(ctx)
 	res = &v1.MyPoapRes{Res: nil}
-	res.Res = service.Poap().GetMyPoap(ctx, model.GetMyPoapInput{UId: int64(user.Uid)})
+	res.Res = service.Poap().GetMyPoap(ctx, model.GetMyPoapInput{UId: user.Uid})
 	fmt.Println(res.Res)
 	return
 }

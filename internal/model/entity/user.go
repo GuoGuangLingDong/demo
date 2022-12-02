@@ -11,7 +11,7 @@ import (
 // User is the golang structure for table user.
 type User struct {
 	Id           uint        `json:"id"           ` // pk
-	Uid          uint        `json:"uid"          ` // User ID
+	Uid          string      `json:"uid"          ` // User ID
 	Password     string      `json:"password"     ` // User Password
 	Username     string      `json:"username"     ` // User Name
 	Nickname     string      `json:"nickname"     ` // User Nickname

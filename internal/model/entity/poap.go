@@ -12,7 +12,7 @@ import (
 type Poap struct {
 	Id          uint        `json:"id"          ` // pk
 	PoapId      uint        `json:"poapId"      ` // Poap id
-	Miner       uint        `json:"miner"       ` // Miner
+	Miner       string      `json:"miner"       ` // Miner
 	PoapName    string      `json:"poapName"    ` // Poap name
 	PoapSum     int         `json:"poapSum"     ` // Poap sum
 	ReceiveCond int         `json:"receiveCond" ` // Receive condition

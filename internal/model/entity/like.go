@@ -11,7 +11,7 @@ import (
 // Like is the golang structure for table like.
 type Like struct {
 	Id       uint        `json:"id"       ` // pk
-	Uid      uint        `json:"uid"      ` // User ID
+	Uid      string      `json:"uid"      ` // User ID
 	PoapId   uint        `json:"poapId"   ` // Poap id
 	CreateAt *gtime.Time `json:"createAt" ` // Created Time
 	UpdateAt *gtime.Time `json:"updateAt" ` // Updated Time

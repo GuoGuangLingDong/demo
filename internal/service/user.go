@@ -20,9 +20,9 @@ type (
 		SignOut(ctx context.Context) error
 		UsernameLegalCheck(ctx context.Context, username string) (bool, error)
         GetProfile(ctx context.Context) *entity.User
-		GetLink(ctx context.Context, uid uint) *v1.Link
-		GetFollower(ctx context.Context, uid uint) int64
-		GetPoapCount(ctx context.Context, uid uint) int64
+		GetLink(ctx context.Context, uid string) *v1.Link
+		GetFollower(ctx context.Context, uid string) int64
+		GetPoapCount(ctx context.Context, uid string) int64
 		EditUserProfile(ctx context.Context, in *v1.EditUserProfileReq) (err error)
 		GetUserFollow(ctx context.Context, in *v1.GetUserFollowReq) *v1.GetUserFollowRes
 		FollowUser(ctx context.Context, in *v1.FollowUserReq) (err error)

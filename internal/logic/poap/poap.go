@@ -159,7 +159,7 @@ func (S SPoap) generatePoapId(ctx context.Context) uint {
 }
 
 // publishPoap 发放POAP
-func (S SPoap) publishPoap(ctx context.Context, userId uint, poapId int64, num int) (err error) {
+func (S SPoap) publishPoap(ctx context.Context, userId string, poapId int64, num int) (err error) {
 	var asset []entity.Publish
 	m := g.DB().Model("publish")
 	m.Where("poap_id", poapId)

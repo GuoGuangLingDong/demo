@@ -11,7 +11,7 @@ import (
 // Userlink is the golang structure for table userlink.
 type Userlink struct {
 	Id       uint        `json:"id"       ` // pk
-	Uid      uint        `json:"uid"      ` // User ID
+	Uid      string      `json:"uid"      ` // User ID
 	Link     string      `json:"link"     ` // Link
 	LinkType int         `json:"linkType" ` // Link type
 	CreateAt *gtime.Time `json:"createAt" ` // Created Time
