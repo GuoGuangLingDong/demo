@@ -11,7 +11,7 @@ import (
 // Publish is the golang structure for table publish.
 type Publish struct {
 	Id           int64       `json:"id"           ` // 主键ID
-	PoapId       uint        `json:"poapId"       ` // Poap id
+	PoapId       string      `json:"poapId"       ` // Poap id
 	TokenId      string      `json:"tokenId"      ` // Poap tokenId
 	Status       string      `json:"status"       ` // 状态 disable:未使用 used.已使用
 	No           uint64      `json:"no"           ` // 编号

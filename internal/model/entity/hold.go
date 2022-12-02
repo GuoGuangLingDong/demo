@@ -12,7 +12,7 @@ import (
 type Hold struct {
 	Id       uint        `json:"id"       ` // pk
 	Uid      string      `json:"uid"      ` // User ID
-	PoapId   uint        `json:"poapId"   ` // Poap id
+	PoapId   string      `json:"poapId"   ` // Poap id
 	CreateAt *gtime.Time `json:"createAt" ` // Created Time
 	UpdateAt *gtime.Time `json:"updateAt" ` // Updated Time
 	TokenId  string      `json:"tokenId"  ` // Poap tokenId

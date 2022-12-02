@@ -1,5 +1,5 @@
-use wesoul;
 
+use wesoul;
 CREATE TABLE if not exists `user`
 (
     `id`            int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'pk',
@@ -32,11 +32,11 @@ CREATE TABLE if not exists `userlink`
     foreign key (`uid`) references `user` (`uid`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
-
+select * from userlink;
 create table if not exists `poap`
 (
     `id`           int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'pk',
-    `poap_id`      int(64) unsigned NOT NULL COMMENT 'Poap id',
+    `poap_id`      varchar(45) NOT NULL COMMENT 'Poap id',
     `miner`        varchar(45) NOT NULL COMMENT 'Miner',
     `poap_name`    varchar(45)      NOT NULL COMMENT 'Poap name',
     `poap_sum`     int(64)          NOT NULL comment 'Poap sum',
@@ -55,7 +55,7 @@ create table if not exists `hold`
 (
     `id`        int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'pk',
     `uid`      varchar(45) NOT NULL COMMENT 'User ID',
-    `poap_id`   int(64) unsigned NOT NULL COMMENT 'Poap id',
+    `poap_id`   varchar(45) NOT NULL COMMENT 'Poap id',
     `create_at` datetime         NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created Time',
     `update_at` datetime                  DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated Time',
     `token_id`  varchar(20)               DEFAULT NULL COMMENT 'Poap tokenId',
@@ -71,7 +71,7 @@ create table if not exists `like`
 (
     `id`        int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'pk',
     `uid`      varchar(45) NOT NULL COMMENT 'User ID',
-    `poap_id`   int(64) unsigned NOT NULL COMMENT 'Poap id',
+    `poap_id`   varchar(45) NOT NULL COMMENT 'Poap id',
     `create_at` datetime         NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created Time',
     `update_at` datetime                  DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated Time',
     foreign key (`uid`) references `user` (`uid`),
@@ -114,7 +114,7 @@ create table if not exists `operation`
 CREATE TABLE `publish`
 (
     `id`            bigint           NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-    `poap_id`       int unsigned     NOT NULL COMMENT 'Poap id',
+    `poap_id`       varchar(45)    NOT NULL COMMENT 'Poap id',
     `token_id`      varchar(20)               DEFAULT NULL COMMENT 'Poap tokenId',
     `status`        varchar(10)      NOT NULL DEFAULT 'disable' COMMENT '状态 disable:未使用 used.已使用',
     `no`            bigint unsigned  NOT NULL DEFAULT '0' COMMENT '编号',

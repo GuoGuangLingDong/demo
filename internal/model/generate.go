@@ -4,8 +4,8 @@ import "strconv"
 
 // GenerateTokenReq 铸造TOKEN
 type GenerateTokenReq struct {
-	PoapId uint `json:"poapId"`
-	Num    uint `json:"num"`
+	PoapId string `json:"poapId"`
+	Num    uint   `json:"num"`
 }
 
 // GenerateTokenRes 铸造出的token

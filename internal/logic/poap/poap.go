@@ -12,7 +12,8 @@ import (
 	"fmt"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/frame/g"
-	"time"
+	"github.com/google/uuid"
+	"strings"
 )
 
 type (
@@ -20,7 +21,7 @@ type (
 )
 
 type PoapIdLike struct {
-	poapId int
+	poapId string
 	number int64
 }
 
@@ -50,24 +51,24 @@ func (S SPoap) GetMainPagePoap(ctx context.Context, in model.GetMainPagePoap) []
 	if err != nil {
 		return nil
 	}
-	poapIds := []int64{}
+	poapIds := []string{}
 	for _, like := range all {
 		poap_id, _ := like.Map()["poap_id"]
 		count, _ := like.Map()["total"]
 		likes = append(likes, PoapIdLike{
-			poapId: poap_id.(int),
+			poapId: poap_id.(string),
 			number: count.(int64),
 		})
-		poapIds = append(poapIds, int64(poap_id.(int)))
+		poapIds = append(poapIds, poap_id.(string))
 	}
 
 	dao.Poap.Ctx(ctx).Where("poap_id in(?)", poapIds).Scan(&poapRes)
 
 	for _, like := range likes {
 		for _, poap := range poapRes {
-			if uint(like.poapId) == poap.PoapId {
-				holders := S.getPoapUser(ctx, int64(poap.PoapId))
-				collectable := S.isCollectable(ctx, int64(poap.PoapId))
+			if like.poapId == poap.PoapId {
+				holders := S.getPoapUser(ctx, poap.PoapId)
+				collectable := S.isCollectable(ctx, poap.PoapId)
 				res = append(res, &v1.PoapDetailPoapRes{
 					poap,
 					int(like.number),
@@ -94,7 +95,7 @@ func (S SPoap) GetPoapDetails(ctx context.Context, in model.GetPoapDetailsInput)
 	return res
 }
 
-func (S SPoap) isCollectable(ctx context.Context, poapId int64) bool {
+func (S SPoap) isCollectable(ctx context.Context, poapId string) bool {
 	uid := service.Session().GetUser(ctx).Uid
 	holdNum, _ := dao.Hold.Ctx(ctx).Where("uid", uid).Where("poap_id", poapId).Count()
 	if holdNum != 0 {
@@ -112,7 +113,7 @@ func (S SPoap) isCollectable(ctx context.Context, poapId int64) bool {
 	return true
 }
 
-func (S SPoap) getPoapUser(ctx context.Context, poapId int64) []*v1.UserInfo {
+func (S SPoap) getPoapUser(ctx context.Context, poapId string) []*v1.UserInfo {
 	holderRes, _ := dao.Hold.Ctx(ctx).Fields("DISTINCT uid").Where("poap_id", poapId).All()
 
 	holders := ([]*v1.UserInfo)(nil)
@@ -154,12 +155,14 @@ func (S SPoap) MintPoap(ctx context.Context, in model.MintPoapInput) (err error)
 	})
 	return
 }
-func (S SPoap) generatePoapId(ctx context.Context) uint {
-	return uint(time.Now().Unix())
+func (S SPoap) generatePoapId(ctx context.Context) string {
+	uid := uuid.NewString()
+	uid = strings.Replace(uid, "-", "", -1)
+	return uid
 }
 
 // publishPoap 发放POAP
-func (S SPoap) publishPoap(ctx context.Context, userId string, poapId int64, num int) (err error) {
+func (S SPoap) publishPoap(ctx context.Context, userId string, poapId string, num int) (err error) {
 	var asset []entity.Publish
 	m := g.DB().Model("publish")
 	m.Where("poap_id", poapId)

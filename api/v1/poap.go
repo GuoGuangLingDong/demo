@@ -24,7 +24,7 @@ type MainPagePoapRes struct {
 
 type PoapDetailReq struct {
 	g.Meta `path:"/poap/details" method:"post" tags:"PoapService" summary:"Get the detail of poap"`
-	PoapId int64 `p:poap_id`
+	PoapId string `p:poap_id`
 }
 
 type UserInfo struct {
@@ -40,7 +40,7 @@ type PoapDetailPoapRes struct {
 
 type PoapCollectReq struct {
 	g.Meta `path:"/poap/collect" method:"post" tags:"PoapService" summary:"Collect a poap"`
-	PoapId int64 `json:"poap_id" v:"required"`
+	PoapId string `json:"poap_id" v:"required"`
 }
 
 type PoapCollectRes struct{}
