@@ -142,6 +142,7 @@ func (s *SUser) GetLink(ctx context.Context, uid string) *v1.Link {
 			res.LinkedinLink = link.Link
 		}
 	}
+	fmt.Println("cicd测试--------------------------------")
 	return res
 }
 
