@@ -26,10 +26,10 @@ func (c *cCode) GetImageVerify(ctx context.Context, req *v1.GetImageVerifyReq) (
 
 // CodeSend 发送验证码
 func (c *cCode) CodeSend(ctx context.Context, req *v1.CodeSendReq) (res *v1.CodeSendRes, err error) {
-	err = utils.ImageCode.VerifyCaptcha(req.ImageVerifyId, req.ImageVerify)
-	if err != nil {
-		return
-	}
+	//err = utils.ImageCode.VerifyCaptcha(req.ImageVerifyId, req.ImageVerify)
+	//if err != nil {
+	//	return
+	//}
 	err = vcodeService.Send(req.Phone, req.From)
 	if err != nil {
 		return
