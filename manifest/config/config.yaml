@@ -40,11 +40,11 @@ chain:
 #sms配置
 sms:
   url: "https://market.juncdt.com/smartmarket/msgService/sendMessage"
-  accessKey: ""
-  accessSecret: ""
+  accessKey: "d0ad7a519058866cb5"
+  accessSecret: "f27ee1886f933516ffb01d4bb6407f"
   classificationSecret: "2atbqWLP"
-  signCode: "jHq74VEp"
+  signCode: "EHf3xALg"
   templateCode: "AqY0bsaM"
 
 system:
-  env: test
+  #env: test
