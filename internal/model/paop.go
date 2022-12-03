@@ -1,11 +1,11 @@
 package model
 
 type GetMyPoapInput struct {
-	UId int64
+	UId string
 }
 
 type GetPoapDetailsInput struct {
-	PoapId int64
+	PoapId string
 }
 
 type GetMainPagePoap struct {
@@ -14,7 +14,7 @@ type GetMainPagePoap struct {
 }
 
 type CollectPoapInput struct {
-	PoapId int64
+	PoapId string
 }
 
 type MintPoapInput struct {

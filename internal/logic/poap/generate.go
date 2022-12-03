@@ -111,7 +111,7 @@ func generateMultiRedisTokenInt(ctx context.Context, tokens chan uint64, errChan
 }
 
 // generateMultiNoInt 生成 编号
-func generateMultiNoInt(poapId uint, tokens chan uint64, num uint) error {
+func generateMultiNoInt(poapId string, tokens chan uint64, num uint) error {
 	// 获取起始值
 	first, err := getTplNextNo(poapId)
 
@@ -136,7 +136,7 @@ func generateMultiNoInt(poapId uint, tokens chan uint64, num uint) error {
 }
 
 // GetTplNextNo 获取下一个编号
-func getTplNextNo(poapId uint) (uint64, error) {
+func getTplNextNo(poapId string) (uint64, error) {
 	val, err := g.DB().Model(dao.Publish.Table()).
 		Where("poap_id = ?", poapId).
 		Fields("MAX(no) max").

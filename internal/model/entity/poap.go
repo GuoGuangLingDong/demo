@@ -11,8 +11,8 @@ import (
 // Poap is the golang structure for table poap.
 type Poap struct {
 	Id          uint        `json:"id"          ` // pk
-	PoapId      uint        `json:"poapId"      ` // Poap id
-	Miner       uint        `json:"miner"       ` // Miner
+	PoapId      string      `json:"poapId"      ` // Poap id
+	Miner       string      `json:"miner"       ` // Miner
 	PoapName    string      `json:"poapName"    ` // Poap name
 	PoapSum     int         `json:"poapSum"     ` // Poap sum
 	ReceiveCond int         `json:"receiveCond" ` // Receive condition

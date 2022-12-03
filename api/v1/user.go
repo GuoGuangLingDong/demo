@@ -94,7 +94,7 @@ type GetUserFollowRes struct {
 
 type FollowInformation struct {
 	Username    string `json:"username,omitempty"`
-	Uid         uint   `json:"uid,omitempty"`
+	Uid         string `json:"uid,omitempty"`
 	FollowCount int    `json:"follow_count,omitempty"`
 	PoapCount   int    `json:"poap_count,omitempty"`
 }
@@ -129,7 +129,7 @@ type UserShareReq struct {
 }
 
 type UserShareRes struct {
-	Uid         uint   `json:"uid"`
+	Uid         string `json:"uid"`
 	Username    string `json:"username"`
 	UserDesc    string `json:"user_desc"`
 	Avatar      string `json:"avatar"`

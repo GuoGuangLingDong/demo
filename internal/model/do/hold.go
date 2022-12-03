@@ -15,7 +15,7 @@ type Hold struct {
 	Id       interface{} // pk
 	Uid      interface{} // User ID
 	PoapId   interface{} // Poap id
-	TokenId  interface{} // Poap tokenId
 	CreateAt *gtime.Time // Created Time
 	UpdateAt *gtime.Time // Updated Time
+	TokenId  interface{} // Poap tokenId
 }

@@ -23,9 +23,9 @@ type HoldColumns struct {
 	Id       string // pk
 	Uid      string // User ID
 	PoapId   string // Poap id
-	TokenId  string // Poap tokenId
 	CreateAt string // Created Time
 	UpdateAt string // Updated Time
+	TokenId  string // Poap tokenId
 }
 
 // holdColumns holds the columns for table hold.
@@ -33,9 +33,9 @@ var holdColumns = HoldColumns{
 	Id:       "id",
 	Uid:      "uid",
 	PoapId:   "poap_id",
-	TokenId:  "token_id",
 	CreateAt: "create_at",
 	UpdateAt: "update_at",
+	TokenId:  "token_id",
 }
 
 // NewHoldDao creates and returns a new DAO object for table data access.

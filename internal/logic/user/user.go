@@ -106,7 +106,7 @@ func (s *SUser) GetProfile(ctx context.Context) *entity.User {
 	return service.Session().GetUser(ctx)
 }
 
-func (s *SUser) GetLink(ctx context.Context, uid uint) *v1.Link {
+func (s *SUser) GetLink(ctx context.Context, uid string) *v1.Link {
 	links := ([]*entity.Userlink)(nil)
 	dao.Userlink.Ctx(ctx).Where("uid", uid).Scan(&links)
 	res := &v1.Link{
@@ -145,7 +145,7 @@ func (s *SUser) GetLink(ctx context.Context, uid uint) *v1.Link {
 	return res
 }
 
-func (s *SUser) GetFollower(ctx context.Context, uid uint) int64 {
+func (s *SUser) GetFollower(ctx context.Context, uid string) int64 {
 	count, err := dao.Follow.Ctx(ctx).Where("followee", uid).Count()
 	if err != nil {
 		return 0
@@ -153,7 +153,7 @@ func (s *SUser) GetFollower(ctx context.Context, uid uint) int64 {
 	return int64(count)
 }
 
-func (s *SUser) GetFollowee(ctx context.Context, uid uint) int64 {
+func (s *SUser) GetFollowee(ctx context.Context, uid string) int64 {
 	count, err := dao.Follow.Ctx(ctx).Where("follower", uid).Count()
 	if err != nil {
 		return 0
@@ -161,7 +161,7 @@ func (s *SUser) GetFollowee(ctx context.Context, uid uint) int64 {
 	return int64(count)
 }
 
-func (s *SUser) GetPoapCount(ctx context.Context, uid uint) int64 {
+func (s *SUser) GetPoapCount(ctx context.Context, uid string) int64 {
 	count, err := dao.Hold.Ctx(ctx).Where("uid", uid).Count()
 	if err != nil {
 		return 0
@@ -284,7 +284,7 @@ func (s *SUser) GetUserFollow(ctx context.Context, in *v1.GetUserFollowReq) *v1.
 	}
 }
 
-func (s *SUser) GetUserInfo(ctx context.Context, uid uint) *entity.User {
+func (s *SUser) GetUserInfo(ctx context.Context, uid string) *entity.User {
 	var user *entity.User
 	dao.User.Ctx(ctx).Where("uid", uid).Scan(&user)
 	return user
