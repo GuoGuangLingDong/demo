@@ -43,7 +43,7 @@ func (s *sMiddleware) Auth(r *ghttp.Request) {
 	if service.User().IsSignedIn(r.Context()) {
 		r.Middleware.Next()
 	} else {
-		r.Response.WriteStats(http.StatusForbidden)
+		r.Response.WriteStatus(http.StatusForbidden)
 	}
 }
 
