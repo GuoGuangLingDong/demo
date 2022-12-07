@@ -131,6 +131,7 @@ func callUpChain(signData []byte) (err error) {
 }
 
 type chainConf struct {
+	Name       string `json:"name"`
 	AppId      string `json:"appId"`
 	AppSecret  string `json:"appSecret"`
 	ChainAddr  string `json:"chainAddr"`

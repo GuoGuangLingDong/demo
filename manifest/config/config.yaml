@@ -31,6 +31,7 @@ redis:
 
 # 上链
 chain:
+  name: "国广链"
   appId: 5
   appSecret: eX3wKQtKuYrQItryXsjYUXhr
   tokenUrl: https://localhost:8111/blockchain/metadata/%s/%s

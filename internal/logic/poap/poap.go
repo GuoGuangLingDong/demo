@@ -14,6 +14,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/google/uuid"
 	"strings"
+	"time"
 )
 
 type (
@@ -74,6 +75,7 @@ func (S SPoap) GetMainPagePoap(ctx context.Context, in model.GetMainPagePoap) []
 					int(like.number),
 					holders,
 					collectable,
+					nil,
 				})
 			}
 		}
@@ -92,6 +94,13 @@ func (S SPoap) GetPoapDetails(ctx context.Context, in model.GetPoapDetailsInput)
 	res.LikeNum = likeNum
 	res.Holders = S.getPoapUser(ctx, poapId)
 	res.Collectable = S.isCollectable(ctx, poapId)
+	chainConf := getChainConf()
+	res.Chain = &v1.Chain{
+		PlatForm:     chainConf.Name,
+		PublishTime:  res.Poap.CreateAt.Format(time.RFC3339),
+		ContractNo:   res.Poap.PoapId,
+		ContractAddr: chainConf.ChainAddr,
+	}
 	return res
 }
 
