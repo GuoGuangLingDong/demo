@@ -31,11 +31,18 @@ type UserInfo struct {
 	Uid      string `json:"uid,omitempty"`
 	Username string `json:"username,omitempty"`
 }
+type Chain struct {
+	PlatForm     string `json:"plat_form"`
+	PublishTime  string `json:"publish_time"`
+	ContractNo   string `json:"contract_no"`
+	ContractAddr string `json:"contract_addr"`
+}
 type PoapDetailPoapRes struct {
 	*entity.Poap `json:"poap,omitempty"`
 	LikeNum      int         `json:"like_num,omitempty"`
 	Holders      []*UserInfo `json:"holders,omitempty"`
 	Collectable  bool        `json:"collectable"`
+	Chain        *Chain      `json:"chain"`
 }
 
 type PoapCollectReq struct {
