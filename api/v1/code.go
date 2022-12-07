@@ -12,11 +12,11 @@ type GetImageVerifyRes struct {
 }
 
 type CodeSendReq struct {
-	g.Meta `path:"/code/send" method:"post" tags:"CodeService" summary:"Get code"`
-	Phone  string `json:"phone" v:"required"`
-	From   string `json:"from" v:"required"`
-	//ImageVerifyId string `json:"imageVerifyId" v:"required"`
-	//ImageVerify   string `json:"imageVerify" v:"required"`
+	g.Meta        `path:"/code/send" method:"post" tags:"CodeService" summary:"Get code"`
+	Phone         string `json:"phone" v:"required"`
+	From          string `json:"from" v:"required"`
+	ImageVerifyId string `json:"imageVerifyId" v:"required"`
+	ImageVerify   string `json:"imageVerify" v:"required"`
 }
 
 type CodeSendRes struct {

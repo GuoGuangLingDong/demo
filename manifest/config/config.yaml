@@ -48,3 +48,10 @@ sms:
 
 system:
   #env: test
+
+# upload
+upload:
+    bucket: "megahero-website"
+    accessKey: "KqGLoHVvPUziQtdocS0mk7FhI2lcw7oNt93GfGuU"
+    secretKey: "3ZrQQmzgC6svX8_3Dy5WJi0DdSAnGRr3kPkKIsj8"
+    cdn: "https://website-cdn.gfanx.com/"

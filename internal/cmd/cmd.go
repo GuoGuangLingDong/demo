@@ -33,6 +33,7 @@ var (
 					controller.User,
 					controller.Poap,
 					controller.Code,
+					controller.Upload,
 				)
 				// Special handler that needs authentication.
 				group.Group("/", func(group *ghttp.RouterGroup) {
