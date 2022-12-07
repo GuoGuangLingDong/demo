@@ -15,6 +15,7 @@ import (
 type (
 	IUser interface {
 		Create(ctx context.Context, in model.UserCreateInput) (err error)
+		DidExists(ctx context.Context, in model.DidCreateInput) bool
 		IsSignedIn(ctx context.Context) bool
 		SignIn(ctx context.Context, in model.UserSignInInput) (err error)
 		SignOut(ctx context.Context) error

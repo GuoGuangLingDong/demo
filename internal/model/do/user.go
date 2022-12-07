@@ -24,4 +24,5 @@ type User struct {
 	InviteCode   interface{} // Invite Code
 	Introduction interface{} // Introduction
 	Avatar       interface{} // 头像
+	Did          interface{} // User DID
 }

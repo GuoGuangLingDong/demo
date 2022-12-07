@@ -49,6 +49,7 @@ type UserSignUpReq struct {
 	Nickname    string
 	PhoneNumber string
 	VerifyCode  string `v:"required"`
+	InviteCode  string
 }
 type UserSignUpRes struct{}
 
