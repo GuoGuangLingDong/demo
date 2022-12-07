@@ -3,6 +3,7 @@ package controller
 import (
 	"context"
 	vcodeService "demo/internal/service/vcode"
+	"demo/internal/utils"
 	"fmt"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/google/uuid"
@@ -67,6 +68,10 @@ func (c *cUser) generateDid() string {
 
 // SignIn is the API for user sign in.
 func (c *cUser) SignIn(ctx context.Context, req *v1.UserSignInReq) (res *v1.UserSignInRes, err error) {
+	err = utils.ImageCode.VerifyCaptcha(req.ImageVerifyId, req.ImageVerify)
+	if err != nil {
+		return nil, err
+	}
 	err = service.User().SignIn(ctx, model.UserSignInInput{
 		Username: req.Username,
 		Password: req.Password,

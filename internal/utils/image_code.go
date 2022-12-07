@@ -1,11 +1,11 @@
 package utils
 
 import (
+	"fmt"
 	"image/color"
 	"strings"
 	"time"
 
-	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/mojocn/base64Captcha"
 )
 
@@ -62,14 +62,14 @@ func (r imageCode) VerifyCaptcha(id, VerifyValue string) (err error) {
 		return
 	}
 	if ret == "" {
-		err = gerror.New("校验码过期 请重新获取!")
+		err = fmt.Errorf("校验码过期 请重新获取!")
 		return
 	}
 	// g.Log().Info("ret:" + strings.ToLower(ret))
 	// g.Log().Info("value:" + strings.ToLower(VerifyValue))
 	if strings.ToLower(ret) != strings.ToLower(VerifyValue) {
 		// err = gerror.New("请输入正确的校验码:" + ret + "!")
-		err = gerror.New("请输入正确的校验码!")
+		err = fmt.Errorf("请输入正确的校验码!")
 		return
 	}
 	return

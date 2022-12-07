@@ -54,9 +54,11 @@ type UserSignUpReq struct {
 type UserSignUpRes struct{}
 
 type UserSignInReq struct {
-	g.Meta   `path:"/user/sign-in" method:"post" tags:"UserService" summary:"Sign in with exist account"`
-	Username string `v:"required"`
-	Password string `v:"required"`
+	g.Meta        `path:"/user/sign-in" method:"post" tags:"UserService" summary:"Sign in with exist account"`
+	Username      string `v:"required"`
+	Password      string `v:"required"`
+	ImageVerify   string `v:"required"`
+	ImageVerifyId string `v:"required"`
 }
 type UserSignInRes struct{}
 

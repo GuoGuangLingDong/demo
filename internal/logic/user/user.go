@@ -74,6 +74,7 @@ func (s *SUser) IsSignedIn(ctx context.Context) bool {
 
 // SignIn creates session for given user account.
 func (s *SUser) SignIn(ctx context.Context, in model.UserSignInInput) (err error) {
+
 	var user *entity.User
 	err = dao.User.Ctx(ctx).Where(do.User{
 		Username: in.Username,
