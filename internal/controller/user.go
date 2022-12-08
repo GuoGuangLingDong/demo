@@ -84,7 +84,7 @@ func (c *cUser) SignIn(ctx context.Context, req *v1.UserSignInReq) (res *v1.User
 func (c *cUser) ResetPassword(ctx context.Context, req *v1.UserResetPasswordReq) (res *v1.UserResetPasswordRes, err error) {
 	// check code
 	if env, _ := g.Cfg().Get(ctx, "system.env"); env.String() != "test" {
-		err = vcodeService.VerifyCode(req.PhoneNumber, req.VerifyCode, vcodeService.REGIST_CODE)
+		err = vcodeService.VerifyCode(req.PhoneNumber, req.VerifyCode, vcodeService.RESET_CODE)
 		if err != nil {
 			return
 		}

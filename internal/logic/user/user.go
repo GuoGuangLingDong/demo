@@ -103,7 +103,6 @@ func (s *SUser) ResetPassword(ctx context.Context, in model.ResetPasswordInput) 
 	var user *entity.User
 	err = dao.User.Ctx(ctx).Where(do.User{
 		PhoneNumber: in.PhoneNumber,
-		Password:    in.Password,
 	}).Scan(&user)
 	if err != nil {
 		return err
