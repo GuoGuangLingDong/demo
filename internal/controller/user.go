@@ -3,9 +3,13 @@ package controller
 import (
 	"context"
 	vcodeService "demo/internal/service/vcode"
+	"demo/internal/utils"
+	"fmt"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/google/uuid"
+	"math/rand"
 	"strings"
+	"time"
 
 	"github.com/gogf/gf/v2/errors/gerror"
 
@@ -36,12 +40,19 @@ func (c *cUser) SignUp(ctx context.Context, req *v1.UserSignUpReq) (res *v1.User
 		}
 	}
 
+	userDid := c.generateDid()
+	for !service.User().DidExists(ctx, model.DidCreateInput{Did: userDid}) {
+		userDid = c.generateDid()
+	}
+
 	err = service.User().Create(ctx, model.UserCreateInput{
 		UId:         uid,
+		Did:         userDid,
 		Username:    req.Username,
 		Password:    req.Password,
 		Nickname:    req.Nickname,
 		PhoneNumebr: req.PhoneNumber,
+		InviteCode:  req.InviteCode,
 	})
 
 	if err == nil {
@@ -51,8 +62,16 @@ func (c *cUser) SignUp(ctx context.Context, req *v1.UserSignUpReq) (res *v1.User
 	return
 }
 
+func (c *cUser) generateDid() string {
+	return fmt.Sprintf("%05v", rand.New(rand.NewSource(time.Now().UnixNano())).Int31n(100000))
+}
+
 // SignIn is the API for user sign in.
 func (c *cUser) SignIn(ctx context.Context, req *v1.UserSignInReq) (res *v1.UserSignInRes, err error) {
+	err = utils.ImageCode.VerifyCaptcha(req.ImageVerifyId, req.ImageVerify)
+	if err != nil {
+		return nil, err
+	}
 	err = service.User().SignIn(ctx, model.UserSignInInput{
 		Username: req.Username,
 		Password: req.Password,

@@ -48,9 +48,20 @@ func (s *SUser) Create(ctx context.Context, in model.UserCreateInput) (err error
 			Username:    in.Username,
 			Password:    in.Password,
 			Nickname:    in.Nickname,
+			Did:         in.Did,
 		}).Insert()
 		return err
 	})
+}
+
+func (s *SUser) DidExists(ctx context.Context, in model.DidCreateInput) bool {
+	count, _ := dao.User.Ctx(ctx).Where("did", in.Did).Count()
+	if count != 0 {
+		fmt.Println(in.Did, " Exits")
+		return false
+	}
+
+	return true
 }
 
 // IsSignedIn checks and returns whether current user is already signed-in.
@@ -63,6 +74,7 @@ func (s *SUser) IsSignedIn(ctx context.Context) bool {
 
 // SignIn creates session for given user account.
 func (s *SUser) SignIn(ctx context.Context, in model.UserSignInInput) (err error) {
+
 	var user *entity.User
 	err = dao.User.Ctx(ctx).Where(do.User{
 		Username: in.Username,

@@ -22,4 +22,5 @@ type User struct {
 	InviteCode   string      `json:"inviteCode"   ` // Invite Code
 	Introduction string      `json:"introduction" ` // Introduction
 	Avatar       string      `json:"avatar"       ` // 头像
+	Did          string      `json:"did"          ` // User DID
 }
