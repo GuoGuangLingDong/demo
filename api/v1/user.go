@@ -60,6 +60,15 @@ type UserSignInReq struct {
 }
 type UserSignInRes struct{}
 
+type UserResetPasswordReq struct {
+	g.Meta      `path:"/user/reset-password" method:"post" tags:"UserService" summary:"Reset user's password"`
+	Password    string `v:"required|length:6,16"`
+	Password2   string `v:"required|length:6,16|same:Password"`
+	PhoneNumber string
+	VerifyCode  string `v:"required"`
+}
+type UserResetPasswordRes struct{}
+
 type UserCheckPassportReq struct {
 	g.Meta   `path:"/user/check-passport" method:"post" tags:"UserService" summary:"Check passport available"`
 	Passport string `v:"required"`

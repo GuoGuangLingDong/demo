@@ -6,7 +6,7 @@ type UserCreateInput struct {
 	UserName    string
 	NickName    string
 	Password    string
-	PhoneNumebr string
+	PhoneNumber string
 	InviteCode  string
 }
 
@@ -17,4 +17,9 @@ type UserSignInInput struct {
 
 type DidCreateInput struct {
 	Did string
+}
+
+type ResetPasswordInput struct {
+	Password    string
+	PhoneNumber string
 }

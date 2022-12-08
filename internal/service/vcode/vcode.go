@@ -35,6 +35,7 @@ var (
 
 const UCENTER_CODE = "UCENTER_CODE"
 const REGIST_CODE = "register"
+const RESET_CODE = "reset_pass"
 
 func DeleteVcode(phone, from string) {
 	key := UCENTER_CODE + phone + from

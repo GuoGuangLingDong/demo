@@ -5,11 +5,12 @@ import (
 	vcodeService "demo/internal/service/vcode"
 	"demo/internal/utils"
 	"fmt"
-	"github.com/gogf/gf/v2/frame/g"
-	"github.com/google/uuid"
 	"math/rand"
 	"strings"
 	"time"
+
+	"github.com/gogf/gf/v2/frame/g"
+	"github.com/google/uuid"
 
 	"github.com/gogf/gf/v2/errors/gerror"
 
@@ -51,7 +52,7 @@ func (c *cUser) SignUp(ctx context.Context, req *v1.UserSignUpReq) (res *v1.User
 		UserName:    userDid,
 		NickName:    userDid,
 		Password:    req.Password,
-		PhoneNumebr: req.PhoneNumber,
+		PhoneNumber: req.PhoneNumber,
 		InviteCode:  req.InviteCode,
 	})
 
@@ -74,6 +75,22 @@ func (c *cUser) SignIn(ctx context.Context, req *v1.UserSignInReq) (res *v1.User
 	}
 	err = service.User().SignIn(ctx, model.UserSignInInput{
 		PhoneNumber: req.Phonenumber,
+		Password:    req.Password,
+	})
+	return
+}
+
+//ResetPassword is the API for user reset password
+func (c *cUser) ResetPassword(ctx context.Context, req *v1.UserResetPasswordReq) (res *v1.UserResetPasswordRes, err error) {
+	// check code
+	if env, _ := g.Cfg().Get(ctx, "system.env"); env.String() != "test" {
+		err = vcodeService.VerifyCode(req.PhoneNumber, req.VerifyCode, vcodeService.REGIST_CODE)
+		if err != nil {
+			return
+		}
+	}
+	err = service.User().ResetPassword(ctx, model.ResetPasswordInput{
+		PhoneNumber: req.PhoneNumber,
 		Password:    req.Password,
 	})
 	return
