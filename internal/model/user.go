@@ -18,3 +18,7 @@ type UserSignInInput struct {
 type DidCreateInput struct {
 	Did string
 }
+
+type DidCreateInput struct {
+	Did string
+}
