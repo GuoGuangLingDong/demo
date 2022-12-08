@@ -30,24 +30,22 @@ func New() *SUser {
 // Create creates user account.
 func (s *SUser) Create(ctx context.Context, in model.UserCreateInput) (err error) {
 	// If Nickname is not specified, generate one
-	if in.Nickname == "" {
-		in.Nickname = fmt.Sprintf("wesoul-%v", in.UId[:6])
-	}
+	//if in.Nickname == "" {
+	//	in.Nickname = fmt.Sprintf("wesoul-%v", in.UId[:6])
+	//}
 	// Username checks.
-	available, err := s.UsernameLegalCheck(ctx, in.Username)
-	if err != nil {
-		return err
-	}
-	if !available {
-		return gerror.Newf(`Nickname "%s" is already token by others`, in.Nickname)
-	}
+	//available, err := s.UsernameLegalCheck(ctx, in.Username)
+	//if err != nil {
+	//	return err
+	//}
+	//if !available {
+	//	return gerror.Newf(`Nickname "%s" is already token by others`, in.Nickname)
+	//}
 	return dao.User.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		_, err = dao.User.Ctx(ctx).Data(do.User{
 			Uid:         in.UId,
 			PhoneNumber: in.PhoneNumebr,
-			Username:    in.Username,
 			Password:    in.Password,
-			Nickname:    in.Nickname,
 			Did:         in.Did,
 		}).Insert()
 		return err
@@ -77,8 +75,8 @@ func (s *SUser) SignIn(ctx context.Context, in model.UserSignInInput) (err error
 
 	var user *entity.User
 	err = dao.User.Ctx(ctx).Where(do.User{
-		Username: in.Username,
-		Password: in.Password,
+		PhoneNumber: in.PhoneNumber,
+		Password:    in.Password,
 	}).Scan(&user)
 	if err != nil {
 		return err
