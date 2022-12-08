@@ -48,7 +48,7 @@ func (s *SUser) Create(ctx context.Context, in model.UserCreateInput) (err error
 			Password:    in.Password,
 			Did:         in.Did,
 			Username:    in.Did,
-			Nickname:    in.NickName,
+			Nickname:    in.Did,
 		}).Insert()
 		return err
 	})
