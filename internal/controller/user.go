@@ -48,6 +48,8 @@ func (c *cUser) SignUp(ctx context.Context, req *v1.UserSignUpReq) (res *v1.User
 	err = service.User().Create(ctx, model.UserCreateInput{
 		UId:         uid,
 		Did:         userDid,
+		UserName:    userDid,
+		NickName:    userDid,
 		Password:    req.Password,
 		PhoneNumebr: req.PhoneNumber,
 		InviteCode:  req.InviteCode,
