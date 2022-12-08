@@ -43,10 +43,8 @@ type Link struct {
 
 type UserSignUpReq struct {
 	g.Meta      `path:"/user/sign-up" method:"post" tags:"UserService" summary:"Sign up a new user account"`
-	Username    string `v:"required|length:6,16"`
 	Password    string `v:"required|length:6,16"`
 	Password2   string `v:"required|length:6,16|same:Password"`
-	Nickname    string
 	PhoneNumber string
 	VerifyCode  string `v:"required"`
 	InviteCode  string
@@ -55,7 +53,7 @@ type UserSignUpRes struct{}
 
 type UserSignInReq struct {
 	g.Meta        `path:"/user/sign-in" method:"post" tags:"UserService" summary:"Sign in with exist account"`
-	Username      string `v:"required"`
+	Phonenumber   string `v:"required"`
 	Password      string `v:"required"`
 	ImageVerify   string `v:"required"`
 	ImageVerifyId string `v:"required"`

@@ -43,6 +43,7 @@ func (r imageCode) CreateCode() (id, b64s string, err error) {
 	// 创建验证码并传入创建的类型的配置，以及存储的对象
 	c := base64Captcha.NewCaptcha(driver, result)
 	id, b64s, answer, err := r.Generate(c)
+	fmt.Println("图形验证码", answer)
 	if err != nil {
 		return
 	}
@@ -67,6 +68,7 @@ func (r imageCode) VerifyCaptcha(id, VerifyValue string) (err error) {
 	}
 	// g.Log().Info("ret:" + strings.ToLower(ret))
 	// g.Log().Info("value:" + strings.ToLower(VerifyValue))
+	fmt.Println(ret)
 	if strings.ToLower(ret) != strings.ToLower(VerifyValue) {
 		// err = gerror.New("请输入正确的校验码:" + ret + "!")
 		err = fmt.Errorf("请输入正确的校验码!")
