@@ -83,6 +83,7 @@ func (s *SUser) SignIn(ctx context.Context, in model.UserSignInInput) (err error
 	if err != nil {
 		return err
 	}
+
 	if user == nil {
 		return gerror.New(`Passport or Password not correct`)
 	}
