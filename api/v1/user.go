@@ -103,7 +103,22 @@ type UserSignOutReq struct {
 type UserSignOutRes struct{}
 
 type GetUserFollowReq struct {
-	g.Meta `path:"/user/follow" method:"get" tags:"UserService" summary:"Get the follow information of current user"`
+	g.Meta `path:"/user/follow_all" method:"get" tags:"UserService" summary:"Get the follow information of current user"`
+}
+
+type GetUserFollowerReq struct {
+	g.Meta `path:"/user/followers" method:"get" tags:"UserService" summary:"Get the follower information of current user"`
+}
+
+type GetUserFollowerRes struct {
+	Follower []*FollowInformation `json:"follower,omitempty"`
+}
+
+type GetUserFolloweeReq struct {
+	g.Meta `path:"/user/followees" method:"get" tags:"UserService" summary:"Get the followee information of current user"`
+}
+type GetUserFolloweeRes struct {
+	Followee []*FollowInformation `json:"followee,omitempty"`
 }
 
 type GetUserFollowRes struct {
@@ -116,6 +131,8 @@ type FollowInformation struct {
 	Uid         string `json:"uid,omitempty"`
 	FollowCount int    `json:"follow_count,omitempty"`
 	PoapCount   int    `json:"poap_count,omitempty"`
+	Avatar      string `json:"avatar"`
+	Did         string `json:"did"`
 }
 
 type FollowUserReq struct {

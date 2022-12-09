@@ -232,6 +232,45 @@ func (s *SUser) EditUserProfile(ctx context.Context, in *v1.EditUserProfileReq) 
 	return nil
 }
 
+func (s *SUser) GetUserFollowers(ctx context.Context, in *v1.GetUserFollowerReq) *v1.GetUserFollowerRes {
+	user := service.Session().GetUser(ctx)
+	followers := []*v1.FollowInformation{}
+	follower := ([]*entity.Follow)(nil)
+	dao.Follow.Ctx(ctx).Where("follower", user.Uid).Scan(&follower) //关注的人
+	for _, f := range follower {
+		followers = append(followers, &v1.FollowInformation{
+			Username:    s.GetUserInfo(ctx, f.Followee).Username,
+			Uid:         f.Followee,
+			FollowCount: int(s.GetFollowee(ctx, f.Followee)),
+			PoapCount:   int(s.GetPoapCount(ctx, f.Followee)),
+			Avatar:      s.GetUserInfo(ctx, f.Followee).Avatar,
+			Did:         s.GetUserInfo(ctx, f.Followee).Did,
+		})
+	}
+	return &v1.GetUserFollowerRes{
+		Follower: followers,
+	}
+}
+func (s *SUser) GetUserFollowees(ctx context.Context, in *v1.GetUserFolloweeReq) *v1.GetUserFolloweeRes {
+	user := service.Session().GetUser(ctx)
+	followees := []*v1.FollowInformation{}
+	followee := ([]*entity.Follow)(nil)
+	dao.Follow.Ctx(ctx).Where("follower", user.Uid).Scan(&followee) //关注的人
+	for _, f := range followee {
+		followees = append(followees, &v1.FollowInformation{
+			Username:    s.GetUserInfo(ctx, f.Followee).Username,
+			Uid:         f.Followee,
+			FollowCount: int(s.GetFollowee(ctx, f.Followee)),
+			PoapCount:   int(s.GetPoapCount(ctx, f.Followee)),
+			Avatar:      s.GetUserInfo(ctx, f.Followee).Avatar,
+			Did:         s.GetUserInfo(ctx, f.Followee).Did,
+		})
+	}
+	return &v1.GetUserFolloweeRes{
+		Followee: followees,
+	}
+
+}
 func (s *SUser) GetUserFollow(ctx context.Context, in *v1.GetUserFollowReq) *v1.GetUserFollowRes {
 	user := service.Session().GetUser(ctx)
 	followees := []*v1.FollowInformation{}
@@ -246,6 +285,7 @@ func (s *SUser) GetUserFollow(ctx context.Context, in *v1.GetUserFollowReq) *v1.
 			Uid:         f.Followee,
 			FollowCount: int(s.GetFollowee(ctx, f.Followee)),
 			PoapCount:   int(s.GetPoapCount(ctx, f.Followee)),
+			Avatar:      s.GetUserInfo(ctx, f.Followee).Avatar,
 		})
 	}
 
@@ -255,6 +295,7 @@ func (s *SUser) GetUserFollow(ctx context.Context, in *v1.GetUserFollowReq) *v1.
 			Uid:         f.Follower,
 			FollowCount: int(s.GetFollowee(ctx, f.Follower)),
 			PoapCount:   int(s.GetPoapCount(ctx, f.Follower)),
+			Avatar:      s.GetUserInfo(ctx, f.Follower).Avatar,
 		})
 	}
 

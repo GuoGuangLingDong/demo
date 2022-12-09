@@ -177,6 +177,14 @@ func (c *cUser) GetUserFollow(ctx context.Context, req *v1.GetUserFollowReq) (re
 	res = service.User().GetUserFollow(ctx, req)
 	return
 }
+func (*cUser) GetUserFollower(ctx context.Context, req *v1.GetUserFollowerReq) (res *v1.GetUserFollowerRes, err error) {
+	res = service.User().GetUserFollowers(ctx, req)
+	return
+}
+func (*cUser) GetUserFollowee(ctx context.Context, req *v1.GetUserFolloweeReq) (res *v1.GetUserFolloweeRes, err error) {
+	res = service.User().GetUserFollowees(ctx, req)
+	return
+}
 
 func (c *cUser) FollowUser(ctx context.Context, req *v1.FollowUserReq) (res *v1.FollowUserRes, err error) {
 	err = service.User().FollowUser(ctx, req)
