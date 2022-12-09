@@ -176,37 +176,28 @@ func (s *SUser) GetPoapCount(ctx context.Context, uid string) int64 {
 func (s *SUser) EditUserProfile(ctx context.Context, in *v1.EditUserProfileReq) (err error) {
 	user := service.Session().GetUser(ctx)
 
-	_, err = dao.User.Ctx(ctx).Data(g.Map{
-		"username":     in.UserName,
-		"introduction": in.Introduction,
-		"avatar":       in.Avatar,
-	}).Where("uid", user.Uid).Update()
-	if err != nil {
-		return err
-	}
-	user.Username = in.UserName
-	user.Introduction = in.Introduction
-	user.Avatar = in.Avatar
-	err, _ = service.Session().SetUser(ctx, user)
-	if err != nil {
-		return err
-	}
-	for _, link := range in.Links {
-		count, err := dao.Userlink.Ctx(ctx).Where("uid = ? and link_type = ?", user.Uid, link.LinkType).Count()
+	dao.Userlink.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+		_, err = dao.User.Ctx(ctx).Data(g.Map{
+			"username":     in.UserName,
+			"introduction": in.Introduction,
+			"avatar":       in.Avatar,
+		}).Where("uid", user.Uid).Update()
 		if err != nil {
 			return err
 		}
-		if count != 0 {
-			_, err = dao.Userlink.Ctx(ctx).Data(do.Userlink{
-				Uid:       user.Uid,
-				Link:      link.Link,
-				LinkType:  link.LinkType,
-				LinkTitle: link.LinkTitle,
-			}).Where("uid = ? and link_type = ?", user.Uid, link.LinkType).Update()
-			if err != nil {
-				return err
-			}
-		} else {
+		user.Username = in.UserName
+		user.Introduction = in.Introduction
+		user.Avatar = in.Avatar
+		err, _ = service.Session().SetUser(ctx, user)
+		if err != nil {
+			return err
+		}
+		
+		_, err = dao.Userlink.Ctx(ctx).Where("uid = ?", user.Uid).Delete()
+		if err != nil {
+			return err
+		}
+		for _, link := range in.Links {
 			_, err = dao.Userlink.Ctx(ctx).Data(do.Userlink{
 				Uid:       user.Uid,
 				Link:      link.Link,
@@ -217,7 +208,9 @@ func (s *SUser) EditUserProfile(ctx context.Context, in *v1.EditUserProfileReq) 
 				return err
 			}
 		}
-	}
+		return nil
+	})
+
 	// 铸造头像nft
 	if user.Avatar != in.Avatar {
 		_ = service.Poap().MintPoap(ctx, model.MintPoapInput{
