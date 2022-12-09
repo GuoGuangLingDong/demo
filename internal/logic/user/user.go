@@ -9,10 +9,11 @@ import (
 	"demo/internal/model/entity"
 	"demo/internal/service"
 	"fmt"
+	"time"
+
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
-	"time"
 )
 
 type (
@@ -44,7 +45,7 @@ func (s *SUser) Create(ctx context.Context, in model.UserCreateInput) (err error
 	return dao.User.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		_, err = dao.User.Ctx(ctx).Data(do.User{
 			Uid:         in.UId,
-			PhoneNumber: in.PhoneNumebr,
+			PhoneNumber: in.PhoneNumber,
 			Password:    in.Password,
 			Did:         in.Did,
 			Username:    in.Did,
@@ -96,6 +97,28 @@ func (s *SUser) SignIn(ctx context.Context, in model.UserSignInInput) (err error
 		Nickname: user.Nickname,
 	})
 	return nil
+}
+
+func (s *SUser) ResetPassword(ctx context.Context, in model.ResetPasswordInput) (err error) {
+	var user *entity.User
+	err = dao.User.Ctx(ctx).Where(do.User{
+		PhoneNumber: in.PhoneNumber,
+	}).Scan(&user)
+	if err != nil {
+		return err
+	}
+	if user == nil {
+		return gerror.New(`User not exist`)
+	}
+	if err = service.Session().SetUser(ctx, user); err != nil {
+		return err
+	}
+
+	_, err = dao.User.Ctx(ctx).Where("uid", user.Uid).Data(g.Map{"password": in.Password}).Update()
+	if err != nil {
+		return err
+	}
+	return
 }
 
 // SignOut removes the session for current signed-in user.

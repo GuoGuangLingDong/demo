@@ -19,6 +19,7 @@ type (
 		IsSignedIn(ctx context.Context) bool
 		SignIn(ctx context.Context, in model.UserSignInInput) (err error)
 		SignOut(ctx context.Context) error
+		ResetPassword(ctx context.Context, in model.ResetPasswordInput) error
 		UsernameLegalCheck(ctx context.Context, username string) (bool, error)
         GetProfile(ctx context.Context) *entity.User
 		GetLink(ctx context.Context, uid string) []*entity.Userlink
