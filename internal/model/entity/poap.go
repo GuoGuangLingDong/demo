@@ -20,4 +20,5 @@ type Poap struct {
 	PoapIntro   string      `json:"poapIntro"   ` // Poap introduction
 	CreateAt    *gtime.Time `json:"createAt"    ` // Created Time
 	UpdateAt    *gtime.Time `json:"updateAt"    ` // Updated Time
+	CollectList string      `json:"collectList" ` //
 }

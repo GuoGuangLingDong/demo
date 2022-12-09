@@ -105,6 +105,7 @@ func (S SPoap) GetPoapDetails(ctx context.Context, in model.GetPoapDetailsInput)
 }
 
 func (S SPoap) isCollectable(ctx context.Context, poapId string) bool {
+
 	uid := service.Session().GetUser(ctx).Uid
 	holdNum, _ := dao.Hold.Ctx(ctx).Where("uid", uid).Where("poap_id", poapId).Count()
 	if holdNum != 0 {

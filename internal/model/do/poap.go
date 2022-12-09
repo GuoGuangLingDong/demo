@@ -22,4 +22,5 @@ type Poap struct {
 	PoapIntro   interface{} // Poap introduction
 	CreateAt    *gtime.Time // Created Time
 	UpdateAt    *gtime.Time // Updated Time
+	CollectList interface{} //
 }

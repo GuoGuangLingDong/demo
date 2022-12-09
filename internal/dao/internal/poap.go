@@ -30,6 +30,7 @@ type PoapColumns struct {
 	PoapIntro   string // Poap introduction
 	CreateAt    string // Created Time
 	UpdateAt    string // Updated Time
+	CollectList string //
 }
 
 // poapColumns holds the columns for table poap.
@@ -44,6 +45,7 @@ var poapColumns = PoapColumns{
 	PoapIntro:   "poap_intro",
 	CreateAt:    "create_at",
 	UpdateAt:    "update_at",
+	CollectList: "collect_list",
 }
 
 // NewPoapDao creates and returns a new DAO object for table data access.
