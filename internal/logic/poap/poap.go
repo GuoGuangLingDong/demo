@@ -49,7 +49,7 @@ func (S SPoap) GetMyPoap(ctx context.Context, in model.GetMyPoapInput) []*v1.Poa
 
 func (S SPoap) GetMainPagePoap(ctx context.Context, in model.GetMainPagePoap) []*v1.PoapDetailPoapRes {
 	res := ([]*v1.PoapDetailPoapRes)(nil)
-	all, err := dao.Poap.Ctx(ctx).InnerJoin("like l", "poap.poap_id=l.poap_id").Fields("poap_id").Where("poap_name like ?", "%"+in.Condition+"%").Group("poap_id").Order("count(`l.uid`) desc").Limit((int)(in.From), int(in.Count)).All()
+	all, err := dao.Poap.Ctx(ctx).InnerJoin("`like` l", "poap.poap_id=l.poap_id").Fields("poap.poap_id").Where("poap_name like ?", "%"+in.Condition+"%").Group("poap_id").Order("count(`uid`) desc").Limit((int)(in.From), int(in.Count)).All()
 	if err != nil {
 		return nil
 	}
