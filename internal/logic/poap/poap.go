@@ -100,7 +100,6 @@ func (S SPoap) GetPoapDetails(ctx context.Context, in model.GetPoapDetailsInput)
 }
 
 func (S SPoap) isCollectable(ctx context.Context, poapId, uid string) bool {
-
 	if uid == "" {
 		uid = service.Session().GetUser(ctx).Uid
 	}
