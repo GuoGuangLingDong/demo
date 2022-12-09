@@ -28,10 +28,6 @@ type PoapDetailReq struct {
 	PoapId string `p:poap_id`
 }
 
-type UserInfo struct {
-	Uid      string `json:"uid,omitempty"`
-	Username string `json:"username,omitempty"`
-}
 type Chain struct {
 	PlatForm     string `json:"plat_form"`
 	PublishTime  string `json:"publish_time"`

@@ -1,9 +1,8 @@
 package v1
 
 import (
-	"github.com/gogf/gf/v2/frame/g"
-
 	"demo/internal/model/entity"
+	"github.com/gogf/gf/v2/frame/g"
 )
 
 type UserProfileReq struct {
@@ -14,11 +13,24 @@ type UserProfileReq struct {
 }
 type poapsDetail []*PoapDetailPoapRes
 type UserProfileRes struct {
-	*entity.User
+	*UserInfo
 	FollowCount int64              `json:"follow_count,omitempty"`
 	PoapCount   int64              `json:"poap_count,omitempty"`
 	Links       []*entity.Userlink `json:"links,omitempty"`
 	PoapList    poapsDetail        `json:"poap_list,omitempty"`
+}
+
+type UserInfo struct {
+	Id           uint   `json:"id"           ` // pk
+	Uid          string `json:"uid"          ` // User ID
+	Username     string `json:"username"     ` // User Name
+	Nickname     string `json:"nickname"     ` // User Nickname
+	PhoneNumber  string `json:"phoneNumber"  ` // Phone Number
+	WechatNumber string `json:"wechatNumber" ` // Wechat Number
+	InviteCode   string `json:"inviteCode"   ` // Invite Code
+	Introduction string `json:"introduction" ` // Introduction
+	Avatar       string `json:"avatar"       ` // 头像
+	Did          string `json:"did"          ` // User DID
 }
 
 type EditUserProfileReq struct {
