@@ -4,11 +4,10 @@ import (
 	"context"
 	v1 "demo/api/v1"
 	"demo/internal/model"
-	"demo/internal/model/entity"
 )
 
 type IPoap interface {
-	GetMyPoap(ctx context.Context, in model.GetMyPoapInput) []*entity.Poap
+	GetMyPoap(ctx context.Context, in model.GetMyPoapInput) []*v1.PoapDetailPoapRes
 	GetMainPagePoap(ctx context.Context, in model.GetMainPagePoap) []*v1.PoapDetailPoapRes
 	GetPoapDetails(ctx context.Context, in model.GetPoapDetailsInput) *v1.PoapDetailPoapRes
 	CollectPoap(ctx context.Context, in model.CollectPoapInput) (err error)

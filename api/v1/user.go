@@ -7,38 +7,35 @@ import (
 )
 
 type UserProfileReq struct {
-	g.Meta `path:"/user/profile" method:"get" tags:"UserService" summary:"Get the profile of current user"`
+	g.Meta `path:"/user/profile" method:"get" tags:"UserService" summary:"Get the profile of current user" `
+	From   int    `json:"from,omitempty"`
+	Count  int    `json:"count,omitempty"`
+	Did    string `json:"did,omitempty"`
 }
 type poapsDetail []*PoapDetailPoapRes
 type UserProfileRes struct {
 	*entity.User
-	FollowCount int64
-	PoapCount   int64
-	Links       *Link
-	poapsDetail
+	FollowCount int64              `json:"follow_count,omitempty"`
+	PoapCount   int64              `json:"poap_count,omitempty"`
+	Links       []*entity.Userlink `json:"links,omitempty"`
+	PoapList    poapsDetail        `json:"poap_list,omitempty"`
 }
 
 type EditUserProfileReq struct {
 	g.Meta       `path:"/user/profile" method:"post" tags:"UserService" summary:"Edit the profile of current user"`
-	UserName     string `json:"user_name,omitempty" json:"user_name,omitempty"`
-	Introduction string `json:"introduction,omitempty" json:"introduction,omitempty"`
-	Links        *Link  `json:"links,omitempty"`
-	Avatar       string `json:"avatar,omitempty" json:"avatar,omitempty"`
+	UserName     string  `json:"username,omitempty" json:"user_name,omitempty"`
+	Introduction string  `json:"introduction,omitempty" json:"introduction,omitempty"`
+	Links        []*Link `json:"links,omitempty"`
+	Avatar       string  `json:"avatar,omitempty" json:"avatar,omitempty"`
 }
 
 type EditUserProfileRes struct {
 }
 
 type Link struct {
-	TiktokLink   string `json:"tiktok_link,omitempty"`
-	InsLink      string `json:"ins_link,omitempty"`
-	WeiboLink    string `json:"weibo_link,omitempty"`
-	RedLink      string `json:"red_link,omitempty"`
-	WechatLink   string `json:"wechat_link,omitempty"`
-	TelLink      string `json:"tel_link,omitempty"`
-	TweetLink    string `json:"tweet_link,omitempty"`
-	FacebookLink string `json:"facebook_link,omitempty"`
-	LinkedinLink string `json:"linkedin_link,omitempty"`
+	LinkTitle string `json:"link_title,omitempty"`
+	Link      string `json:"link,omitempty"`
+	LinkType  string `json:"link_type,omitempty"`
 }
 
 type UserSignUpReq struct {

@@ -108,11 +108,15 @@ func (c *cUser) CheckUserName(ctx context.Context, req *v1.UserCheckNickNameReq)
 // Profile returns the user profile.
 func (c *cUser) Profile(ctx context.Context, req *v1.UserProfileReq) (res *v1.UserProfileRes, err error) {
 	user := service.User().GetProfile(ctx)
+	if req.Did != "" {
+		user = service.User().GetUserByDid(ctx, req.Did)
+	}
 	res = &v1.UserProfileRes{
 		User:        user,
 		FollowCount: service.User().GetFollower(ctx, user.Uid),
 		PoapCount:   service.User().GetPoapCount(ctx, user.Uid),
 		Links:       service.User().GetLink(ctx, user.Uid),
+		PoapList:    service.User().GetPoapList(ctx, user.Uid, req.From, req.Count),
 	}
 	return
 }
