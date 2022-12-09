@@ -23,4 +23,5 @@ type Poap struct {
 	CreateAt    *gtime.Time // Created Time
 	UpdateAt    *gtime.Time // Updated Time
 	CollectList interface{} //
+	MintPlat    interface{} // Mint platform
 }

@@ -12,9 +12,9 @@ import (
 type Userlink struct {
 	Id        uint        `json:"id"        ` // pk
 	Uid       string      `json:"uid"       ` // User ID
-	Link      string      `json:"link"      ` // Link
 	LinkType  int         `json:"linkType"  ` // Link type
 	CreateAt  *gtime.Time `json:"createAt"  ` // Created Time
 	UpdateAt  *gtime.Time `json:"updateAt"  ` // Updated Time
 	LinkTitle string      `json:"linkTitle" ` // Link Title
+	Link      string      `json:"link"      ` // Link
 }

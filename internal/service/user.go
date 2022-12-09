@@ -32,6 +32,7 @@ type (
 		GetUserScore(ctx context.Context, req *v1.GetUserScoreReq) *v1.GetUserScoreRes
 		GetUserByDid(ctx context.Context, did string) *entity.User
 		GetPoapList(ctx context.Context, uid string, from int, count int ) []*v1.PoapDetailPoapRes
+		SignUpScore(ctx context.Context, uid string) (err error)
 	}
 )
 

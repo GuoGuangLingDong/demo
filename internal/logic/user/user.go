@@ -294,6 +294,7 @@ func (s *SUser) GetUserScore(ctx context.Context, req *v1.GetUserScoreReq) *v1.G
 		Score:     int64(sum),
 		Oprations: opts,
 	}
+
 }
 
 func (s *SUser) GetUserByDid(ctx context.Context, did string) *entity.User {
@@ -305,4 +306,19 @@ func (s *SUser) GetUserByDid(ctx context.Context, did string) *entity.User {
 func (s *SUser) GetPoapList(ctx context.Context, uid string, from int, count int) []*v1.PoapDetailPoapRes {
 	res := service.Poap().GetMyPoap(ctx, model.GetMyPoapInput{UId: uid, From: from, Count: count})
 	return res
+}
+
+type Operation struct {
+	Uid     string
+	OptType int
+	Score   int
+}
+
+func (s *SUser) SignUpScore(ctx context.Context, uid string) (err error) {
+	_, err = dao.Operation.Ctx(ctx).Data(Operation{
+		Uid:     uid,
+		OptType: 6,
+		Score:   800,
+	}).Insert()
+	return
 }

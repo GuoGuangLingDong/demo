@@ -22,22 +22,22 @@ type UserlinkDao struct {
 type UserlinkColumns struct {
 	Id        string // pk
 	Uid       string // User ID
-	Link      string // Link
 	LinkType  string // Link type
 	CreateAt  string // Created Time
 	UpdateAt  string // Updated Time
 	LinkTitle string // Link Title
+	Link      string // Link
 }
 
 // userlinkColumns holds the columns for table userlink.
 var userlinkColumns = UserlinkColumns{
 	Id:        "id",
 	Uid:       "uid",
-	Link:      "link",
 	LinkType:  "link_type",
 	CreateAt:  "create_at",
 	UpdateAt:  "update_at",
 	LinkTitle: "link_title",
+	Link:      "link",
 }
 
 // NewUserlinkDao creates and returns a new DAO object for table data access.

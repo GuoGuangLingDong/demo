@@ -57,6 +57,9 @@ func (c *cUser) SignUp(ctx context.Context, req *v1.UserSignUpReq) (res *v1.User
 		PhoneNumber: req.PhoneNumber,
 		InviteCode:  req.InviteCode,
 	})
+	if err == nil {
+		service.User().SignUpScore(ctx, uid)
+	}
 
 	if err == nil {
 		vcodeService.DeleteVcode(req.PhoneNumber, vcodeService.REGIST_CODE)

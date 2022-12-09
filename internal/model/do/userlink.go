@@ -14,9 +14,9 @@ type Userlink struct {
 	g.Meta    `orm:"table:userlink, do:true"`
 	Id        interface{} // pk
 	Uid       interface{} // User ID
-	Link      interface{} // Link
 	LinkType  interface{} // Link type
 	CreateAt  *gtime.Time // Created Time
 	UpdateAt  *gtime.Time // Updated Time
 	LinkTitle interface{} // Link Title
+	Link      interface{} // Link
 }
