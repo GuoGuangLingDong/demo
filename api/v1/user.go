@@ -156,8 +156,13 @@ type GetUserScoreReq struct {
 }
 
 type GetUserScoreRes struct {
-	Score     int64               `json:"score,omitempty"`
-	Oprations []*entity.Operation `json:"oprations,omitempty"`
+	Score     int64        `json:"score,omitempty"`
+	Oprations []*Operation `json:"oprations,omitempty"`
+}
+type Operation struct {
+	*entity.Operation
+	Opt      string `json:"opt"`
+	Opt_time string `json:"opt_time"`
 }
 
 type UserShareReq struct {

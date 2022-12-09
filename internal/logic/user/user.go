@@ -331,9 +331,32 @@ func (s *SUser) GetUserScore(ctx context.Context, req *v1.GetUserScoreReq) *v1.G
 	sum, _ := dao.Operation.Ctx(ctx).Where("uid", user.Uid).Sum("score")
 	opts := ([]*entity.Operation)(nil)
 	dao.Operation.Ctx(ctx).Where("uid", user.Uid).Scan(&opts)
+	operations := ([]*v1.Operation)(nil)
+	for _, opt := range opts {
+		optName := ""
+		switch {
+		case opt.OptType == 1:
+			optName = "铸造"
+		case opt.OptType == 2:
+			optName = "兑换DID"
+		case opt.OptType == 3:
+			optName = "点赞"
+		case opt.OptType == 4:
+			optName = "建立连接（关注）"
+		case opt.OptType == 5:
+			optName = "领取POAP"
+		case opt.OptType == 6:
+			optName = "新用户赠送"
+		}
+		operations = append(operations, &v1.Operation{
+			Operation: opt,
+			Opt:       optName,
+			Opt_time:  opt.CreateAt.String(),
+		})
+	}
 	return &v1.GetUserScoreRes{
 		Score:     int64(sum),
-		Oprations: opts,
+		Oprations: operations,
 	}
 
 }
