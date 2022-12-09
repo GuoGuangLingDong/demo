@@ -2,6 +2,8 @@ package controller
 
 import (
 	"context"
+	"demo/internal/dao"
+	"demo/internal/model/entity"
 	vcodeService "demo/internal/service/vcode"
 	"demo/internal/utils"
 	"fmt"
@@ -80,7 +82,7 @@ func (c *cUser) SignIn(ctx context.Context, req *v1.UserSignInReq) (res *v1.User
 	return
 }
 
-//ResetPassword is the API for user reset password
+// ResetPassword is the API for user reset password
 func (c *cUser) ResetPassword(ctx context.Context, req *v1.UserResetPasswordReq) (res *v1.UserResetPasswordRes, err error) {
 	// check code
 	if env, _ := g.Cfg().Get(ctx, "system.env"); env.String() != "test" {
@@ -124,12 +126,27 @@ func (c *cUser) CheckUserName(ctx context.Context, req *v1.UserCheckNickNameReq)
 
 // Profile returns the user profile.
 func (c *cUser) Profile(ctx context.Context, req *v1.UserProfileReq) (res *v1.UserProfileRes, err error) {
-	user := service.User().GetProfile(ctx)
+	var user *entity.User
+	if service.User() != nil {
+		user = service.User().GetProfile(ctx)
+	}
+	if req.Did != "" {
+		user = GetUserByDid(ctx, req.Did)
+	}
 	res = &v1.UserProfileRes{
-		User:        user,
+		UserInfo: &v1.UserInfo{
+			Id:           user.Id,
+			Uid:          user.Uid,
+			Username:     user.Username,
+			Nickname:     user.Nickname,
+			Introduction: user.Introduction,
+			Avatar:       user.Avatar,
+			Did:          user.Did,
+		},
 		FollowCount: service.User().GetFollower(ctx, user.Uid),
 		PoapCount:   service.User().GetPoapCount(ctx, user.Uid),
 		Links:       service.User().GetLink(ctx, user.Uid),
+		PoapList:    service.User().GetPoapList(ctx, user.Uid, req.From, req.Count),
 	}
 	return
 }
@@ -179,4 +196,10 @@ func legalCheck(ctx context.Context, phoneNumber string) error {
 	}
 	//TODO phone number check
 	return nil
+}
+
+func GetUserByDid(ctx context.Context, did string) *entity.User {
+	user := (*entity.User)(nil)
+	dao.User.Ctx(ctx).Where("did", did).Scan(&user)
+	return user
 }
