@@ -67,6 +67,8 @@ func (S SPoap) GetPoapDetails(ctx context.Context, in model.GetPoapDetailsInput)
 	dao.Poap.Ctx(ctx).Where("poap_id", poapId).Scan(&res.Poap)
 	res.LikeNum, _ = dao.Like.Ctx(ctx).Where("poap_id", poapId).Count()
 	res.HolderNumber, _ = dao.Hold.Ctx(ctx).Where("poap_id", poapId).Count()
+	avatar, _ := dao.User.Ctx(ctx).Fields("avatar").Where("uid", uid).Value()
+	res.Avatar = avatar.String()
 	favour, _ := dao.Like.Ctx(ctx).Where("poap_id", poapId).Where("uid", uid).Count()
 	if favour == 0 {
 		res.Favoured = false
