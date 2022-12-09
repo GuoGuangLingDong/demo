@@ -69,3 +69,9 @@ func (c *cPoap) ChainCallback(ctx context.Context, req *v1.ChainCallbackReq) (re
 	err = service.Poap().ChainCallback(ctx, req)
 	return
 }
+
+func (c *cPoap) Favor(ctx context.Context, req *v1.FavorReq) (res *v1.FavorRes, err error) {
+	res = &v1.FavorRes{}
+	err = service.Poap().Favor(ctx, req)
+	return
+}

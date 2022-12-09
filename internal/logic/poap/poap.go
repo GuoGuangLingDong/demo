@@ -22,6 +22,24 @@ type (
 	SPoap struct{}
 )
 
+func (S SPoap) Favor(ctx context.Context, in *v1.FavorReq) (err error) {
+	uid := service.Session().GetUser(ctx).Uid
+	count, err := dao.Like.Ctx(ctx).Where("uid = ? and poap_id = ?", uid, in.PoapId).Count()
+	if err != nil {
+		return err
+	}
+	if count == 0 {
+		_, err := dao.Like.Ctx(ctx).Data(do.Like{
+			Uid:    uid,
+			PoapId: in.PoapId,
+		}).Insert()
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 type PoapIdLike struct {
 	poapId string
 	number int64

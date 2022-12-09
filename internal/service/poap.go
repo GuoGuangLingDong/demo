@@ -14,6 +14,7 @@ type IPoap interface {
 	MintPoap(ctx context.Context, in model.MintPoapInput) (err error)
 	ChainCallback(ctx context.Context, in *v1.ChainCallbackReq) (err error)
 	Generate(ctx context.Context, in model.GenerateTokenReq) (err error)
+	Favor(ctx context.Context, in *v1.FavorReq) (err error)
 }
 
 var (

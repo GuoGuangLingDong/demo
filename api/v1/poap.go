@@ -87,3 +87,11 @@ type ChainCallbackReq struct {
 }
 
 type ChainCallbackRes struct{}
+
+type FavorReq struct {
+	g.Meta `path:"/poap/favor" method:"post" tags:"PoapService" summary:"Favor Poap"`
+	PoapId string `json:"poap_id" v:"required"`
+}
+
+type FavorRes struct {
+}
