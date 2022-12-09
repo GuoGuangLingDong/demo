@@ -192,7 +192,7 @@ func (s *SUser) EditUserProfile(ctx context.Context, in *v1.EditUserProfileReq) 
 		if err != nil {
 			return err
 		}
-		
+
 		_, err = dao.Userlink.Ctx(ctx).Where("uid = ?", user.Uid).Delete()
 		if err != nil {
 			return err
@@ -306,6 +306,7 @@ func (s *SUser) GetUserInfo(ctx context.Context, uid string) *entity.User {
 
 func (s *SUser) FollowUser(ctx context.Context, req *v1.FollowUserReq) (err error) {
 	user := service.Session().GetUser(ctx)
+	fmt.Println("followee", req.Uid)
 	_, err = dao.Follow.Ctx(ctx).Data(g.Map{
 		"followee": req.Uid,
 		"follower": user.Uid,
