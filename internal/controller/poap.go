@@ -57,6 +57,8 @@ func (c *cPoap) MintPoap(ctx context.Context, req *v1.PoapMintReq) (res *v1.Poap
 		ReceiveCond: req.ReceiveCond,
 		CoverImg:    req.CoverImg,
 		PoapIntro:   req.PoapIntro,
+		MintPlat:    req.MintPlat,
+		CollectList: req.CollectList,
 	})
 	return
 }

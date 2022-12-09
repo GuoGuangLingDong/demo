@@ -23,4 +23,6 @@ type MintPoapInput struct {
 	ReceiveCond int64
 	CoverImg    string
 	PoapIntro   string
+	MintPlat    int
+	CollectList string
 }

@@ -11,6 +11,7 @@ import (
 	"demo/internal/service"
 	"fmt"
 	"github.com/gogf/gf/v2/database/gdb"
+	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/google/uuid"
 	"strings"
@@ -142,16 +143,23 @@ func (S SPoap) CollectPoap(ctx context.Context, in model.CollectPoapInput) (err 
 }
 
 func (S SPoap) MintPoap(ctx context.Context, in model.MintPoapInput) (err error) {
+	user := service.Session().GetUser(ctx)
+	if user == nil {
+		err = gerror.New("获取用户信息失败")
+		return
+	}
 	poapId := S.generatePoapId(ctx)
 	newPoap := &entity.Poap{
 		PoapId: poapId,
-		Miner:  service.Session().GetUser(ctx).Uid,
-		//Miner:       1,
+		Miner:  user.Uid,
+		//Miner:       "aea7cbc430cb4a7893896e64a5dc2b9c",
 		PoapName:    in.PoapName,
 		PoapSum:     int(in.PoapSum),
 		ReceiveCond: int(in.ReceiveCond),
 		CoverImg:    in.CoverImg,
 		PoapIntro:   in.PoapIntro,
+		MintPlat:    in.MintPlat,
+		CollectList: in.CollectList,
 	}
 	_, err = dao.Poap.Ctx(ctx).Insert(newPoap)
 	if err != nil {

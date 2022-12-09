@@ -59,6 +59,8 @@ type PoapMintReq struct {
 	ReceiveCond int64  `json:"receive_cond" v:"required|integer"`
 	CoverImg    string `json:"cover_img" v:"required"`
 	PoapIntro   string `json:"poap_intro" v:"required"`
+	MintPlat    int    `json:"mint_plat" v:"required"`
+	CollectList string `json:"collect_list" v:"required-if:receive_cond,2"`
 }
 
 type PoapMintRes struct{}
