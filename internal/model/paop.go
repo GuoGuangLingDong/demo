@@ -1,7 +1,9 @@
 package model
 
 type GetMyPoapInput struct {
-	UId string
+	UId   string
+	From  int
+	Count int
 }
 
 type GetPoapDetailsInput struct {
@@ -9,8 +11,9 @@ type GetPoapDetailsInput struct {
 }
 
 type GetMainPagePoap struct {
-	From  int64
-	Count int64
+	From      int64
+	Count     int64
+	Condition string
 }
 
 type CollectPoapInput struct {

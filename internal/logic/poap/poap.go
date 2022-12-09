@@ -27,59 +27,35 @@ type PoapIdLike struct {
 	number int64
 }
 
-func (S SPoap) GetMyPoap(ctx context.Context, in model.GetMyPoapInput) []*entity.Poap {
+func (S SPoap) GetMyPoap(ctx context.Context, in model.GetMyPoapInput) []*v1.PoapDetailPoapRes {
 	//TODO implement me
 	uid := in.UId
 
-	holds, err := dao.Hold.Ctx(ctx).Where(do.Hold{Uid: uid}).All()
+	holds, err := dao.Hold.Ctx(ctx).Where(do.Hold{Uid: uid}).Limit(in.From, in.Count).All()
 	if err != nil {
-		return []*entity.Poap{}
+		return []*v1.PoapDetailPoapRes{}
 	}
-	poap_ids := []int64{}
+	poap_ids := []string{}
 	for _, hold := range holds {
 		poap_id, _ := hold.Map()["poap_id"]
-		poap_ids = append(poap_ids, int64(poap_id.(int)))
+		poap_ids = append(poap_ids, poap_id.(string))
 	}
-	res := ([]*entity.Poap)(nil)
-	dao.Poap.Ctx(ctx).Where("poap_id in(?)", poap_ids).Scan(&res)
+	res := []*v1.PoapDetailPoapRes{}
+	for _, poap_id := range poap_ids {
+		res = append(res, S.GetPoapDetails(ctx, model.GetPoapDetailsInput{PoapId: poap_id}))
+	}
 	return res
 }
 
 func (S SPoap) GetMainPagePoap(ctx context.Context, in model.GetMainPagePoap) []*v1.PoapDetailPoapRes {
-	likes := ([]PoapIdLike)(nil)
 	res := ([]*v1.PoapDetailPoapRes)(nil)
-	poapRes := ([]*entity.Poap)(nil)
-	all, err := dao.Like.Ctx(ctx).Fields("poapId, count(`uid`) total").Group("poap_id").Order("count(`uid`) desc").Limit((int)(in.From), int(in.Count)).All()
+	all, err := dao.Poap.Ctx(ctx).InnerJoin("like l", "poap.poap_id=l.poap_id").Fields("poap_id").Where("poap_name like ?", "%"+in.Condition+"%").Group("poap_id").Order("count(`l.uid`) desc").Limit((int)(in.From), int(in.Count)).All()
 	if err != nil {
 		return nil
 	}
-	poapIds := []string{}
 	for _, like := range all {
 		poap_id, _ := like.Map()["poap_id"]
-		count, _ := like.Map()["total"]
-		likes = append(likes, PoapIdLike{
-			poapId: poap_id.(string),
-			number: count.(int64),
-		})
-		poapIds = append(poapIds, poap_id.(string))
-	}
-
-	dao.Poap.Ctx(ctx).Where("poap_id in(?)", poapIds).Scan(&poapRes)
-
-	for _, like := range likes {
-		for _, poap := range poapRes {
-			if like.poapId == poap.PoapId {
-				holders := S.getPoapUser(ctx, poap.PoapId)
-				collectable := S.isCollectable(ctx, poap.PoapId)
-				res = append(res, &v1.PoapDetailPoapRes{
-					poap,
-					int(like.number),
-					holders,
-					collectable,
-					nil,
-				})
-			}
-		}
+		res = append(res, S.GetPoapDetails(ctx, model.GetPoapDetailsInput{PoapId: poap_id.(string)}))
 	}
 	return res
 }
@@ -101,6 +77,13 @@ func (S SPoap) GetPoapDetails(ctx context.Context, in model.GetPoapDetailsInput)
 		PublishTime:  res.Poap.CreateAt.Format(time.RFC3339),
 		ContractNo:   res.Poap.PoapId,
 		ContractAddr: chainConf.ChainAddr,
+	}
+	var miner *entity.User
+	dao.User.Ctx(ctx).Where("uid", res.Poap.Miner).Scan(&miner)
+	res.Miner = &v1.Miner{
+		MinerUid:  miner.Uid,
+		MinerName: miner.Username,
+		MinerIcon: miner.Avatar,
 	}
 	return res
 }
@@ -127,10 +110,10 @@ func (S SPoap) getPoapUser(ctx context.Context, poapId string) []*v1.UserInfo {
 	holderRes, _ := dao.Hold.Ctx(ctx).Fields("DISTINCT uid").Where("poap_id", poapId).All()
 
 	holders := ([]*v1.UserInfo)(nil)
-	holderIds := ([]int64)(nil)
+	holderIds := ([]string)(nil)
 	for _, holder := range holderRes {
 		holderId, _ := holder.Map()["uid"]
-		holderIds = append(holderIds, int64(holderId.(int)))
+		holderIds = append(holderIds, holderId.(string))
 	}
 	dao.User.Ctx(ctx).Where("uid in (?)", holderIds).Scan(&holders)
 	return holders

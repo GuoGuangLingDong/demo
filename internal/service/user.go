@@ -22,7 +22,7 @@ type (
 		ResetPassword(ctx context.Context, in model.ResetPasswordInput) error
 		UsernameLegalCheck(ctx context.Context, username string) (bool, error)
         GetProfile(ctx context.Context) *entity.User
-		GetLink(ctx context.Context, uid string) *v1.Link
+		GetLink(ctx context.Context, uid string) []*entity.Userlink
 		GetFollower(ctx context.Context, uid string) int64
 		GetPoapCount(ctx context.Context, uid string) int64
 		EditUserProfile(ctx context.Context, in *v1.EditUserProfileReq) (err error)
@@ -30,6 +30,8 @@ type (
 		FollowUser(ctx context.Context, in *v1.FollowUserReq) (err error)
 		UnfollowUser(ctx context.Context, in *v1.UnfollowUserReq) (err error)
 		GetUserScore(ctx context.Context, req *v1.GetUserScoreReq) *v1.GetUserScoreRes
+		GetUserByDid(ctx context.Context, did string) *entity.User
+		GetPoapList(ctx context.Context, uid string, from int, count int ) []*v1.PoapDetailPoapRes
 	}
 )
 

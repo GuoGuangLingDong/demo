@@ -9,13 +9,14 @@ type MyPoapReq struct {
 	g.Meta `path:"/poap/my_list" method:"get" tags:"PoapService" summary:"Get the poap of me"`
 }
 type MyPoapRes struct {
-	Res []*entity.Poap
+	Res []*PoapDetailPoapRes
 }
 
 type MainPagePoapReq struct {
-	g.Meta `path:"/poap/mainpage_list" method:"post" tags:"PoapService" summary:"Get the poap of main page"`
-	From   int64
-	Count  int64
+	g.Meta    `path:"/poap/mainpage_list" method:"post" tags:"PoapService" summary:"Get the poap of main page"`
+	From      int64
+	Count     int64
+	Condition string
 }
 
 type MainPagePoapRes struct {
@@ -38,11 +39,18 @@ type Chain struct {
 	ContractAddr string `json:"contract_addr"`
 }
 type PoapDetailPoapRes struct {
-	*entity.Poap `json:"poap,omitempty"`
-	LikeNum      int         `json:"like_num,omitempty"`
-	Holders      []*UserInfo `json:"holders,omitempty"`
-	Collectable  bool        `json:"collectable"`
-	Chain        *Chain      `json:"chain"`
+	*entity.Poap
+	LikeNum     int         `json:"like_num,omitempty"`
+	Holders     []*UserInfo `json:"holders,omitempty"`
+	Collectable bool        `json:"collectable"`
+	Chain       *Chain      `json:"chain"`
+	*Miner
+}
+
+type Miner struct {
+	MinerUid  string `json:"minerUid"`
+	MinerName string `json:"minerName"`
+	MinerIcon string `json:"minerIcon"`
 }
 
 type PoapCollectReq struct {
