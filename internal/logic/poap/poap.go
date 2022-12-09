@@ -42,7 +42,7 @@ func (S SPoap) GetMyPoap(ctx context.Context, in model.GetMyPoapInput) []*v1.Poa
 	}
 	res := []*v1.PoapDetailPoapRes{}
 	for _, poap_id := range poap_ids {
-		res = append(res, S.GetPoapDetails(ctx, model.GetPoapDetailsInput{PoapId: poap_id}))
+		res = append(res, S.GetPoapDetails(ctx, model.GetPoapDetailsInput{PoapId: poap_id, Uid: in.UId}))
 	}
 	return res
 }
@@ -70,7 +70,7 @@ func (S SPoap) GetPoapDetails(ctx context.Context, in model.GetPoapDetailsInput)
 	}
 	res.LikeNum = likeNum
 	res.Holders = S.getPoapUser(ctx, poapId)
-	res.Collectable = S.isCollectable(ctx, poapId)
+	res.Collectable = S.isCollectable(ctx, poapId, in.Uid)
 	chainConf := getChainConf()
 	res.Chain = &v1.Chain{
 		PlatForm:     chainConf.Name,
@@ -88,8 +88,10 @@ func (S SPoap) GetPoapDetails(ctx context.Context, in model.GetPoapDetailsInput)
 	return res
 }
 
-func (S SPoap) isCollectable(ctx context.Context, poapId string) bool {
-	uid := service.Session().GetUser(ctx).Uid
+func (S SPoap) isCollectable(ctx context.Context, poapId, uid string) bool {
+	if uid == "" {
+		uid = service.Session().GetUser(ctx).Uid
+	}
 	holdNum, _ := dao.Hold.Ctx(ctx).Where("uid", uid).Where("poap_id", poapId).Count()
 	if holdNum != 0 {
 		return false

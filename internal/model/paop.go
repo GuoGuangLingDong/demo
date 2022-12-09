@@ -8,6 +8,7 @@ type GetMyPoapInput struct {
 
 type GetPoapDetailsInput struct {
 	PoapId string
+	Uid    string
 }
 
 type GetMainPagePoap struct {
