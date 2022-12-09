@@ -51,6 +51,7 @@ func (S SPoap) GetMyPoap(ctx context.Context, in model.GetMyPoapInput) []*v1.Poa
 
 	holds, err := dao.Hold.Ctx(ctx).Where(do.Hold{Uid: uid}).Limit(in.From, in.Count).All()
 	if err != nil {
+
 		return []*v1.PoapDetailPoapRes{}
 	}
 	poap_ids := []string{}
@@ -93,7 +94,7 @@ func (S SPoap) GetPoapDetails(ctx context.Context, in model.GetPoapDetailsInput)
 	} else {
 		res.Favoured = true
 	}
-	res.Holders = S.getPoapUser(ctx, poapId)
+	res.Holders = S.getPoapUser(ctx, poapId, -1, -1)
 	res.Collectable = S.isCollectable(ctx, poapId, in.Uid)
 	chainConf := getChainConf()
 	res.Chain = &v1.Chain{
@@ -164,8 +165,13 @@ func (S SPoap) isCollectable(ctx context.Context, poapId, uid string) bool {
 	return false
 }
 
-func (S SPoap) getPoapUser(ctx context.Context, poapId string) []*v1.UserInfo {
-	holderRes, _ := dao.Hold.Ctx(ctx).Fields("DISTINCT uid").Where("poap_id", poapId).All()
+func (S SPoap) getPoapUser(ctx context.Context, poapId string, from int, count int) []*v1.UserInfo {
+	holderRes := gdb.Result{}
+	if from == -1 {
+		holderRes, _ = dao.Hold.Ctx(ctx).Fields("DISTINCT uid").Where("poap_id", poapId).All()
+	} else {
+		holderRes, _ = dao.Hold.Ctx(ctx).Fields("DISTINCT uid").Limit(from, count).Where("poap_id", poapId).All()
+	}
 
 	holders := ([]*v1.UserInfo)(nil)
 	holderIds := ([]string)(nil)
@@ -176,7 +182,24 @@ func (S SPoap) getPoapUser(ctx context.Context, poapId string) []*v1.UserInfo {
 	dao.User.Ctx(ctx).Where("uid in (?)", holderIds).Scan(&holders)
 	return holders
 }
+func (S SPoap) GetHolders(ctx context.Context, in *v1.GetHoldersReq) []*v1.HolderInfo {
+	holdersInit := S.getPoapUser(ctx, in.PoapId, in.From, in.Count)
+	holders := ([]*v1.HolderInfo)(nil)
+	miner, _ := dao.Poap.Ctx(ctx).Fields("miner").Where("poap_id", in.PoapId).Value()
+	for _, user := range holdersInit {
+		temp := &v1.HolderInfo{}
+		temp.UserInfo = user
+		follow, _ := dao.Follow.Ctx(ctx).Where("followee", miner).Where("follower", user.Uid).Count()
+		if follow == 0 {
+			temp.Follow = 0
+		} else {
+			temp.Follow = 1
+		}
+		holders = append(holders, temp)
+	}
+	return holders
 
+}
 func (S SPoap) CollectPoap(ctx context.Context, in model.CollectPoapInput) (err error) {
 	userId := service.Session().GetUser(ctx).Uid
 	err = S.publishPoap(ctx, userId, in.PoapId, 1)
