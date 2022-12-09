@@ -42,14 +42,14 @@ func (S SPoap) GetMyPoap(ctx context.Context, in model.GetMyPoapInput) []*v1.Poa
 	}
 	res := []*v1.PoapDetailPoapRes{}
 	for _, poap_id := range poap_ids {
-		res = append(res, S.GetPoapDetails(ctx, model.GetPoapDetailsInput{PoapId: poap_id}))
+		res = append(res, S.GetPoapDetails(ctx, model.GetPoapDetailsInput{PoapId: poap_id, Uid: in.UId}))
 	}
 	return res
 }
 
 func (S SPoap) GetMainPagePoap(ctx context.Context, in model.GetMainPagePoap) []*v1.PoapDetailPoapRes {
 	res := ([]*v1.PoapDetailPoapRes)(nil)
-	all, err := dao.Poap.Ctx(ctx).InnerJoin("like l", "poap.poap_id=l.poap_id").Fields("poap_id").Where("poap_name like ?", "%"+in.Condition+"%").Group("poap_id").Order("count(`l.uid`) desc").Limit((int)(in.From), int(in.Count)).All()
+	all, err := dao.Poap.Ctx(ctx).InnerJoin("`like` l", "poap.poap_id=l.poap_id").Fields("poap.poap_id").Where("poap_name like ?", "%"+in.Condition+"%").Group("poap_id").Order("count(`uid`) desc").Limit((int)(in.From), int(in.Count)).All()
 	if err != nil {
 		return nil
 	}
@@ -62,15 +62,19 @@ func (S SPoap) GetMainPagePoap(ctx context.Context, in model.GetMainPagePoap) []
 
 func (S SPoap) GetPoapDetails(ctx context.Context, in model.GetPoapDetailsInput) *v1.PoapDetailPoapRes {
 	poapId := in.PoapId
+	uid := service.Session().GetUser(ctx).Uid
 	res := &v1.PoapDetailPoapRes{}
 	dao.Poap.Ctx(ctx).Where("poap_id", poapId).Scan(&res.Poap)
-	likeNum, err := dao.Like.Ctx(ctx).Where("poap_id", poapId).Count()
-	if err != nil {
-		panic(err)
+	res.LikeNum, _ = dao.Like.Ctx(ctx).Where("poap_id", poapId).Count()
+	res.HolderNumber, _ = dao.Hold.Ctx(ctx).Where("poap_id", poapId).Count()
+	favour, _ := dao.Like.Ctx(ctx).Where("poap_id", poapId).Where("uid", uid).Count()
+	if favour == 0 {
+		res.Favoured = false
+	} else {
+		res.Favoured = true
 	}
-	res.LikeNum = likeNum
 	res.Holders = S.getPoapUser(ctx, poapId)
-	res.Collectable = S.isCollectable(ctx, poapId)
+	res.Collectable = S.isCollectable(ctx, poapId, in.Uid)
 	chainConf := getChainConf()
 	res.Chain = &v1.Chain{
 		PlatForm:     chainConf.Name,
@@ -85,26 +89,60 @@ func (S SPoap) GetPoapDetails(ctx context.Context, in model.GetPoapDetailsInput)
 		MinerName: miner.Username,
 		MinerIcon: miner.Avatar,
 	}
+	follow, _ := dao.Follow.Ctx(ctx).Where("followee", miner.Uid).Where("follower", uid).Count()
+	if follow == 0 {
+		res.FollowMiner = 0
+	} else {
+		res.FollowMiner = 1
+	}
+
 	return res
 }
 
-func (S SPoap) isCollectable(ctx context.Context, poapId string) bool {
+func (S SPoap) isCollectable(ctx context.Context, poapId, uid string) bool {
 
-	uid := service.Session().GetUser(ctx).Uid
-	holdNum, _ := dao.Hold.Ctx(ctx).Where("uid", uid).Where("poap_id", poapId).Count()
-	if holdNum != 0 {
-		return false
+	if uid == "" {
+		uid = service.Session().GetUser(ctx).Uid
 	}
-	poapSum, _ := dao.Poap.Ctx(ctx).Fields("poap_sum").Where("poap_id", poapId).Value()
-	poapHold, _ := dao.Hold.Ctx(ctx).Where("poap_id", poapId).Count()
-	fmt.Println("poapSum: ", poapSum)
-	fmt.Println("poapHold: ", poapHold)
-
-	if poapSum.Int() <= poapHold {
+	poap := &entity.Poap{}
+	dao.Poap.Ctx(ctx).Where("poap_id", poapId).Scan(&poap)
+	receiveCond := poap.ReceiveCond
+	if receiveCond == 1 { //所有人可领取 未持有 有剩余
+		holdNum, _ := dao.Hold.Ctx(ctx).Where("uid", uid).Where("poap_id", poapId).Count()
+		if holdNum != 0 {
+			return false
+		}
+		poapSum, _ := dao.Poap.Ctx(ctx).Fields("poap_sum").Where("poap_id", poapId).Value()
+		poapHold, _ := dao.Hold.Ctx(ctx).Where("poap_id", poapId).Count()
+		if poapSum.Int() <= poapHold {
+			return false
+		}
+		return true
+	} else if receiveCond == 2 { //指定人可领取
+		collectList, _ := dao.Poap.Ctx(ctx).Fields("collect_list").Where("poap_id", poapId).Value()
+		if strings.Contains(collectList.String(), uid) {
+			return true
+		}
 		return false
-	}
+	} else if receiveCond == 3 { //凭口令领取
 
-	return true
+	} else if receiveCond == 4 { //我的链接
+		follow, _ := dao.Follow.Ctx(ctx).Where("follower", poap.Miner).Where("followee", uid).Count()
+		if follow == 0 {
+			return false
+		}
+		return true
+	} else if receiveCond == 5 { //链接我的
+		followee, _ := dao.Follow.Ctx(ctx).Where("follower", uid).Where("followee", poap.Miner).Count()
+		if followee == 0 {
+			return false
+		}
+		return true
+
+	} else if receiveCond == 6 { //付费领取
+
+	}
+	return false
 }
 
 func (S SPoap) getPoapUser(ctx context.Context, poapId string) []*v1.UserInfo {
