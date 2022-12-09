@@ -148,7 +148,7 @@ type UserShareReq struct {
 }
 
 type UserShareRes struct {
-	Uid         string `json:"uid"`
+	Did         string `json:"did"`
 	Username    string `json:"username"`
 	UserDesc    string `json:"user_desc"`
 	Avatar      string `json:"avatar"`

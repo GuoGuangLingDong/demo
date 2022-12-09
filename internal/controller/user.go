@@ -155,7 +155,7 @@ func (c *cUser) Profile(ctx context.Context, req *v1.UserProfileReq) (res *v1.Us
 func (c *cUser) ShareInfo(ctx context.Context, req *v1.UserShareReq) (res *v1.UserShareRes, err error) {
 	user := service.User().GetProfile(ctx)
 	res = &v1.UserShareRes{
-		Uid:         user.Uid,
+		Did:         user.Did,
 		Username:    user.Username,
 		UserDesc:    user.Introduction,
 		Avatar:      user.Avatar,
