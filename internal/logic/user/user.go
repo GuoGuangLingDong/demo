@@ -106,43 +106,10 @@ func (s *SUser) GetProfile(ctx context.Context) *entity.User {
 	return service.Session().GetUser(ctx)
 }
 
-func (s *SUser) GetLink(ctx context.Context, uid string) *v1.Link {
+func (s *SUser) GetLink(ctx context.Context, uid string) []*entity.Userlink {
 	links := ([]*entity.Userlink)(nil)
 	dao.Userlink.Ctx(ctx).Where("uid", uid).Scan(&links)
-	res := &v1.Link{
-		TiktokLink:   "",
-		InsLink:      "",
-		WeiboLink:    "",
-		RedLink:      "",
-		WechatLink:   "",
-		TelLink:      "",
-		TweetLink:    "",
-		FacebookLink: "",
-		LinkedinLink: "",
-	}
-	for _, link := range links {
-		switch link.LinkType {
-		case 1:
-			res.TiktokLink = link.Link
-		case 2:
-			res.WeiboLink = link.Link
-		case 3:
-			res.RedLink = link.Link
-		case 4:
-			res.WechatLink = link.Link
-		case 5:
-			res.TelLink = link.Link
-		case 6:
-			res.InsLink = link.Link
-		case 7:
-			res.TweetLink = link.Link
-		case 8:
-			res.FacebookLink = link.Link
-		case 9:
-			res.LinkedinLink = link.Link
-		}
-	}
-	return res
+	return links
 }
 
 func (s *SUser) GetFollower(ctx context.Context, uid string) int64 {
@@ -188,56 +155,33 @@ func (s *SUser) EditUserProfile(ctx context.Context, in *v1.EditUserProfileReq) 
 	if err != nil {
 		return err
 	}
-	if in.Links != nil {
-		if in.Links.TiktokLink != "" {
-			_, err = dao.Userlink.Ctx(ctx).Data(g.Map{"uid": user.Uid, "link": in.Links.TiktokLink, "link_type": 1}).Insert()
+	for _, link := range in.Links {
+		count, err := dao.Userlink.Ctx(ctx).Where("uid = ? and link_type = ?", user.Uid, link.LinkType).Count()
+		if err != nil {
+			return err
+		}
+		if count != 0 {
+			_, err = dao.Userlink.Ctx(ctx).Data(do.Userlink{
+				Uid:       user.Uid,
+				Link:      link.Link,
+				LinkType:  link.LinkType,
+				LinkTitle: link.LinkTitle,
+			}).Where("uid = ? and link_type = ?", user.Uid, link.LinkType).Update()
 			if err != nil {
-				_, err = dao.Userlink.Ctx(ctx).Data(g.Map{"uid": user.Uid, "link": in.Links.TiktokLink, "link_type": 1}).Update()
+				return err
 			}
-		}
-		if in.Links.WeiboLink != "" {
-			_, err = dao.Userlink.Ctx(ctx).Data(g.Map{"uid": user.Uid, "link": in.Links.WeiboLink, "link_type": 2}).Insert()
+		} else {
+			_, err = dao.Userlink.Ctx(ctx).Data(do.Userlink{
+				Uid:       user.Uid,
+				Link:      link.Link,
+				LinkType:  link.LinkType,
+				LinkTitle: link.LinkTitle,
+			}).Insert()
 			if err != nil {
-				_, err = dao.Userlink.Ctx(ctx).Data(g.Map{"uid": user.Uid, "link": in.Links.WeiboLink, "link_type": 2}).Update()
-			}
-		}
-		if in.Links.RedLink != "" {
-			if _, err = dao.Userlink.Ctx(ctx).Data(g.Map{"uid": user.Uid, "link": in.Links.RedLink, "link_type": 3}).Insert(); err != nil {
-				_, err = dao.Userlink.Ctx(ctx).Data(g.Map{"uid": user.Uid, "link": in.Links.RedLink, "link_type": 3}).Update()
-			}
-		}
-		if in.Links.WechatLink != "" {
-			if _, err = dao.Userlink.Ctx(ctx).Data(g.Map{"uid": user.Uid, "link": in.Links.WechatLink, "link_type": 4}).Insert(); err != nil {
-				_, err = dao.Userlink.Ctx(ctx).Data(g.Map{"uid": user.Uid, "link": in.Links.WechatLink, "link_type": 4}).Update()
-			}
-		}
-		if in.Links.TelLink != "" {
-			if _, err = dao.Userlink.Ctx(ctx).Data(g.Map{"uid": user.Uid, "link": in.Links.TelLink, "link_type": 5}).Insert(); err != nil {
-				_, err = dao.Userlink.Ctx(ctx).Data(g.Map{"uid": user.Uid, "link": in.Links.TelLink, "link_type": 5}).Update()
-			}
-		}
-		if in.Links.InsLink != "" {
-			if _, err = dao.Userlink.Ctx(ctx).Data(g.Map{"uid": user.Uid, "link": in.Links.InsLink, "link_type": 6}).Insert(); err != nil {
-				_, err = dao.Userlink.Ctx(ctx).Data(g.Map{"uid": user.Uid, "link": in.Links.InsLink, "link_type": 6}).Update()
-			}
-		}
-		if in.Links.TweetLink != "" {
-			if _, err = dao.Userlink.Ctx(ctx).Data(g.Map{"uid": user.Uid, "link": in.Links.TweetLink, "link_type": 7}).Insert(); err != nil {
-				_, err = dao.Userlink.Ctx(ctx).Data(g.Map{"uid": user.Uid, "link": in.Links.TweetLink, "link_type": 7}).Update()
-			}
-		}
-		if in.Links.FacebookLink != "" {
-			if _, err = dao.Userlink.Ctx(ctx).Data(g.Map{"uid": user.Uid, "link": in.Links.FacebookLink, "link_type": 8}).Insert(); err != nil {
-				_, err = dao.Userlink.Ctx(ctx).Data(g.Map{"uid": user.Uid, "link": in.Links.FacebookLink, "link_type": 8}).Update()
-			}
-		}
-		if in.Links.LinkedinLink != "" {
-			if _, err = dao.Userlink.Ctx(ctx).Data(g.Map{"uid": user.Uid, "link": in.Links.LinkedinLink, "link_type": 9}).Insert(); err != nil {
-				_, err = dao.Userlink.Ctx(ctx).Data(g.Map{"uid": user.Uid, "link": in.Links.LinkedinLink, "link_type": 9}).Update()
+				return err
 			}
 		}
 	}
-
 	// 铸造头像nft
 	if user.Avatar != in.Avatar {
 		_ = service.Poap().MintPoap(ctx, model.MintPoapInput{
@@ -314,4 +258,15 @@ func (s *SUser) GetUserScore(ctx context.Context, req *v1.GetUserScoreReq) *v1.G
 		Score:     int64(sum),
 		Oprations: opts,
 	}
+}
+
+func (s *SUser) GetUserByDid(ctx context.Context, did string) *entity.User {
+	user := (*entity.User)(nil)
+	dao.User.Ctx(ctx).Where("did", did).Scan(&user)
+	return user
+}
+
+func (s *SUser) GetPoapList(ctx context.Context, uid string, from int, count int) []*v1.PoapDetailPoapRes {
+	res := service.Poap().GetMyPoap(ctx, model.GetMyPoapInput{UId: uid, From: from, Count: count})
+	return res
 }
