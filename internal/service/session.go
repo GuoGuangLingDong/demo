@@ -11,7 +11,7 @@ import (
 )
 
 type ISession interface {
-	SetUser(ctx context.Context, user *entity.User) error
+	SetUser(ctx context.Context, user *entity.User) (error, string)
 	GetUser(ctx context.Context) *entity.User
 	RemoveUser(ctx context.Context) error
 }

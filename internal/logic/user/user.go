@@ -74,7 +74,7 @@ func (s *SUser) IsSignedIn(ctx context.Context) bool {
 }
 
 // SignIn creates session for given user account.
-func (s *SUser) SignIn(ctx context.Context, in model.UserSignInInput) (err error) {
+func (s *SUser) SignIn(ctx context.Context, in model.UserSignInInput) (err error, sessionId string) {
 
 	var user *entity.User
 	err = dao.User.Ctx(ctx).Where(do.User{
@@ -82,21 +82,21 @@ func (s *SUser) SignIn(ctx context.Context, in model.UserSignInInput) (err error
 		Password:    in.Password,
 	}).Scan(&user)
 	if err != nil {
-		return err
+		return err, ""
 	}
 
 	if user == nil {
-		return gerror.New(`Passport or Password not correct`)
+		return gerror.New(`Passport or Password not correct`), ""
 	}
-	if err = service.Session().SetUser(ctx, user); err != nil {
-		return err
+	if err, sessionId = service.Session().SetUser(ctx, user); err != nil {
+		return err, sessionId
 	}
 	service.BizCtx().SetUser(ctx, &model.ContextUser{
 		Id:       user.Id,
 		Username: user.Username,
 		Nickname: user.Nickname,
 	})
-	return nil
+	return nil, sessionId
 }
 
 func (s *SUser) ResetPassword(ctx context.Context, in model.ResetPasswordInput) (err error) {
@@ -110,7 +110,7 @@ func (s *SUser) ResetPassword(ctx context.Context, in model.ResetPasswordInput) 
 	if user == nil {
 		return gerror.New(`User not exist`)
 	}
-	if err = service.Session().SetUser(ctx, user); err != nil {
+	if err, _ = service.Session().SetUser(ctx, user); err != nil {
 		return err
 	}
 
@@ -187,7 +187,7 @@ func (s *SUser) EditUserProfile(ctx context.Context, in *v1.EditUserProfileReq) 
 	user.Username = in.UserName
 	user.Introduction = in.Introduction
 	user.Avatar = in.Avatar
-	err = service.Session().SetUser(ctx, user)
+	err, _ = service.Session().SetUser(ctx, user)
 	if err != nil {
 		return err
 	}

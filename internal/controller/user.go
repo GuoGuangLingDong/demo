@@ -78,7 +78,8 @@ func (c *cUser) SignIn(ctx context.Context, req *v1.UserSignInReq) (res *v1.User
 	if err != nil {
 		return nil, err
 	}
-	err = service.User().SignIn(ctx, model.UserSignInInput{
+	res = &v1.UserSignInRes{SessionId: ""}
+	err, res.SessionId = service.User().SignIn(ctx, model.UserSignInInput{
 		PhoneNumber: req.Phonenumber,
 		Password:    req.Password,
 	})

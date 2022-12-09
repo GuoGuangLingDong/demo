@@ -67,7 +67,9 @@ type UserSignInReq struct {
 	ImageVerify   string `v:"required"`
 	ImageVerifyId string `v:"required"`
 }
-type UserSignInRes struct{}
+type UserSignInRes struct {
+	SessionId string `json:"sessionId,omitempty"`
+}
 
 type UserResetPasswordReq struct {
 	g.Meta      `path:"/user/reset-password" method:"post" tags:"UserService" summary:"Reset user's password"`

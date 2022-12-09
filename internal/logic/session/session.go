@@ -21,8 +21,9 @@ func New() *sSession {
 }
 
 // SetUser sets user into the session.
-func (s *sSession) SetUser(ctx context.Context, user *entity.User) error {
-	return service.BizCtx().Get(ctx).Session.Set(consts.UserSessionKey, user)
+func (s *sSession) SetUser(ctx context.Context, user *entity.User) (error, string) {
+	id, _ := service.BizCtx().Get(ctx).Session.Id()
+	return service.BizCtx().Get(ctx).Session.Set(consts.UserSessionKey, user), id
 }
 
 // GetUser retrieves and returns the user from session.
