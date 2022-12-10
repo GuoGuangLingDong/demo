@@ -38,7 +38,17 @@ var (
 				// Special handler that needs authentication.
 				group.Group("/", func(group *ghttp.RouterGroup) {
 					group.Middleware(service.Middleware().Auth)
-					group.ALLMap(g.Map{})
+					group.ALLMap(g.Map{
+						"/poap/collect":   controller.Poap.CollectPoap,
+						"/poap/favor":     controller.Poap.Favor,
+						"/user/follow":    controller.User.FollowUser,
+						"/user/unfollow":  controller.User.UnfollowUser,
+						"/user/profile":   controller.User.EditProfile,
+						"/poap/mint":      controller.Poap.MintPoap,
+						"/user/score":     controller.User.GetUserScore,
+						"/user/followees": controller.User.GetUserFollowee,
+						"/user/followers": controller.User.GetUserFollower,
+					})
 				})
 			})
 			// Custom enhance API document.
