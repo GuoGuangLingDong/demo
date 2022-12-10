@@ -75,3 +75,9 @@ func (c *cPoap) Favor(ctx context.Context, req *v1.FavorReq) (res *v1.FavorRes, 
 	err = service.Poap().Favor(ctx, req)
 	return
 }
+
+func (c *cPoap) GetHolders(ctx context.Context, req *v1.GetHoldersReq) (res *v1.GetHodlersRes, err error) {
+	res = &v1.GetHodlersRes{}
+	res.Res = service.Poap().GetHolders(ctx, req)
+	return
+}

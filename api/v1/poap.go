@@ -95,3 +95,17 @@ type FavorReq struct {
 
 type FavorRes struct {
 }
+
+type GetHoldersReq struct {
+	g.Meta `path:"/poap/holders" method:"get" tags:"PoapService" summary:"Get the holders of poap"`
+	PoapId string `json:"poap_id"`
+	From   int    `json:"from"`
+	Count  int    `json:"count"`
+}
+type HolderInfo struct {
+	*UserInfo
+	Follow int `json:"follow"`
+}
+type GetHodlersRes struct {
+	Res []*HolderInfo
+}
