@@ -172,7 +172,6 @@ func (s *SUser) GetPoapCount(ctx context.Context, uid string) int64 {
 	return int64(count)
 }
 
-// todo 加事务
 func (s *SUser) EditUserProfile(ctx context.Context, in *v1.EditUserProfileReq) (err error) {
 	user := service.Session().GetUser(ctx)
 
@@ -208,20 +207,21 @@ func (s *SUser) EditUserProfile(ctx context.Context, in *v1.EditUserProfileReq) 
 				return err
 			}
 		}
+		// 铸造头像nft
+		if user.Avatar != in.Avatar {
+			err = service.Poap().MintPoap(ctx, model.MintPoapInput{
+				PoapName:    fmt.Sprintf("%d.did Avatar PFP", user.Uid),
+				PoapSum:     1,
+				ReceiveCond: 1,
+				CoverImg:    in.Avatar,
+				PoapIntro:   fmt.Sprintf("%d.did于%s时间更新头像", user.Uid, time.Now().Format(time.RFC3339)),
+			})
+			if err != nil {
+				return err
+			}
+		}
 		return nil
 	})
-
-	// 铸造头像nft
-	if user.Avatar != in.Avatar {
-		_ = service.Poap().MintPoap(ctx, model.MintPoapInput{
-			PoapName:    fmt.Sprintf("%d.did Avatar PFP", user.Uid),
-			PoapSum:     1,
-			ReceiveCond: 1,
-			CoverImg:    in.Avatar,
-			PoapIntro:   fmt.Sprintf("%d.did于%s时间更新头像", user.Uid, time.Now().Format(time.RFC3339)),
-		})
-	}
-
 	return nil
 }
 

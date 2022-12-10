@@ -15,6 +15,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/google/uuid"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -45,6 +46,9 @@ type PoapIdLike struct {
 	number int64
 }
 
+var lock sync.Mutex
+var wg sync.WaitGroup
+
 func (S SPoap) GetMyPoap(ctx context.Context, in model.GetMyPoapInput) []*v1.PoapDetailPoapRes {
 	//TODO implement me
 	uid := in.UId
@@ -59,10 +63,17 @@ func (S SPoap) GetMyPoap(ctx context.Context, in model.GetMyPoapInput) []*v1.Poa
 		poap_id, _ := hold.Map()["poap_id"]
 		poap_ids = append(poap_ids, poap_id.(string))
 	}
+	wg.Add(len(holds))
 	res := []*v1.PoapDetailPoapRes{}
 	for _, poap_id := range poap_ids {
-		res = append(res, S.GetPoapDetails(ctx, model.GetPoapDetailsInput{PoapId: poap_id, Uid: in.UId}))
+		go func() {
+			lock.Lock()
+			defer lock.Unlock()
+			res = append(res, S.GetPoapDetails(ctx, model.GetPoapDetailsInput{PoapId: poap_id, Uid: in.UId}))
+			wg.Done()
+		}()
 	}
+	wg.Wait()
 	return res
 }
 
