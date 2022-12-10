@@ -20,7 +20,7 @@ type MainPagePoapReq struct {
 }
 
 type MainPagePoapRes struct {
-	Res []*PoapDetailPoapRes
+	Res []*PoapDetailPoapRes `json:"list,omitempty"`
 }
 
 type PoapDetailReq struct {
