@@ -110,6 +110,8 @@ type GetUserFollowReq struct {
 
 type GetUserFollowerReq struct {
 	g.Meta `path:"/user/followers" method:"get" tags:"UserService" summary:"Get the follower information of current user"`
+	From   int `json:"from"`
+	Count  int `json:"count"`
 }
 
 type GetUserFollowerRes struct {
@@ -118,6 +120,8 @@ type GetUserFollowerRes struct {
 
 type GetUserFolloweeReq struct {
 	g.Meta `path:"/user/followees" method:"get" tags:"UserService" summary:"Get the followee information of current user"`
+	From   int `json:"from"`
+	Count  int `json:"count"`
 }
 type GetUserFolloweeRes struct {
 	Followee []*FollowInformation `json:"list,omitempty"`
