@@ -229,7 +229,7 @@ func (s *SUser) GetUserFollowers(ctx context.Context, in *v1.GetUserFollowerReq)
 	user := service.Session().GetUser(ctx)
 	followers := []*v1.FollowInformation{}
 	follower := ([]*entity.Follow)(nil)
-	dao.Follow.Ctx(ctx).Where("follower", user.Uid).Scan(&follower) //关注的人
+	dao.Follow.Ctx(ctx).Where("follower", user.Uid).Limit(in.From, in.Count).Scan(&follower) //关注的人
 	for _, f := range follower {
 		followers = append(followers, &v1.FollowInformation{
 			Username:    s.GetUserInfo(ctx, f.Followee).Username,
@@ -248,7 +248,7 @@ func (s *SUser) GetUserFollowees(ctx context.Context, in *v1.GetUserFolloweeReq)
 	user := service.Session().GetUser(ctx)
 	followees := []*v1.FollowInformation{}
 	followee := ([]*entity.Follow)(nil)
-	dao.Follow.Ctx(ctx).Where("followee", user.Uid).Scan(&followee) //粉丝
+	dao.Follow.Ctx(ctx).Where("followee", user.Uid).Limit(in.From, in.Count).Scan(&followee) //粉丝
 	for _, f := range followee {
 		followees = append(followees, &v1.FollowInformation{
 			Username:    s.GetUserInfo(ctx, f.Followee).Username,
