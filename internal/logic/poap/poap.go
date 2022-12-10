@@ -63,17 +63,8 @@ func (S SPoap) GetMyPoap(ctx context.Context, in model.GetMyPoapInput) []*v1.Poa
 		poap_id, _ := hold.Map()["poap_id"]
 		poap_ids = append(poap_ids, poap_id.(string))
 	}
-	wg.Add(len(holds))
 	res := []*v1.PoapDetailPoapRes{}
-	for _, poap_id := range poap_ids {
-		go func() {
-			lock.Lock()
-			defer lock.Unlock()
-			res = append(res, S.GetPoapDetails(ctx, model.GetPoapDetailsInput{PoapId: poap_id, Uid: in.UId}))
-			wg.Done()
-		}()
-	}
-	wg.Wait()
+	res = S.GetPoapsDetail(ctx, model.GetPoapsDetailsInput{PoapIds: poap_ids, Uid: in.UId})
 	return res
 }
 
@@ -83,16 +74,68 @@ func (S SPoap) GetMainPagePoap(ctx context.Context, in model.GetMainPagePoap) []
 	if err != nil {
 		return nil
 	}
+	poap_ids := []string{}
 	for _, like := range all {
 		poap_id, _ := like.Map()["poap_id"]
-		res = append(res, S.GetPoapDetails(ctx, model.GetPoapDetailsInput{PoapId: poap_id.(string)}))
+		poap_ids = append(poap_ids, poap_id.(string))
 	}
+	res = S.GetPoapsDetail(ctx, model.GetPoapsDetailsInput{PoapIds: poap_ids})
 	return res
 }
 
-func (S SPoap) GetPoapDetails(ctx context.Context, in model.GetPoapDetailsInput) *v1.PoapDetailPoapRes {
-	poapId := in.PoapId
-	uid := service.Session().GetUser(ctx).Uid
+// todo 点赞、持有等关系变化需要设置缓存失效，或者缓存粒度设粗
+func (S SPoap) GetPoapsDetail(ctx context.Context, in model.GetPoapsDetailsInput) []*v1.PoapDetailPoapRes {
+	res := []*v1.PoapDetailPoapRes{}
+
+	var uid string
+	if in.Uid != "" {
+		uid = in.Uid
+	} else {
+		uid = service.Session().GetUser(ctx).Uid
+	}
+	for _, poapId := range in.PoapIds {
+		key := fmt.Sprintf("poapid-%s-uid-%s", poapId, uid)
+		cmd, err := g.Redis().Do(ctx, "EXISTS", key)
+		if err != nil {
+			return res
+		}
+		exists := cmd.Int64()
+		if exists == 1 {
+			//在内存中从内存中取
+			gv, err := g.Redis().Do(ctx, "GET", key)
+			if err != nil {
+				return res
+			}
+			var curPoap *v1.PoapDetailPoapRes
+			err = gv.Scan(&curPoap)
+			if err != nil {
+				return res
+			} else {
+				res = append(res, curPoap)
+				_, err = g.Redis().Do(ctx, "SET", key, curPoap, "ex", 3*24*3600)
+				if err != nil {
+					// g.Log().Errorf("发送验证码失败：%v", err)
+					err = fmt.Errorf("设置缓存失败")
+				}
+			}
+
+		} else {
+			//不在内存从数据库里查
+			curPoap := S.GetPoapDetail(ctx, poapId, uid)
+			res = append(res, curPoap)
+			_, err = g.Redis().Do(ctx, "SET", key, curPoap, "ex", 3*24*3600)
+			if err != nil {
+				// g.Log().Errorf("发送验证码失败：%v", err)
+				err = fmt.Errorf("设置缓存失败")
+			}
+		}
+	}
+
+	return res
+
+}
+
+func (S SPoap) GetPoapDetail(ctx context.Context, poapId, uid string) *v1.PoapDetailPoapRes {
 	res := &v1.PoapDetailPoapRes{}
 	dao.Poap.Ctx(ctx).Where("poap_id", poapId).Scan(&res.Poap)
 	res.LikeNum, _ = dao.Like.Ctx(ctx).Where("poap_id", poapId).Count()
@@ -106,7 +149,7 @@ func (S SPoap) GetPoapDetails(ctx context.Context, in model.GetPoapDetailsInput)
 		res.Favoured = true
 	}
 	res.Holders = S.getPoapUser(ctx, poapId, -1, -1)
-	res.Collectable = S.isCollectable(ctx, poapId, in.Uid)
+	res.Collectable = S.isCollectable(ctx, poapId, uid)
 	chainConf := getChainConf()
 	res.Chain = &v1.Chain{
 		PlatForm:     chainConf.Name,
@@ -127,7 +170,6 @@ func (S SPoap) GetPoapDetails(ctx context.Context, in model.GetPoapDetailsInput)
 	} else {
 		res.FollowMiner = 1
 	}
-
 	return res
 }
 

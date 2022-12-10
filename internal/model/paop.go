@@ -6,9 +6,9 @@ type GetMyPoapInput struct {
 	Count int
 }
 
-type GetPoapDetailsInput struct {
-	PoapId string
-	Uid    string
+type GetPoapsDetailsInput struct {
+	PoapIds []string
+	Uid     string
 }
 
 type GetMainPagePoap struct {

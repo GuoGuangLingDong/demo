@@ -9,7 +9,7 @@ import (
 type IPoap interface {
 	GetMyPoap(ctx context.Context, in model.GetMyPoapInput) []*v1.PoapDetailPoapRes
 	GetMainPagePoap(ctx context.Context, in model.GetMainPagePoap) []*v1.PoapDetailPoapRes
-	GetPoapDetails(ctx context.Context, in model.GetPoapDetailsInput) *v1.PoapDetailPoapRes
+	GetPoapsDetail(ctx context.Context, in model.GetPoapsDetailsInput) []*v1.PoapDetailPoapRes
 	CollectPoap(ctx context.Context, in model.CollectPoapInput) (err error)
 	MintPoap(ctx context.Context, in model.MintPoapInput) (err error)
 	ChainCallback(ctx context.Context, in *v1.ChainCallbackReq) (err error)

@@ -36,8 +36,8 @@ func (c *cPoap) GetMainPagePoap(ctx context.Context, req *v1.MainPagePoapReq) (r
 }
 
 // Get poap info
-func (c *cPoap) GetPoapDetails(ctx context.Context, req *v1.PoapDetailReq) (res *v1.PoapDetailPoapRes, err error) {
-	res = service.Poap().GetPoapDetails(ctx, model.GetPoapDetailsInput{PoapId: req.PoapId})
+func (c *cPoap) GetPoapsDetail(ctx context.Context, req *v1.PoapDetailReq) (res []*v1.PoapDetailPoapRes, err error) {
+	res = service.Poap().GetPoapsDetail(ctx, model.GetPoapsDetailsInput{PoapIds: []string{req.PoapId}})
 	return
 }
 
