@@ -372,11 +372,15 @@ type Operation struct {
 	Score   int
 }
 
-func (s *SUser) SignUpScore(ctx context.Context, uid string) (err error) {
-	_, err = dao.Operation.Ctx(ctx).Data(Operation{
+func (s *SUser) RecordScore(ctx context.Context, score int, opt int) (err error) {
+	uid := service.Session().GetUser(ctx).Uid
+	_, err = dao.Operation.Ctx(ctx).Data(Operation{ //更新操作记录
 		Uid:     uid,
-		OptType: 6,
-		Score:   800,
+		OptType: opt,
+		Score:   score,
 	}).Insert()
+	oldScore, _ := dao.User.Ctx(ctx).Fields("score").Where("uid", uid).Value()
+	newScore := oldScore.Int() + score
+	_, err = dao.User.Ctx(ctx).Where("uid", uid).Data(g.Map{"score": newScore}).Update() //更新总积分
 	return
 }

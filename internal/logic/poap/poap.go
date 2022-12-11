@@ -88,7 +88,7 @@ func (S SPoap) GetPoapsDetail(ctx context.Context, in model.GetPoapsDetailsInput
 	res := []*v1.PoapDetailPoapRes{}
 
 	var uid string
-	if in.Uid != "" {
+	if in.Uid != "" && in.Uid != "tempUser" {
 		uid = in.Uid
 	} else if service.Session().GetUser(ctx) != nil {
 		uid = service.Session().GetUser(ctx).Uid
@@ -97,6 +97,9 @@ func (S SPoap) GetPoapsDetail(ctx context.Context, in model.GetPoapsDetailsInput
 	}
 	for _, poapId := range in.PoapIds {
 		key := fmt.Sprintf("poapid-%s-uid-%s", poapId, uid)
+
+		fmt.Println("查redis，key：", key)
+
 		cmd, err := g.Redis().Do(ctx, "EXISTS", key)
 		if err != nil {
 			return res
@@ -123,6 +126,7 @@ func (S SPoap) GetPoapsDetail(ctx context.Context, in model.GetPoapsDetailsInput
 
 		} else {
 			//不在内存从数据库里查
+			fmt.Println("查数据库")
 			curPoap := S.GetPoapDetail(ctx, poapId, uid)
 			res = append(res, curPoap)
 			_, err = g.Redis().Do(ctx, "SET", key, curPoap, "ex", 3*24*3600)
@@ -144,8 +148,6 @@ func (S SPoap) GetPoapDetail(ctx context.Context, poapId, uid string) *v1.PoapDe
 	res.HolderNumber, _ = dao.Hold.Ctx(ctx).Where("poap_id", poapId).Count()
 	avatar, _ := dao.User.Ctx(ctx).Fields("avatar").Where("uid", uid).Value()
 	res.Avatar = avatar.String()
-	res.Holders = S.getPoapUser(ctx, poapId, -1, -1)
-
 	chainConf := getChainConf()
 	res.Chain = &v1.Chain{
 		PlatForm:     chainConf.Name,
@@ -172,6 +174,7 @@ func (S SPoap) GetPoapDetail(ctx context.Context, poapId, uid string) *v1.PoapDe
 		favour, _ = dao.Like.Ctx(ctx).Where("poap_id", poapId).Where("uid", uid).Count()
 		follow, _ = dao.Follow.Ctx(ctx).Where("followee", miner.Uid).Where("follower", uid).Count()
 	}
+	fmt.Println("follow：", follow)
 	if favour == 0 {
 		res.Favoured = false
 	} else {

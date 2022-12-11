@@ -36,14 +36,13 @@ type Chain struct {
 }
 type PoapDetailPoapRes struct {
 	*entity.Poap
-	LikeNum      int         `json:"favour_number,omitempty"`
-	FollowMiner  int         `json:"follow_miner"`
-	HolderNumber int         `json:"holder_num"`
-	Favoured     bool        `json:"favoured"`
-	Holders      []*UserInfo `json:"holders,omitempty"`
-	Collectable  bool        `json:"collectable"`
-	Chain        *Chain      `json:"chain"`
-	Avatar       string      `json:"avatar"`
+	LikeNum      int    `json:"favour_number,omitempty"`
+	FollowMiner  int    `json:"follow_miner"`
+	HolderNumber int    `json:"holder_num"`
+	Favoured     bool   `json:"favoured"`
+	Collectable  bool   `json:"collectable"`
+	Chain        *Chain `json:"chain"`
+	Avatar       string `json:"avatar"`
 	*Miner
 }
 
