@@ -22,7 +22,7 @@ var (
 		Brief: "start http server of simple goframe demos",
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
 			s := g.Server()
-			s.SetSessionMaxAge(1 * time.Minute)
+			s.SetSessionMaxAge(30 * time.Minute)
 			s.Use(ghttp.MiddlewareHandlerResponse)
 			s.Group("/", func(group *ghttp.RouterGroup) {
 				// Group middlewares.
