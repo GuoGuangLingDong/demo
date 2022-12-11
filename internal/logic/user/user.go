@@ -372,8 +372,7 @@ type Operation struct {
 	Score   int
 }
 
-func (s *SUser) RecordScore(ctx context.Context, score int, opt int) (err error) {
-	uid := service.Session().GetUser(ctx).Uid
+func (s *SUser) RecordScore(ctx context.Context, score int, opt int, uid string) (err error) {
 	_, err = dao.Operation.Ctx(ctx).Data(Operation{ //更新操作记录
 		Uid:     uid,
 		OptType: opt,

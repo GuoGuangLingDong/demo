@@ -58,7 +58,7 @@ func (c *cUser) SignUp(ctx context.Context, req *v1.UserSignUpReq) (res *v1.User
 		InviteCode:  req.InviteCode,
 	})
 	if err == nil {
-		service.User().RecordScore(ctx, 200, 6)
+		service.User().RecordScore(ctx, 200, 6, uid)
 	}
 
 	if err == nil {

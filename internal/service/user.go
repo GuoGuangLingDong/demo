@@ -34,7 +34,7 @@ type (
 		GetUserScore(ctx context.Context, req *v1.GetUserScoreReq) *v1.GetUserScoreRes
 		GetUserByDid(ctx context.Context, did string) *entity.User
 		GetPoapList(ctx context.Context, uid string, from int, count int ) []*v1.PoapDetailPoapRes
-		RecordScore(ctx context.Context, score int, opt int) (err error)
+		RecordScore(ctx context.Context, score int, opt int,uid string) (err error)
 	}
 )
 

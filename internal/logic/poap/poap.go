@@ -95,6 +95,7 @@ func (S SPoap) GetPoapsDetail(ctx context.Context, in model.GetPoapsDetailsInput
 	} else {
 		uid = "tempUser"
 	}
+	fmt.Println("FinalUid: ", uid)
 	for _, poapId := range in.PoapIds {
 		key := fmt.Sprintf("poapid-%s-uid-%s", poapId, uid)
 
