@@ -98,9 +98,6 @@ func (S SPoap) GetPoapsDetail(ctx context.Context, in model.GetPoapsDetailsInput
 	fmt.Println("FinalUid: ", uid)
 	for _, poapId := range in.PoapIds {
 		key := fmt.Sprintf("poapid-%s-uid-%s", poapId, uid)
-
-		fmt.Println("查redis，key：", key)
-
 		cmd, err := g.Redis().Do(ctx, "EXISTS", key)
 		if err != nil {
 			return res
@@ -108,6 +105,7 @@ func (S SPoap) GetPoapsDetail(ctx context.Context, in model.GetPoapsDetailsInput
 		exists := cmd.Int64()
 		if exists == 1 {
 			//在内存中从内存中取
+			fmt.Println("查redis，key：", key)
 			gv, err := g.Redis().Do(ctx, "GET", key)
 			if err != nil {
 				return res

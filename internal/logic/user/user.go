@@ -42,6 +42,11 @@ func (s *SUser) Create(ctx context.Context, in model.UserCreateInput) (err error
 	//if !available {
 	//	return gerror.Newf(`Nickname "%s" is already token by others`, in.Nickname)
 	//}
+	exists, _ := dao.User.Ctx(ctx).Where("phone_number", in.PhoneNumber).Count()
+	if exists != 0 {
+		err = fmt.Errorf("手机号已注册")
+		return
+	}
 	return dao.User.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		_, err = dao.User.Ctx(ctx).Data(do.User{
 			Uid:         in.UId,
@@ -378,8 +383,5 @@ func (s *SUser) RecordScore(ctx context.Context, score int, opt int, uid string)
 		OptType: opt,
 		Score:   score,
 	}).Insert()
-	oldScore, _ := dao.User.Ctx(ctx).Fields("score").Where("uid", uid).Value()
-	newScore := oldScore.Int() + score
-	_, err = dao.User.Ctx(ctx).Where("uid", uid).Data(g.Map{"score": newScore}).Update() //更新总积分
 	return
 }
