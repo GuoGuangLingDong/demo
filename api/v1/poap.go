@@ -2,6 +2,7 @@ package v1
 
 import (
 	"demo/internal/model/entity"
+
 	"github.com/gogf/gf/v2/frame/g"
 )
 
@@ -106,5 +107,5 @@ type HolderInfo struct {
 	Follow int `json:"follow"`
 }
 type GetHodlersRes struct {
-	Res []*HolderInfo
+	Res []*HolderInfo `json:"list,omitempty"`
 }
