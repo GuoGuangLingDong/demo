@@ -134,8 +134,8 @@ func (c *cUser) Profile(ctx context.Context, req *v1.UserProfileReq) (res *v1.Us
 	if service.User() != nil {
 		user = service.User().GetProfile(ctx)
 	}
-	if req.Did != "" {
-		user = GetUserByDid(ctx, req.Did)
+	if req.Uid != "" {
+		user = GetUserByUid(ctx, req.Uid)
 	}
 	res = &v1.UserProfileRes{
 		UserInfo: &v1.UserInfo{
@@ -213,5 +213,11 @@ func legalCheck(ctx context.Context, phoneNumber string) error {
 func GetUserByDid(ctx context.Context, did string) *entity.User {
 	user := (*entity.User)(nil)
 	dao.User.Ctx(ctx).Where("did", did).Scan(&user)
+	return user
+}
+
+func GetUserByUid(ctx context.Context, uid string) *entity.User {
+	user := (*entity.User)(nil)
+	dao.User.Ctx(ctx).Where("uid", uid).Scan(&user)
 	return user
 }

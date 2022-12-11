@@ -2,6 +2,7 @@ package v1
 
 import (
 	"demo/internal/model/entity"
+
 	"github.com/gogf/gf/v2/frame/g"
 )
 
@@ -9,7 +10,7 @@ type UserProfileReq struct {
 	g.Meta `path:"/user/profile" method:"get" tags:"UserService" summary:"Get the profile of current user" `
 	From   int    `json:"from,omitempty"`
 	Count  int    `json:"count,omitempty"`
-	Did    string `json:"did,omitempty"`
+	Uid    string `json:"uid,omitempty"`
 }
 type poapsDetail []*PoapDetailPoapRes
 type UserProfileRes struct {
