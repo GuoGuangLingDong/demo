@@ -90,8 +90,10 @@ func (S SPoap) GetPoapsDetail(ctx context.Context, in model.GetPoapsDetailsInput
 	var uid string
 	if in.Uid != "" {
 		uid = in.Uid
-	} else {
+	} else if service.Session().GetUser(ctx) != nil {
 		uid = service.Session().GetUser(ctx).Uid
+	} else {
+		uid = "tempUser"
 	}
 	for _, poapId := range in.PoapIds {
 		key := fmt.Sprintf("poapid-%s-uid-%s", poapId, uid)
@@ -142,14 +144,8 @@ func (S SPoap) GetPoapDetail(ctx context.Context, poapId, uid string) *v1.PoapDe
 	res.HolderNumber, _ = dao.Hold.Ctx(ctx).Where("poap_id", poapId).Count()
 	avatar, _ := dao.User.Ctx(ctx).Fields("avatar").Where("uid", uid).Value()
 	res.Avatar = avatar.String()
-	favour, _ := dao.Like.Ctx(ctx).Where("poap_id", poapId).Where("uid", uid).Count()
-	if favour == 0 {
-		res.Favoured = false
-	} else {
-		res.Favoured = true
-	}
 	res.Holders = S.getPoapUser(ctx, poapId, -1, -1)
-	res.Collectable = S.isCollectable(ctx, poapId, uid)
+
 	chainConf := getChainConf()
 	res.Chain = &v1.Chain{
 		PlatForm:     chainConf.Name,
@@ -164,7 +160,23 @@ func (S SPoap) GetPoapDetail(ctx context.Context, poapId, uid string) *v1.PoapDe
 		MinerName: miner.Username,
 		MinerIcon: miner.Avatar,
 	}
-	follow, _ := dao.Follow.Ctx(ctx).Where("followee", miner.Uid).Where("follower", uid).Count()
+
+	var favour int
+	var follow int
+	if uid == "tempUser" {
+		res.Collectable = false
+		favour = 0
+		follow = 0
+	} else {
+		res.Collectable = S.isCollectable(ctx, poapId, uid)
+		favour, _ = dao.Like.Ctx(ctx).Where("poap_id", poapId).Where("uid", uid).Count()
+		follow, _ = dao.Follow.Ctx(ctx).Where("followee", miner.Uid).Where("follower", uid).Count()
+	}
+	if favour == 0 {
+		res.Favoured = false
+	} else {
+		res.Favoured = true
+	}
 	if follow == 0 {
 		res.FollowMiner = 0
 	} else {
