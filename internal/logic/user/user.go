@@ -192,10 +192,6 @@ func (s *SUser) EditUserProfile(ctx context.Context, in *v1.EditUserProfileReq) 
 		user.Username = in.UserName
 		user.Introduction = in.Introduction
 		user.Avatar = in.Avatar
-		err, _ = service.Session().SetUser(ctx, user)
-		if err != nil {
-			return err
-		}
 
 		_, err = dao.Userlink.Ctx(ctx).Where("uid = ?", user.Uid).Delete()
 		if err != nil {
