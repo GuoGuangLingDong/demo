@@ -19,7 +19,7 @@ database:
     stdout: true
 
   default:
-    link: "mysql:root:123456@tcp(118.195.238.77:3306)/wesoul"
+    link: "mysql:root:Wesoul@123@tcp(60.205.229.57:3306)/wesoul"
     debug: true
 
 # redis

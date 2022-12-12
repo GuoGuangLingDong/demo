@@ -256,12 +256,12 @@ func (s *SUser) GetUserFollowees(ctx context.Context, in *v1.GetUserFolloweeReq)
 	dao.Follow.Ctx(ctx).Where("followee", user.Uid).Limit(in.From, in.Count).Scan(&followee) //粉丝
 	for _, f := range followee {
 		followees = append(followees, &v1.FollowInformation{
-			Username:    s.GetUserInfo(ctx, f.Followee).Username,
-			Uid:         f.Followee,
-			FollowCount: int(s.GetFollowee(ctx, f.Followee)),
-			PoapCount:   int(s.GetPoapCount(ctx, f.Followee)),
-			Avatar:      s.GetUserInfo(ctx, f.Followee).Avatar,
-			Did:         s.GetUserInfo(ctx, f.Followee).Did,
+			Username:    s.GetUserInfo(ctx, f.Follower).Username,
+			Uid:         f.Follower,
+			FollowCount: int(s.GetFollowee(ctx, f.Follower)),
+			PoapCount:   int(s.GetPoapCount(ctx, f.Follower)),
+			Avatar:      s.GetUserInfo(ctx, f.Follower).Avatar,
+			Did:         s.GetUserInfo(ctx, f.Follower).Did,
 		})
 	}
 	return &v1.GetUserFolloweeRes{
@@ -316,12 +316,46 @@ func (s *SUser) FollowUser(ctx context.Context, req *v1.FollowUserReq) (err erro
 		"followee": req.Uid,
 		"follower": user.Uid,
 	}).Insert()
+
+	//更新缓存
+	key := fmt.Sprintf("poapid-*-uid-%s", user.Uid)
+	cmd, err := g.Redis().Do(ctx, "KEYS", key)
+	if err != nil {
+		err = fmt.Errorf("查询缓存失败")
+	}
+	fmt.Println("follow key:", cmd)
+	fmt.Println("num", cmd.Int64())
+	keys := cmd.Array()
+	for _, k := range keys {
+		fmt.Println("delete key:", k)
+		_, err := g.Redis().Do(ctx, "DEL", k)
+		if err != nil {
+			err = fmt.Errorf("删除缓存失败")
+		}
+	}
+
 	return
 }
 
 func (s *SUser) UnfollowUser(ctx context.Context, req *v1.UnfollowUserReq) (err error) {
 	user := service.Session().GetUser(ctx)
 	_, err = dao.Follow.Ctx(ctx).Where("followee", req.Uid).Where("follower", user.Uid).Delete()
+	//更新缓存
+	key := fmt.Sprintf("poapid-*-uid-%s", user.Uid)
+	cmd, err := g.Redis().Do(ctx, "KEYS", key)
+	if err != nil {
+		err = fmt.Errorf("查询缓存失败")
+	}
+	fmt.Println("follow key:", cmd)
+	fmt.Println("num", cmd.Int64())
+	keys := cmd.Array()
+	for _, k := range keys {
+		fmt.Println("delete key:", k)
+		_, err := g.Redis().Do(ctx, "DEL", k)
+		if err != nil {
+			err = fmt.Errorf("删除缓存失败")
+		}
+	}
 	return
 }
 

@@ -272,13 +272,14 @@ func (S SPoap) getPoapUser(ctx context.Context, poapId string, from int, count i
 	return holders
 }
 func (S SPoap) GetHolders(ctx context.Context, in *v1.GetHoldersReq) []*v1.HolderInfo {
+	userId := service.Session().GetUser(ctx).Uid
 	holdersInit := S.getPoapUser(ctx, in.PoapId, in.From, in.Count)
 	holders := ([]*v1.HolderInfo)(nil)
-	miner, _ := dao.Poap.Ctx(ctx).Fields("miner").Where("poap_id", in.PoapId).Value()
+	// miner, _ := dao.Poap.Ctx(ctx).Fields("miner").Where("poap_id", in.PoapId).Value()
 	for _, user := range holdersInit {
 		temp := &v1.HolderInfo{}
 		temp.UserInfo = user
-		follow, _ := dao.Follow.Ctx(ctx).Where("followee", miner).Where("follower", user.Uid).Count()
+		follow, _ := dao.Follow.Ctx(ctx).Where("followee", user.Uid).Where("follower", userId).Count()
 		if follow == 0 {
 			temp.Follow = 0
 		} else {
