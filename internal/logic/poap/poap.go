@@ -16,7 +16,6 @@ import (
 	"github.com/google/uuid"
 	"strings"
 	"sync"
-	"time"
 )
 
 type (
@@ -150,7 +149,7 @@ func (S SPoap) GetPoapDetail(ctx context.Context, poapId, uid string) *v1.PoapDe
 	chainConf := getChainConf()
 	res.Chain = &v1.Chain{
 		PlatForm:     chainConf.Name,
-		PublishTime:  res.Poap.CreateAt.Format(time.RFC3339),
+		PublishTime:  res.Poap.CreateAt.Format("Y-m-d H:i:s"),
 		ContractNo:   res.Poap.PoapId,
 		ContractAddr: chainConf.ChainAddr,
 	}

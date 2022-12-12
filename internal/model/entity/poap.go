@@ -18,8 +18,8 @@ type Poap struct {
 	ReceiveCond int         `json:"receive_cond" ` // Receive condition
 	CoverImg    string      `json:"cover_img"    ` // Cover picture
 	PoapIntro   string      `json:"poap_intro"   ` // Poap introduction
-	CreateAt    *gtime.Time `json:"createAt"    ` // Created Time
-	UpdateAt    *gtime.Time `json:"updateAt"    ` // Updated Time
+	CreateAt    *gtime.Time `json:"create_at"    ` // Created Time
+	UpdateAt    *gtime.Time `json:"update_at"    ` // Updated Time
 	MintPlat int `json:"mintPlat" ` // mintPlat
 	CollectList string `json:"collectList"` // Collector list
 }
