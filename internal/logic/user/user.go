@@ -255,14 +255,23 @@ func (s *SUser) GetUserFollowees(ctx context.Context, in *v1.GetUserFolloweeReq)
 	followee := ([]*entity.Follow)(nil)
 	dao.Follow.Ctx(ctx).Where("followee", user.Uid).Limit(in.From, in.Count).Scan(&followee) //粉丝
 	for _, f := range followee {
-		followees = append(followees, &v1.FollowInformation{
+		temp := &v1.FollowInformation{
 			Username:    s.GetUserInfo(ctx, f.Follower).Username,
 			Uid:         f.Follower,
 			FollowCount: int(s.GetFollowee(ctx, f.Follower)),
 			PoapCount:   int(s.GetPoapCount(ctx, f.Follower)),
 			Avatar:      s.GetUserInfo(ctx, f.Follower).Avatar,
 			Did:         s.GetUserInfo(ctx, f.Follower).Did,
-		})
+		}
+		follow, _ := dao.Follow.Ctx(ctx).Where("followee", f.Follower).Where("follower", user.Uid).Count()
+
+		if follow == 0 {
+			temp.Follow = false
+		} else {
+			temp.Follow = true
+		}
+
+		followees = append(followees, temp)
 	}
 	return &v1.GetUserFolloweeRes{
 		Followee: followees,

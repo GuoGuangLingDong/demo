@@ -140,6 +140,7 @@ type FollowInformation struct {
 	PoapCount   int    `json:"poap_count,omitempty"`
 	Avatar      string `json:"avatar"`
 	Did         string `json:"did"`
+	Follow      bool   `json:"follow"`
 }
 
 type FollowUserReq struct {
