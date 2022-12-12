@@ -10,12 +10,13 @@ import (
 	"demo/internal/model/entity"
 	"demo/internal/service"
 	"fmt"
+	"strings"
+	"sync"
+
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/google/uuid"
-	"strings"
-	"sync"
 )
 
 type (
@@ -35,6 +36,21 @@ func (S SPoap) Favor(ctx context.Context, in *v1.FavorReq) (err error) {
 		}).Insert()
 		if err != nil {
 			return err
+		}
+		//更新缓存
+		key := fmt.Sprintf("poapid-%s-uid-%s", in.PoapId, uid)
+		cmd, err := g.Redis().Do(ctx, "EXISTS", key)
+		if err != nil {
+			err = fmt.Errorf("查询缓存失败")
+		}
+		exists := cmd.Int64()
+		if exists == 1 {
+			//在内存中，使缓存失效
+			_, err := g.Redis().Do(ctx, "DEL", key)
+			if err != nil {
+				err = fmt.Errorf("删除缓存失败")
+			}
+
 		}
 	}
 	return nil
@@ -104,7 +120,7 @@ func (S SPoap) GetPoapsDetail(ctx context.Context, in model.GetPoapsDetailsInput
 		exists := cmd.Int64()
 		if exists == 1 {
 			//在内存中从内存中取
-			fmt.Println("查redis，key：", key)
+			// fmt.Println("查redis，key：", key)
 			gv, err := g.Redis().Do(ctx, "GET", key)
 			if err != nil {
 				return res
@@ -204,9 +220,16 @@ func (S SPoap) isCollectable(ctx context.Context, poapId, uid string) bool {
 			return false
 		}
 		return true
-	} else if receiveCond == 2 { //指定人可领取
+	} else if receiveCond == 2 { //指定人可领取 未持有 有剩余
+		holdNum, _ := dao.Hold.Ctx(ctx).Where("uid", uid).Where("poap_id", poapId).Count()
+		if holdNum != 0 {
+			return false
+		}
 		collectList, _ := dao.Poap.Ctx(ctx).Fields("collect_list").Where("poap_id", poapId).Value()
+		// fmt.Println("phonenumber：", service.Session().GetUser(ctx).PhoneNumber)
 		if strings.Contains(collectList.String(), uid) {
+			return true
+		} else if strings.Contains(collectList.String(), service.Session().GetUser(ctx).PhoneNumber) {
 			return true
 		}
 		return false
@@ -269,6 +292,21 @@ func (S SPoap) GetHolders(ctx context.Context, in *v1.GetHoldersReq) []*v1.Holde
 func (S SPoap) CollectPoap(ctx context.Context, in model.CollectPoapInput) (err error) {
 	userId := service.Session().GetUser(ctx).Uid
 	err = S.publishPoap(ctx, userId, in.PoapId, 1)
+	//更新缓存
+	key := fmt.Sprintf("poapid-%s-uid-%s", in.PoapId, userId)
+	cmd, err := g.Redis().Do(ctx, "EXISTS", key)
+	if err != nil {
+		err = fmt.Errorf("查询缓存失败")
+	}
+	exists := cmd.Int64()
+	if exists == 1 {
+		//在内存中，使缓存失效
+		_, err := g.Redis().Do(ctx, "DEL", key)
+		if err != nil {
+			err = fmt.Errorf("删除缓存失败")
+		}
+
+	}
 	return err
 }
 
