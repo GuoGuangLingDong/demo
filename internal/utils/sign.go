@@ -6,7 +6,6 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
-	"github.com/gogf/gf/v2/util/gconv"
 	"sort"
 	"strings"
 )
@@ -27,9 +26,8 @@ func Sign(appSecret string, reqMap map[string]interface{}) string {
 		case []map[string]interface{}:
 			r := ""
 			for _, v := range reqMap[k].([]map[string]interface{}) {
-				for _, vv := range v {
-					r += gconv.String(vv)
-				}
+				r += v["tokenId"].(string)
+				r += v["url"].(string)
 			}
 			kvs = append(kvs, fmt.Sprintf("%s=%v", k, r))
 		default:
