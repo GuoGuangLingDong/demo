@@ -180,30 +180,29 @@ func (s *SUser) GetPoapCount(ctx context.Context, uid string) int64 {
 func (s *SUser) EditUserProfile(ctx context.Context, in *v1.EditUserProfileReq) (err error) {
 	user := service.Session().GetUser(ctx)
 
-	dao.Userlink.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
-		_, err = dao.User.Ctx(ctx).Data(g.Map{
+	dao.Userlink.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+		_, err = tx.Ctx(ctx).Update("user", g.Map{
 			"username":     in.UserName,
 			"introduction": in.Introduction,
 			"avatar":       in.Avatar,
-		}).Where("uid", user.Uid).Update()
+		}, "uid", user.Uid)
 		if err != nil {
 			return err
 		}
 		user.Username = in.UserName
 		user.Introduction = in.Introduction
 		user.Avatar = in.Avatar
-
-		_, err = dao.Userlink.Ctx(ctx).Where("uid = ?", user.Uid).Delete()
+		_, err = tx.Ctx(ctx).Delete("userlink", "uid", user.Uid)
 		if err != nil {
 			return err
 		}
 		for _, link := range in.Links {
-			_, err = dao.Userlink.Ctx(ctx).Data(do.Userlink{
-				Uid:       user.Uid,
-				Link:      link.Link,
-				LinkType:  link.LinkType,
-				LinkTitle: link.LinkTitle,
-			}).Insert()
+			_, err = tx.Ctx(ctx).Insert("userlink", g.Map{
+				"uid":        user.Uid,
+				"link":       link.Link,
+				"link_type":  link.LinkType,
+				"link_title": link.LinkTitle,
+			})
 			if err != nil {
 				return err
 			}
