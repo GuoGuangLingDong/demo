@@ -5,8 +5,10 @@ import (
 	v1 "demo/api/v1"
 	"fmt"
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/google/uuid"
 	"github.com/qiniu/go-sdk/v7/auth/qbox"
 	"github.com/qiniu/go-sdk/v7/storage"
+	"path"
 )
 
 var Upload = cUpload{}
@@ -25,7 +27,8 @@ func (c *cUpload) GetUploadToken(ctx context.Context, req *v1.GetUploadTokenReq)
 	mac := qbox.NewMac(confMap["accessKey"], confMap["secretKey"])
 
 	upToken := putPolicy.UploadToken(mac)
-	key := fmt.Sprintf("did/%s", req.Name)
+
+	key := fmt.Sprintf("did/%s", uuid.NewString()+path.Ext(req.Name))
 
 	res = &v1.GetUploadTokenRes{
 		UploadKey: key,
