@@ -128,6 +128,8 @@ func (c *cUser) Profile(ctx context.Context, req *v1.UserProfileReq) (res *v1.Us
 	}
 	if req.Uid != "" {
 		user = GetUserByUid(ctx, req.Uid)
+	} else { //登录之后从数据库中查询用户信息
+		user = GetUserByUid(ctx, user.Uid)
 	}
 	res = &v1.UserProfileRes{
 		UserInfo: &v1.UserInfo{
