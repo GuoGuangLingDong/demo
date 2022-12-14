@@ -59,7 +59,9 @@ type UserSignUpReq struct {
 	VerifyCode  string `v:"required"`
 	InviteCode  string
 }
-type UserSignUpRes struct{}
+type UserSignUpRes struct {
+	SessionId string `json:"sessionId,omitempty"`
+}
 
 type UserSignInReq struct {
 	g.Meta        `path:"/user/sign-in" method:"post" tags:"UserService" summary:"Sign in with exist account"`

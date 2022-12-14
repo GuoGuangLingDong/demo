@@ -8,6 +8,7 @@ import (
 	"demo/internal/model/do"
 	"demo/internal/model/entity"
 	"demo/internal/service"
+	vcodeService "demo/internal/service/vcode"
 	"fmt"
 	"time"
 
@@ -29,7 +30,7 @@ func New() *SUser {
 }
 
 // Create creates user account.
-func (s *SUser) Create(ctx context.Context, in model.UserCreateInput) (err error) {
+func (s *SUser) SignUp(ctx context.Context, in model.UserCreateInput) (res *v1.UserSignUpRes, err error) {
 	// If Nickname is not specified, generate one
 	//if in.Nickname == "" {
 	//	in.Nickname = fmt.Sprintf("wesoul-%v", in.UId[:6])
@@ -47,7 +48,9 @@ func (s *SUser) Create(ctx context.Context, in model.UserCreateInput) (err error
 		err = fmt.Errorf("手机号已注册")
 		return
 	}
-	return dao.User.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+
+	res = &v1.UserSignUpRes{}
+	err = dao.User.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		_, err = dao.User.Ctx(ctx).Data(do.User{
 			Uid:         in.UId,
 			PhoneNumber: in.PhoneNumber,
@@ -56,8 +59,24 @@ func (s *SUser) Create(ctx context.Context, in model.UserCreateInput) (err error
 			Username:    in.Did,
 			Nickname:    in.NickName,
 		}).Insert()
+
+		if err == nil {
+			vcodeService.DeleteVcode(in.PhoneNumber, vcodeService.REGIST_CODE)
+			if err = service.User().RecordScore(ctx, 200, 6, in.UId); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+
+		err, res.SessionId = service.User().SignIn(ctx, model.UserSignInInput{
+			PhoneNumber: in.PhoneNumber,
+			Password:    in.Password,
+		})
 		return err
 	})
+	return res, err
+
 }
 
 func (s *SUser) DidExists(ctx context.Context, in model.DidCreateInput) bool {
@@ -180,7 +199,7 @@ func (s *SUser) GetPoapCount(ctx context.Context, uid string) int64 {
 func (s *SUser) EditUserProfile(ctx context.Context, in *v1.EditUserProfileReq) (err error) {
 	user := service.Session().GetUser(ctx)
 
-	dao.Userlink.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+	err = g.DB().Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		_, err = tx.Ctx(ctx).Update("user", g.Map{
 			"username":     in.UserName,
 			"introduction": in.Introduction,
@@ -222,7 +241,7 @@ func (s *SUser) EditUserProfile(ctx context.Context, in *v1.EditUserProfileReq) 
 		}
 		return nil
 	})
-	return nil
+	return err
 }
 
 func (s *SUser) GetUserFollowers(ctx context.Context, in *v1.GetUserFollowerReq) *v1.GetUserFollowerRes {

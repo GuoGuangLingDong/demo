@@ -48,7 +48,7 @@ func (c *cUser) SignUp(ctx context.Context, req *v1.UserSignUpReq) (res *v1.User
 		userDid = c.generateDid()
 	}
 
-	err = service.User().Create(ctx, model.UserCreateInput{
+	res, err = service.User().SignUp(ctx, model.UserCreateInput{
 		UId:         uid,
 		Did:         userDid,
 		UserName:    userDid,
@@ -57,15 +57,7 @@ func (c *cUser) SignUp(ctx context.Context, req *v1.UserSignUpReq) (res *v1.User
 		PhoneNumber: req.PhoneNumber,
 		InviteCode:  req.InviteCode,
 	})
-	if err == nil {
-		service.User().RecordScore(ctx, 200, 6, uid)
-	}
-
-	if err == nil {
-		vcodeService.DeleteVcode(req.PhoneNumber, vcodeService.REGIST_CODE)
-	}
-
-	return
+	return res, err
 }
 
 func (c *cUser) generateDid() string {
