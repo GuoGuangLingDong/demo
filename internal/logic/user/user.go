@@ -227,17 +227,21 @@ func (s *SUser) EditUserProfile(ctx context.Context, in *v1.EditUserProfileReq) 
 			}
 		}
 		// 铸造头像nft
-		if user.Avatar != in.Avatar {
-			err = service.Poap().MintPoap(ctx, model.MintPoapInput{
+		if service.Session().GetUser(ctx).Avatar != in.Avatar {
+			poapId, err := service.Poap().MintPoap(ctx, model.MintPoapInput{
 				PoapName:    fmt.Sprintf("%d.did Avatar PFP", user.Uid),
 				PoapSum:     1,
-				ReceiveCond: 1,
+				ReceiveCond: 2,
 				CoverImg:    in.Avatar,
 				PoapIntro:   fmt.Sprintf("%d.did于%s时间更新头像", user.Uid, time.Now().Format(time.RFC3339)),
 			})
 			if err != nil {
 				return err
 			}
+			// 领取
+			_ = service.Poap().CollectPoap(ctx, model.CollectPoapInput{
+				PoapId: poapId,
+			})
 		}
 		return nil
 	})

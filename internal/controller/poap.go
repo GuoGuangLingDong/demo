@@ -51,7 +51,7 @@ func (c *cPoap) CollectPoap(ctx context.Context, req *v1.PoapCollectReq) (res *v
 // MintPoap poap铸造
 func (c *cPoap) MintPoap(ctx context.Context, req *v1.PoapMintReq) (res *v1.PoapMintRes, err error) {
 	res = &v1.PoapMintRes{}
-	err = service.Poap().MintPoap(ctx, model.MintPoapInput{
+	_, err = service.Poap().MintPoap(ctx, model.MintPoapInput{
 		PoapName:    req.PoapName,
 		PoapSum:     req.PoapSum,
 		ReceiveCond: req.ReceiveCond,
