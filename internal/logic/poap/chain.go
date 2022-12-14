@@ -61,8 +61,8 @@ func upChain(poapId string) (err error) {
 		tokenInfo := make([]map[string]interface{}, 0)
 		for _, v := range tokenIds {
 			tokenInfo = append(tokenInfo, map[string]interface{}{
-				"tokenId": v,
-				"url":     fmt.Sprintf(conf.TokenUrl, gconv.String(poapInfo.PoapId), v),
+				"tokenId": v.String(),
+				"url":     fmt.Sprintf(conf.TokenUrl, gconv.String(poapInfo.PoapId), v.String()),
 			})
 		}
 
