@@ -311,13 +311,13 @@ func (S SPoap) CollectPoap(ctx context.Context, in model.CollectPoapInput) (err 
 	return err
 }
 
-func (S SPoap) MintPoap(ctx context.Context, in model.MintPoapInput) (err error) {
+func (S SPoap) MintPoap(ctx context.Context, in model.MintPoapInput) (poapId string, err error) {
 	user := service.Session().GetUser(ctx)
 	if user == nil {
 		err = gerror.New("获取用户信息失败")
 		return
 	}
-	poapId := S.generatePoapId(ctx)
+	poapId = S.generatePoapId(ctx)
 	newPoap := &entity.Poap{
 		PoapId: poapId,
 		Miner:  user.Uid,

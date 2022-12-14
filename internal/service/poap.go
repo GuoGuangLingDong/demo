@@ -11,7 +11,7 @@ type IPoap interface {
 	GetMainPagePoap(ctx context.Context, in model.GetMainPagePoap) []*v1.PoapDetailPoapRes
 	GetPoapsDetail(ctx context.Context, in model.GetPoapsDetailsInput) []*v1.PoapDetailPoapRes
 	CollectPoap(ctx context.Context, in model.CollectPoapInput) (err error)
-	MintPoap(ctx context.Context, in model.MintPoapInput) (err error)
+	MintPoap(ctx context.Context, in model.MintPoapInput) (poapId string, err error)
 	ChainCallback(ctx context.Context, in *v1.ChainCallbackReq) (err error)
 	Generate(ctx context.Context, in model.GenerateTokenReq) (err error)
 	Favor(ctx context.Context, in *v1.FavorReq) (err error)
