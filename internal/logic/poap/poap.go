@@ -227,7 +227,7 @@ func (S SPoap) isCollectable(ctx context.Context, poapId, uid string) bool {
 		}
 		collectList, _ := dao.Poap.Ctx(ctx).Fields("collect_list").Where("poap_id", poapId).Value()
 		// fmt.Println("phonenumber：", service.Session().GetUser(ctx).PhoneNumber)
-		if strings.Contains(collectList.String(), uid) {
+		if strings.Contains(collectList.String(), service.Session().GetUser(ctx).Did) {
 			return true
 		} else if strings.Contains(collectList.String(), service.Session().GetUser(ctx).PhoneNumber) {
 			return true
