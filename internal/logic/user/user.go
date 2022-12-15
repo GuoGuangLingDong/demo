@@ -14,6 +14,7 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
+	"time"
 )
 
 type (
@@ -49,19 +50,19 @@ func (s *SUser) SignUp(ctx context.Context, in model.UserCreateInput) (res *v1.U
 	}
 
 	res = &v1.UserSignUpRes{}
-	err = dao.User.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
-		_, err = dao.User.Ctx(ctx).Data(do.User{
-			Uid:         in.UId,
-			PhoneNumber: in.PhoneNumber,
-			Password:    in.Password,
-			Did:         in.Did,
-			Username:    in.Did,
-			Nickname:    in.NickName,
-		}).Insert()
+	err = g.DB().Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+		_, err = tx.Ctx(ctx).Insert("user", g.Map{
+			"uid":          in.UId,
+			"phone_number": in.PhoneNumber,
+			"password":     in.Password,
+			"did":          in.Did,
+			"username":     in.Did,
+			"nickname":     in.NickName,
+		})
 
 		if err == nil {
 			vcodeService.DeleteVcode(in.PhoneNumber, vcodeService.REGIST_CODE)
-			if err = service.User().RecordScore(ctx, 200, 6, in.UId); err != nil {
+			if err = service.User().RecordScore(ctx, 200, 6, in.UId, -1); err != nil {
 				return err
 			}
 		} else {
@@ -392,7 +393,7 @@ func (s *SUser) UnfollowUser(ctx context.Context, req *v1.UnfollowUserReq) (err 
 
 func (s *SUser) GetUserScore(ctx context.Context, req *v1.GetUserScoreReq) *v1.GetUserScoreRes {
 	user := service.Session().GetUser(ctx)
-	sum, _ := dao.Operation.Ctx(ctx).Where("uid", user.Uid).Sum("score")
+	sum, _ := dao.Operation.Ctx(ctx).Where("uid", user.Uid).Where("overdue_at > ", "now()").Sum("score")
 	opts := ([]*entity.Operation)(nil)
 	dao.Operation.Ctx(ctx).Where("uid", user.Uid).Scan(&opts)
 	operations := ([]*v1.Operation)(nil)
@@ -411,6 +412,8 @@ func (s *SUser) GetUserScore(ctx context.Context, req *v1.GetUserScoreReq) *v1.G
 			optName = "领取POAP"
 		case opt.OptType == 6:
 			optName = "新用户赠送"
+		case opt.OptType == 7:
+			optName = "每天赠送"
 		}
 		operations = append(operations, &v1.Operation{
 			Operation: opt,
@@ -436,17 +439,18 @@ func (s *SUser) GetPoapList(ctx context.Context, uid string, from int, count int
 	return res
 }
 
-type Operation struct {
-	Uid     string
-	OptType int
-	Score   int
-}
-
-func (s *SUser) RecordScore(ctx context.Context, score int, opt int, uid string) (err error) {
-	_, err = dao.Operation.Ctx(ctx).Data(Operation{ //更新操作记录
-		Uid:     uid,
-		OptType: opt,
-		Score:   score,
+func (s *SUser) RecordScore(ctx context.Context, score int, opt int, uid string, validDays int) (err error) {
+	curTime := gtime.Now()
+	overDueTime := curTime.Add(time.Duration(validDays*24) * time.Hour)
+	if validDays == -1 {
+		overDueTime = gtime.New("2100-12-31 00:00:00")
+	}
+	_, err = dao.Operation.Ctx(ctx).Data(do.Operation{ //更新操作记录
+		Uid:       uid,
+		OptType:   opt,
+		Score:     score,
+		CreateAt:  curTime,
+		OverdueAt: overDueTime,
 	}).Insert()
 	return
 }

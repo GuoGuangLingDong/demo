@@ -10,10 +10,11 @@ import (
 
 // Operation is the golang structure for table operation.
 type Operation struct {
-	Id       uint        `json:"id"       ` // pk
-	Uid      string      `json:"uid"      ` // User ID
-	OptType  uint        `json:"optType"  ` // Operate Type
-	Score    uint        `json:"score"    ` // Score
-	CreateAt *gtime.Time `json:"createAt" ` // Created Time
-	UpdateAt *gtime.Time `json:"updateAt" ` // Updated Time
+	Id        uint        `json:"id"        ` // pk
+	Uid       string      `json:"uid"       ` // User ID
+	OptType   uint        `json:"optType"   ` // Operate Type
+	Score     uint        `json:"score"     ` // Score
+	CreateAt  *gtime.Time `json:"createAt"  ` // Created Time
+	UpdateAt  *gtime.Time `json:"updateAt"  ` // Updated Time
+	OverdueAt *gtime.Time `json:"overdueAt" ` //
 }

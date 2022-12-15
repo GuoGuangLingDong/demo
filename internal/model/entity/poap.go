@@ -11,15 +11,15 @@ import (
 // Poap is the golang structure for table poap.
 type Poap struct {
 	Id          uint        `json:"id"          ` // pk
-	PoapId      string      `json:"poap_id"      ` // Poap id
+	PoapId      string      `json:"poapId"      ` // Poap id
 	Miner       string      `json:"miner"       ` // Miner
-	PoapName    string      `json:"poap_name"    ` // Poap name
-	PoapSum     int         `json:"poap_sum"     ` // Poap sum
-	ReceiveCond int         `json:"receive_cond" ` // Receive condition
-	CoverImg    string      `json:"cover_img"    ` // Cover picture
-	PoapIntro   string      `json:"poap_intro"   ` // Poap introduction
-	CreateAt    *gtime.Time `json:"create_at"    ` // Created Time
-	UpdateAt    *gtime.Time `json:"update_at"    ` // Updated Time
-	MintPlat int `json:"mintPlat" ` // mintPlat
-	CollectList string `json:"collectList"` // Collector list
+	PoapName    string      `json:"poapName"    ` // Poap name
+	PoapSum     int         `json:"poapSum"     ` // Poap sum
+	ReceiveCond int         `json:"receiveCond" ` // Receive condition
+	CoverImg    string      `json:"coverImg"    ` // Cover picture
+	PoapIntro   string      `json:"poapIntro"   ` // Poap introduction
+	CreateAt    *gtime.Time `json:"createAt"    ` // Created Time
+	UpdateAt    *gtime.Time `json:"updateAt"    ` // Updated Time
+	CollectList string      `json:"collectList" ` //
+	MintPlat    int         `json:"mintPlat"    ` // Mint platform
 }

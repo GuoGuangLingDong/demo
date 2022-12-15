@@ -30,27 +30,43 @@ func (S SPoap) Favor(ctx context.Context, in *v1.FavorReq) (err error) {
 		return err
 	}
 	if count == 0 {
-		_, err := dao.Like.Ctx(ctx).Data(do.Like{
-			Uid:    uid,
-			PoapId: in.PoapId,
-		}).Insert()
-		if err != nil {
-			return err
-		}
-		//更新缓存
-		key := fmt.Sprintf("poapid-%s-uid-%s", in.PoapId, uid)
-		cmd, err := g.Redis().Do(ctx, "EXISTS", key)
-		if err != nil {
-			err = fmt.Errorf("查询缓存失败")
-		}
-		exists := cmd.Int64()
-		if exists == 1 {
-			//在内存中，使缓存失效
-			_, err := g.Redis().Do(ctx, "DEL", key)
-			if err != nil {
-				err = fmt.Errorf("删除缓存失败")
+		err = g.DB().Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+			//点赞消耗积分
+			userScoreRes := service.User().GetUserScore(ctx, &v1.GetUserScoreReq{})
+			if userScoreRes.Score < 5 {
+				return fmt.Errorf("积分小于5，暂不能点赞")
 			}
 
+			if err = service.User().RecordScore(ctx, -5, 3, uid, -1); err != nil {
+				return err
+			}
+
+			if _, err = tx.Ctx(ctx).Insert("like", g.Map{
+				"uid":     uid,
+				"poap_id": in.PoapId,
+			}); err != nil {
+				return err
+			}
+			return nil
+		})
+
+		if err != nil {
+			return err
+		} else {
+			//更新缓存
+			key := fmt.Sprintf("poapid-%s-uid-%s", in.PoapId, uid)
+			cmd, err := g.Redis().Do(ctx, "EXISTS", key)
+			if err != nil {
+				err = fmt.Errorf("查询缓存失败")
+			}
+			exists := cmd.Int64()
+			if exists == 1 {
+				//在内存中，使缓存失效
+				_, err := g.Redis().Do(ctx, "DEL", key)
+				if err != nil {
+					err = fmt.Errorf("删除缓存失败")
+				}
+			}
 		}
 	}
 	return nil
