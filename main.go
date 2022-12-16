@@ -17,7 +17,7 @@ import (
 
 func main() {
 	ctx := context.Background()
-	_, err := gcron.Add(ctx, "*/60 * * * * *", func(ctx context.Context) {
+	_, err := gcron.Add(ctx, "0 0 0 * * *", func(ctx context.Context) {
 		// 设置进程全局时区
 		uids := ([]string)(nil)
 		items, _ := dao.User.Ctx(ctx).Fields("DISTINCT uid").Array()
