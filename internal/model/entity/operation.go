@@ -13,7 +13,7 @@ type Operation struct {
 	Id        uint        `json:"id"        ` // pk
 	Uid       string      `json:"uid"       ` // User ID
 	OptType   uint        `json:"optType"   ` // Operate Type
-	Score     uint        `json:"score"     ` // Score
+	Score     int        `json:"score"     ` // Score
 	CreateAt  *gtime.Time `json:"create_at"  ` // Created Time
 	UpdateAt  *gtime.Time `json:"update_at"  ` // Updated Time
 	OverdueAt *gtime.Time `json:"overdue_at" ` //

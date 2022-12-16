@@ -393,7 +393,8 @@ func (s *SUser) UnfollowUser(ctx context.Context, req *v1.UnfollowUserReq) (err 
 
 func (s *SUser) GetUserScore(ctx context.Context, req *v1.GetUserScoreReq) *v1.GetUserScoreRes {
 	user := service.Session().GetUser(ctx)
-	sum, _ := dao.Operation.Ctx(ctx).Where("uid", user.Uid).Where("overdue_at > ", "now()").Sum("score")
+	now := gtime.Now().String()
+	sum, _ := dao.Operation.Ctx(ctx).Where("uid", user.Uid).Where("overdue_at > ", now).Sum("score")
 	opts := ([]*entity.Operation)(nil)
 	dao.Operation.Ctx(ctx).Where("uid", user.Uid).Scan(&opts)
 	operations := ([]*v1.Operation)(nil)
