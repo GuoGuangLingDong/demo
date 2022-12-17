@@ -348,6 +348,18 @@ func (s *SUser) FollowUser(ctx context.Context, req *v1.FollowUserReq) (err erro
 		"followee": req.Uid,
 		"follower": user.Uid,
 	}).Insert()
+	followeeCount, _ := dao.Follow.Ctx(ctx).Where("followee", req.Uid).Count()
+	followerCount, _ := dao.Follow.Ctx(ctx).Where("follower", user.Uid).Count()
+	if followeeCount == 1 {
+		if err = s.RecordScore(ctx, 200, 4, req.Uid, 90); err != nil {
+			return fmt.Errorf("被关注时赠送积分失败")
+		}
+	}
+	if followerCount == 1 {
+		if err = s.RecordScore(ctx, 200, 4, user.Uid, 90); err != nil {
+			return fmt.Errorf("关注时赠送积分失败")
+		}
+	}
 
 	//更新缓存
 	key := fmt.Sprintf("poapid-*-uid-%s", user.Uid)
@@ -442,7 +454,7 @@ func (s *SUser) GetPoapList(ctx context.Context, uid string, from int, count int
 
 func (s *SUser) RecordScore(ctx context.Context, score int, opt int, uid string, validDays int) (err error) {
 	curTime := gtime.Now()
-	overDueTime := curTime.Add(time.Duration(validDays*24) * time.Hour)
+	overDueTime := curTime.Add(time.Duration(validDays*24+8) * time.Hour)
 	if validDays == -1 {
 		overDueTime = gtime.New("2100-12-31 00:00:00")
 	}

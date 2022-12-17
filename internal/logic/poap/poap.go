@@ -308,7 +308,13 @@ func (S SPoap) GetHolders(ctx context.Context, in *v1.GetHoldersReq) []*v1.Holde
 }
 func (S SPoap) CollectPoap(ctx context.Context, in model.CollectPoapInput) (err error) {
 	userId := service.Session().GetUser(ctx).Uid
-	err = S.publishPoap(ctx, userId, in.PoapId, 1)
+	if err = S.publishPoap(ctx, userId, in.PoapId, 1); err == nil {
+		if count, _ := dao.Hold.Ctx(ctx).Where("uid", userId).Count(); count == 1 {
+			if err = service.User().RecordScore(ctx, 200, 5, userId, 90); err != nil {
+				return fmt.Errorf("领取poap时赠送积分失败")
+			}
+		}
+	}
 	//更新缓存
 	key := fmt.Sprintf("poapid-%s-uid-%s", in.PoapId, userId)
 	cmd, err := g.Redis().Do(ctx, "EXISTS", key)
