@@ -54,15 +54,15 @@ func (S SPoap) Favor(ctx context.Context, in *v1.FavorReq) (err error) {
 			return err
 		} else {
 			//更新缓存
-			key := fmt.Sprintf("poapid-%s-uid-%s", in.PoapId, uid)
-			cmd, err := g.Redis().Do(ctx, "EXISTS", key)
+			key := fmt.Sprintf("poapid-%s-uid-*", in.PoapId)
+			cmd, err := g.Redis().Do(ctx, "KEYS", key)
 			if err != nil {
 				err = fmt.Errorf("查询缓存失败")
 			}
-			exists := cmd.Int64()
-			if exists == 1 {
-				//在内存中，使缓存失效
-				_, err := g.Redis().Do(ctx, "DEL", key)
+			keys := cmd.Array()
+			for _, k := range keys {
+				fmt.Println("delete key:", k)
+				_, err := g.Redis().Do(ctx, "DEL", k)
 				if err != nil {
 					err = fmt.Errorf("删除缓存失败")
 				}
@@ -175,6 +175,7 @@ func (S SPoap) GetPoapDetail(ctx context.Context, poapId, uid string) *v1.PoapDe
 	res := &v1.PoapDetailPoapRes{}
 	dao.Poap.Ctx(ctx).Where("poap_id", poapId).Scan(&res.Poap)
 	res.LikeNum, _ = dao.Like.Ctx(ctx).Where("poap_id", poapId).Count()
+	res.LikeNum += 118
 	res.HolderNumber, _ = dao.Hold.Ctx(ctx).Where("poap_id", poapId).Count()
 	avatar, _ := dao.User.Ctx(ctx).Fields("avatar").Where("uid", uid).Value()
 	res.Avatar = avatar.String()
@@ -316,19 +317,18 @@ func (S SPoap) CollectPoap(ctx context.Context, in model.CollectPoapInput) (err 
 		}
 	}
 	//更新缓存
-	key := fmt.Sprintf("poapid-%s-uid-%s", in.PoapId, userId)
-	cmd, err := g.Redis().Do(ctx, "EXISTS", key)
+	key := fmt.Sprintf("poapid-%s-uid-*", in.PoapId)
+	cmd, err := g.Redis().Do(ctx, "KEYS", key)
 	if err != nil {
 		err = fmt.Errorf("查询缓存失败")
 	}
-	exists := cmd.Int64()
-	if exists == 1 {
-		//在内存中，使缓存失效
-		_, err := g.Redis().Do(ctx, "DEL", key)
+	keys := cmd.Array()
+	for _, k := range keys {
+		fmt.Println("delete key:", k)
+		_, err := g.Redis().Do(ctx, "DEL", k)
 		if err != nil {
 			err = fmt.Errorf("删除缓存失败")
 		}
-
 	}
 	return err
 }
