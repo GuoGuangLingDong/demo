@@ -344,10 +344,13 @@ func (S SPoap) MintPoap(ctx context.Context, in model.MintPoapInput) (poapId str
 		return
 	}
 	poapId = S.generatePoapId(ctx)
+	miner := user.Uid
+	if in.Miner != "" {
+		miner = in.Miner
+	}
 	newPoap := &entity.Poap{
-		PoapId: poapId,
-		Miner:  user.Uid,
-		//Miner:       "aea7cbc430cb4a7893896e64a5dc2b9c",
+		PoapId:      poapId,
+		Miner:       miner,
 		PoapName:    in.PoapName,
 		PoapSum:     int(in.PoapSum),
 		ReceiveCond: int(in.ReceiveCond),
@@ -355,6 +358,7 @@ func (S SPoap) MintPoap(ctx context.Context, in model.MintPoapInput) (poapId str
 		PoapIntro:   in.PoapIntro,
 		MintPlat:    in.MintPlat,
 		CollectList: in.CollectList,
+		Status:      in.Status,
 		Type:        in.Type,
 	}
 	_, err = dao.Poap.Ctx(ctx).Insert(newPoap)

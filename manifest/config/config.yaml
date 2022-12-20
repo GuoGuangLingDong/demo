@@ -56,3 +56,8 @@ upload:
     accessKey: "KqGLoHVvPUziQtdocS0mk7FhI2lcw7oNt93GfGuU"
     secretKey: "3ZrQQmzgC6svX8_3Dy5WJi0DdSAnGRr3kPkKIsj8"
     cdn: "https://website-cdn.gfanx.com/"
+
+# define
+define:
+  didImg: "https://website-cdn.gfanx.com/did/c9c87cbb-f208-4b49-a38a-cd5e519d91a2.jpeg"
+  wesoulUid: "121a016c3d1e4s5d9c85b1a898f623s1"

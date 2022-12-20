@@ -57,6 +57,24 @@ func (c *cUser) SignUp(ctx context.Context, req *v1.UserSignUpReq) (res *v1.User
 		PhoneNumber: req.PhoneNumber,
 		InviteCode:  req.InviteCode,
 	})
+
+	// did 铸造
+	if err == nil {
+		didImg, _ := g.Cfg().Get(ctx, "define.didImg")
+		wesoulUid, _ := g.Cfg().Get(ctx, "define.wesoulUid")
+		service.Poap().MintPoap(ctx, model.MintPoapInput{
+			PoapName:    fmt.Sprintf("%s.did", userDid),
+			PoapSum:     1,
+			ReceiveCond: 2,
+			CoverImg:    didImg.String(),
+			PoapIntro:   fmt.Sprintf("%s.did,an DID name.", userDid),
+			MintPlat:    1,
+			Type:        3,
+			Status:      2,
+			Miner:       wesoulUid.String(),
+			CollectList: uid,
+		})
+	}
 	return res, err
 }
 
