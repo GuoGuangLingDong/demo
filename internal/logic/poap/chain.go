@@ -31,8 +31,8 @@ func (S SPoap) ChainCallback(ctx context.Context, params *v1.ChainCallbackReq) (
 	return
 }
 
-// upChain 上链
-func upChain(poapId string) (err error) {
+// UpChain 上链
+func UpChain(poapId string) (err error) {
 	var poapInfo *entity.Poap
 	dao.Poap.Ctx(nil).Where("poap_id = ?", poapId).Scan(&poapInfo)
 	if poapInfo == nil {

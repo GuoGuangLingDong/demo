@@ -16,6 +16,7 @@ type IPoap interface {
 	Generate(ctx context.Context, in model.GenerateTokenReq) (err error)
 	Favor(ctx context.Context, in *v1.FavorReq) (err error)
 	GetHolders(ctx context.Context, in *v1.GetHoldersReq) []*v1.HolderInfo
+	PublishPoap(ctx context.Context, userId string, poapId string, num int) (err error)
 }
 
 var (

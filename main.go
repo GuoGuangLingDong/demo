@@ -4,6 +4,7 @@ import (
 	"context"
 	"demo/internal/dao"
 	_ "demo/internal/logic"
+	"demo/internal/task"
 	"fmt"
 	_ "github.com/gogf/gf/contrib/drivers/mysql/v2"
 	"github.com/gogf/gf/v2/frame/g"
@@ -47,5 +48,7 @@ func main() {
 	if err != nil {
 		fmt.Println("定时任务启动失败")
 	}
+	go task.Mint()
+
 	cmd.Main.Run(gctx.New())
 }

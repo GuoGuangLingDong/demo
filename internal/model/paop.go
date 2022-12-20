@@ -29,4 +29,5 @@ type MintPoapInput struct {
 	PoapIntro   string
 	MintPlat    int
 	CollectList string
+	Type        int
 }

@@ -9,6 +9,7 @@ import (
 	"demo/internal/model/do"
 	"demo/internal/model/entity"
 	"demo/internal/service"
+	"errors"
 	"fmt"
 	"strings"
 	"sync"
@@ -101,7 +102,7 @@ func (S SPoap) GetMyPoap(ctx context.Context, in model.GetMyPoapInput) []*v1.Poa
 
 func (S SPoap) GetMainPagePoap(ctx context.Context, in model.GetMainPagePoap) []*v1.PoapDetailPoapRes {
 	res := ([]*v1.PoapDetailPoapRes)(nil)
-	all, err := dao.Poap.Ctx(ctx).LeftJoin("`like` l", "poap.poap_id=l.poap_id").Fields("poap.poap_id").Where("poap_name like ?", "%"+in.Condition+"%").Group("poap_id").Order("count(`uid`) desc").Limit((int)(in.From), int(in.Count)).All()
+	all, err := dao.Poap.Ctx(ctx).LeftJoin("`like` l", "poap.poap_id=l.poap_id").Fields("poap.poap_id").Where("poap.status = 1 and poap.type = 1").Where("poap_name like ?", "%"+in.Condition+"%").Group("poap_id").Order("count(`uid`) desc").Limit((int)(in.From), int(in.Count)).All()
 	if err != nil {
 		return nil
 	}
@@ -308,7 +309,10 @@ func (S SPoap) GetHolders(ctx context.Context, in *v1.GetHoldersReq) []*v1.Holde
 }
 func (S SPoap) CollectPoap(ctx context.Context, in model.CollectPoapInput) (err error) {
 	userId := service.Session().GetUser(ctx).Uid
-	if err = S.publishPoap(ctx, userId, in.PoapId, 1); err == nil {
+	if false == S.isCollectable(ctx, in.PoapId, userId) {
+		return fmt.Errorf("领取失败，请稍后再试~")
+	}
+	if err = S.PublishPoap(ctx, userId, in.PoapId, 1); err == nil {
 		if count, _ := dao.Hold.Ctx(ctx).Where("uid", userId).Count(); count == 1 {
 			if err = service.User().RecordScore(ctx, 200, 5, userId, 90); err != nil {
 				return fmt.Errorf("领取poap时赠送积分失败")
@@ -351,16 +355,12 @@ func (S SPoap) MintPoap(ctx context.Context, in model.MintPoapInput) (poapId str
 		PoapIntro:   in.PoapIntro,
 		MintPlat:    in.MintPlat,
 		CollectList: in.CollectList,
+		Type:        in.Type,
 	}
 	_, err = dao.Poap.Ctx(ctx).Insert(newPoap)
 	if err != nil {
 		return
 	}
-
-	_ = S.Generate(ctx, model.GenerateTokenReq{
-		PoapId: poapId,
-		Num:    uint(in.PoapSum),
-	})
 	return
 }
 func (S SPoap) generatePoapId(ctx context.Context) string {
@@ -369,8 +369,8 @@ func (S SPoap) generatePoapId(ctx context.Context) string {
 	return uid
 }
 
-// publishPoap 发放POAP
-func (S SPoap) publishPoap(ctx context.Context, userId string, poapId string, num int) (err error) {
+// PublishPoap 发放POAP
+func (S SPoap) PublishPoap(ctx context.Context, userId string, poapId string, num int) (err error) {
 	var asset []entity.Publish
 	m := g.DB().Model("publish")
 	m.Where("poap_id", poapId)
@@ -381,12 +381,12 @@ func (S SPoap) publishPoap(ctx context.Context, userId string, poapId string, nu
 	err = m.Scan(&asset)
 	if len(asset) == 0 {
 		g.Log().Errorf(ctx, "未查询可用资产：poapId:%s", poapId)
-		err = fmt.Errorf("出错了，请稍后再试")
+		err = fmt.Errorf("POAP数量不足~")
 		return
 	}
 	if len(asset) != num {
 		g.Log().Errorf(ctx, "查询可用资产数量不足：poapId:%s", poapId)
-		err = fmt.Errorf("出错了，请稍后再试")
+		err = fmt.Errorf("POAP数量不足~")
 		return
 	}
 
@@ -431,11 +431,15 @@ func (S SPoap) publishPoap(ctx context.Context, userId string, poapId string, nu
 	return
 }
 
-// generate poap铸造发行
+// Generate 铸造发行
 func (S SPoap) Generate(ctx context.Context, req model.GenerateTokenReq) (err error) {
+
+	g.Log().Infof(ctx, "铸造开始---params:%+v", req)
+
 	// 生成token
 	tokens, err := generateToken(ctx, req)
 	if err != nil {
+		g.Log().Errorf(ctx, "铸造失败---params:%+v, err:%+v", req, err)
 		return
 	}
 	lockFlag := uint(1)
@@ -461,14 +465,35 @@ func (S SPoap) Generate(ctx context.Context, req model.GenerateTokenReq) (err er
 			})
 		}
 	}
+
 	// insert publish
-	_, err = dao.Publish.Ctx(ctx).Batch(5000).Data(publish).Insert()
+	err = g.DB().Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+		ret, err := tx.Model(dao.Poap.Table()).Data(g.Map{
+			"status": 1,
+		}).Where("poap_id", req.PoapId).Update()
+		if err != nil {
+			return err
+		}
+		ra, err := ret.RowsAffected()
+		if err != nil {
+			return err
+		}
+		if ra == 0 {
+			err = errors.New("RowsAffected = 0")
+			return err
+		}
+		_, err = tx.Model(dao.Publish.Table()).Batch(5000).Data(publish).Insert()
+		if err != nil {
+			return err
+		}
+		return nil
+	})
 	if err != nil {
+		g.Log().Errorf(ctx, "铸造失败---params:%+v, err:%+v", req, err)
 		return
 	}
+	g.Log().Infof(ctx, "铸造成功---params:%+v", req)
 
-	// 上链
-	_ = upChain(req.PoapId)
 	return
 }
 
