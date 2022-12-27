@@ -405,7 +405,7 @@ func (s *SUser) GetUserScore(ctx context.Context, req *v1.GetUserScoreReq) *v1.G
 	now := gtime.Now().String()
 	sum, _ := dao.Operation.Ctx(ctx).Where("uid", user.Uid).Where("overdue_at > ", now).Sum("score")
 	opts := ([]*entity.Operation)(nil)
-	dao.Operation.Ctx(ctx).Where("uid", user.Uid).Scan(&opts)
+	dao.Operation.Ctx(ctx).Where("uid", user.Uid).Limit(req.From, req.Count).Scan(&opts)
 	operations := ([]*v1.Operation)(nil)
 	for _, opt := range opts {
 		optName := ""

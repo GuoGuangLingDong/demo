@@ -163,6 +163,8 @@ type UnfollowUserRes struct {
 
 type GetUserScoreReq struct {
 	g.Meta `path:"/user/score" method:"get" tags:"UserService" summary:"Get the score of current user"`
+	From   int `json:"from"`
+	Count  int `json:"count"`
 }
 
 type GetUserScoreRes struct {
