@@ -10,9 +10,9 @@ import (
 
 // Poap is the golang structure for table poap.
 type Poap struct {
-	Id          uint        `json:"id"          ` // pk
+	Id          uint        `json:"id"          `  // pk
 	PoapId      string      `json:"poap_id"      ` // Poap id
-	Miner       string      `json:"miner"       ` // Miner
+	Miner       string      `json:"miner"       `  // Miner
 	PoapName    string      `json:"poap_name"    ` // Poap name
 	PoapSum     int         `json:"poap_sum"     ` // Poap sum
 	ReceiveCond int         `json:"receive_cond" ` // Receive condition
@@ -20,6 +20,8 @@ type Poap struct {
 	PoapIntro   string      `json:"poap_intro"   ` // Poap introduction
 	CreateAt    *gtime.Time `json:"create_at"    ` // Created Time
 	UpdateAt    *gtime.Time `json:"update_at"    ` // Updated Time
-	MintPlat int `json:"mintPlat" ` // mintPlat
-	CollectList string `json:"collectList"` // Collector list
+	MintPlat    int         `json:"mintPlat" `     // mintPlat
+	CollectList string      `json:"collectList"`   // Collector list
+	Status      int         `json:"status"`        // Status
+	Type        int         `json:"type"`          // Type
 }

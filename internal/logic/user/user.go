@@ -227,30 +227,26 @@ func (s *SUser) EditUserProfile(ctx context.Context, in *v1.EditUserProfileReq) 
 				return err
 			}
 		}
-		return nil
-	})
-	// 铸造头像nft
-	if err != nil && service.Session().GetUser(ctx).Avatar != in.Avatar {
-		poapId, err := service.Poap().MintPoap(ctx, model.MintPoapInput{
-			PoapName:    fmt.Sprintf("%s.did Avatar PFP", user.Did),
-			PoapSum:     1,
-			ReceiveCond: 2,
-			CoverImg:    in.Avatar,
-			PoapIntro:   fmt.Sprintf("%s.did于%s时间更新头像", user.Did, gtime.Now().Format("Y-m-d H:i:s")),
-			MintPlat:    1,
-		})
-		if err == nil {
-			// 领取
-			err = service.Poap().CollectPoap(ctx, model.CollectPoapInput{
-				PoapId: poapId,
+
+		// 铸造头像nft
+		if service.Session().GetUser(ctx).Avatar != in.Avatar {
+			_, err = service.Poap().MintPoap(ctx, model.MintPoapInput{
+				PoapName:    fmt.Sprintf("%s.did Avatar PFP", user.Did),
+				PoapSum:     1,
+				ReceiveCond: 2,
+				CoverImg:    in.Avatar,
+				PoapIntro:   fmt.Sprintf("%s.did于%s时间更新头像", user.Did, gtime.Now().Format("Y-m-d H:i:s")),
+				MintPlat:    1,
+				Type:        2,
 			})
 			if err != nil {
-				g.Log().Errorf(ctx, "领取头像NFT失败:%v", err)
+				g.Log().Errorf(ctx, "铸造头像NFT失败:%v", err)
+				return err
 			}
-		} else {
-			g.Log().Errorf(ctx, "铸造头像NFT失败:%v", err)
 		}
-	}
+		return nil
+	})
+
 	return err
 }
 

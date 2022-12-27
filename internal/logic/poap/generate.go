@@ -43,7 +43,7 @@ func generateToken(ctx context.Context, req model.GenerateTokenReq) (gens []*mod
 				No:           noData,
 				ErrorMessage: err.Error(),
 			})
-			g.Log().Error(ctx, "SelfGenerate:req:%+v-==-err:%+v", req, err)
+			g.Log().Errorf(ctx, "SelfGenerate:req:%+v-==-err:%+v", req, err)
 		case token := <-tokens:
 			gens = append(gens, &model.GenerateTokenRes{
 				No:      noData,
