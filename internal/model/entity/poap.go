@@ -10,18 +10,19 @@ import (
 
 // Poap is the golang structure for table poap.
 type Poap struct {
-	Id          uint        `json:"id"          `  // pk
-	PoapId      string      `json:"poap_id"      ` // Poap id
-	Miner       string      `json:"miner"       `  // Miner
-	PoapName    string      `json:"poap_name"    ` // Poap name
-	PoapSum     int         `json:"poap_sum"     ` // Poap sum
-	ReceiveCond int         `json:"receive_cond" ` // Receive condition
-	CoverImg    string      `json:"cover_img"    ` // Cover picture
-	PoapIntro   string      `json:"poap_intro"   ` // Poap introduction
-	CreateAt    *gtime.Time `json:"create_at"    ` // Created Time
-	UpdateAt    *gtime.Time `json:"update_at"    ` // Updated Time
-	MintPlat    int         `json:"mintPlat" `     // mintPlat
-	CollectList string      `json:"collectList"`   // Collector list
-	Status      int         `json:"status"`        // Status
-	Type        int         `json:"type"`          // Type
+	Id          uint        `json:"id"          ` // pk
+	PoapId      string      `json:"poapId"      ` // Poap id
+	Miner       string      `json:"miner"       ` // Miner
+	PoapName    string      `json:"poapName"    ` // Poap name
+	PoapSum     int         `json:"poapSum"     ` // Poap sum
+	ReceiveCond int         `json:"receiveCond" ` // Receive condition
+	CoverImg    string      `json:"coverImg"    ` // Cover picture
+	PoapIntro   string      `json:"poapIntro"   ` // Poap introduction
+	CreateAt    *gtime.Time `json:"createAt"    ` // Created Time
+	UpdateAt    *gtime.Time `json:"updateAt"    ` // Updated Time
+	CollectList string      `json:"collectList" ` //
+	MintPlat    int         `json:"mintPlat"    ` // Mint platform
+	Status      int         `json:"status"      ` // 状态 0.新建 1.正常（已铸造） 2.审核通过 3.审核不通过
+	Type        int         `json:"type"        ` // 类型  1.poap 2.头像nft 3.did
+	Seriesid    string      `json:"seriesid"    ` //
 }

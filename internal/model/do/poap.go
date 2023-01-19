@@ -24,4 +24,7 @@ type Poap struct {
 	UpdateAt    *gtime.Time // Updated Time
 	CollectList interface{} //
 	MintPlat    interface{} // Mint platform
+	Status      interface{} // 状态 0.新建 1.正常（已铸造） 2.审核通过 3.审核不通过
+	Type        interface{} // 类型  1.poap 2.头像nft 3.did
+	Seriesid    interface{} //
 }
