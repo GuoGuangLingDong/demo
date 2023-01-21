@@ -501,6 +501,39 @@ func (S SPoap) Generate(ctx context.Context, req model.GenerateTokenReq) (err er
 	return
 }
 
+// 创建徽章系列
+func (S SPoap) CreatePoapSeries(ctx context.Context, req *v1.CreatePoapSeriesReq, userId string) (err error) {
+	exists, _ := dao.Poapseries.Ctx(ctx).Where("series_name", req.SeriesName).Count()
+	if exists != 0 {
+		err = fmt.Errorf("徽章系列已经创建")
+		return
+	}
+	series_id := S.generatePoapId(ctx)
+	_, err = dao.Poapseries.Ctx(ctx).Data(g.Map{
+		"series_id":        series_id,
+		"series_name":      req.SeriesName,
+		"series_type":      req.SeriesType,
+		"series_intro":     req.SeriesIntro,
+		"series_num":       req.SeriesNum,
+		"series_num_left":  req.SeriesNum,
+		"series_createrid": userId,
+	}).Insert()
+	return err
+}
+
+// 获取当前用户持有的徽章系列
+func (S SPoap) GetPoapSeries(ctx context.Context, in *v1.GetPoapSeriesReq, userId string) []*v1.SeriesDeatil {
+	series := []*v1.SeriesDeatil(nil)
+	dao.Poapseries.Ctx(ctx).Where("series_createrid", userId).Scan(&series)
+	return series
+}
+
+func (S SPoap) GetPoapSeriesDetail(ctx context.Context, in *v1.GetPoapSeriesDetailReq) *v1.SeriesDeatil {
+	res := &v1.SeriesDeatil{}
+	dao.Poapseries.Ctx(ctx).Where("series_id", in.SeriesId).Scan(&res)
+	return res
+}
+
 func init() {
 	service.RegisterPoap(New())
 }
