@@ -20,28 +20,30 @@ type PoapseriesDao struct {
 
 // PoapseriesColumns defines and stores column names for table poapseries.
 type PoapseriesColumns struct {
-	Id            string // pk
-	SeriesId      string // 徽章系列ID
-	SeriesName    string // 徽章系列名称
-	SeriesType    string // 徽章系列类型
-	SeriesIntro   string // 徽章系列简介
-	SeriesNum     string // 徽章系列总量
-	SeriesNumLeft string // 徽章系列剩余数量
-	CreateAt      string // Created Time
-	UpdateAt      string // Updated Time
+	Id              string // pk
+	SeriesId        string // 徽章系列ID
+	SeriesName      string // 徽章系列名称
+	SeriesType      string // 徽章系列类型
+	SeriesIntro     string // 徽章系列简介
+	SeriesNum       string // 徽章系列总量
+	SeriesNumLeft   string // 徽章系列剩余数量
+	CreateAt        string // Created Time
+	UpdateAt        string // Updated Time
+	SeriesCreaterid string //
 }
 
 // poapseriesColumns holds the columns for table poapseries.
 var poapseriesColumns = PoapseriesColumns{
-	Id:            "id",
-	SeriesId:      "series_id",
-	SeriesName:    "series_name",
-	SeriesType:    "series_type",
-	SeriesIntro:   "series_intro",
-	SeriesNum:     "series_num",
-	SeriesNumLeft: "series_num_left",
-	CreateAt:      "create_at",
-	UpdateAt:      "update_at",
+	Id:              "id",
+	SeriesId:        "series_id",
+	SeriesName:      "series_name",
+	SeriesType:      "series_type",
+	SeriesIntro:     "series_intro",
+	SeriesNum:       "series_num",
+	SeriesNumLeft:   "series_num_left",
+	CreateAt:        "create_at",
+	UpdateAt:        "update_at",
+	SeriesCreaterid: "series_createrid",
 }
 
 // NewPoapseriesDao creates and returns a new DAO object for table data access.
