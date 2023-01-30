@@ -42,15 +42,17 @@ var (
 				group.Group("/", func(group *ghttp.RouterGroup) {
 					group.Middleware(service.Middleware().Auth)
 					group.ALLMap(g.Map{
-						"/poap/collect":   controller.Poap.CollectPoap,
-						"/poap/favor":     controller.Poap.Favor,
-						"/user/follow":    controller.User.FollowUser,
-						"/user/unfollow":  controller.User.UnfollowUser,
-						"/user/profile":   controller.User.EditProfile,
-						"/poap/mint":      controller.Poap.MintPoap,
-						"/user/score":     controller.User.GetUserScore,
-						"/user/followees": controller.User.GetUserFollowee,
-						"/user/followers": controller.User.GetUserFollower,
+						"/poap/collect":     controller.Poap.CollectPoap,
+						"/poap/favor":       controller.Poap.Favor,
+						"/user/follow":      controller.User.FollowUser,
+						"/user/unfollow":    controller.User.UnfollowUser,
+						"/user/profile":     controller.User.EditProfile,
+						"/poap/mint":        controller.Poap.MintPoap,
+						"/user/score":       controller.User.GetUserScore,
+						"/user/followees":   controller.User.GetUserFollowee,
+						"/user/followers":   controller.User.GetUserFollower,
+						"/poap/series":      controller.Poap.CreatePoapSeries,
+						"/poap/series_list": controller.Poap.GetPoapSeries,
 					})
 				})
 			})

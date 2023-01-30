@@ -82,3 +82,23 @@ func (c *cPoap) GetHolders(ctx context.Context, req *v1.GetHoldersReq) (res *v1.
 	res.Res = service.Poap().GetHolders(ctx, req)
 	return
 }
+
+func (c *cPoap) CreatePoapSeries(ctx context.Context, req *v1.CreatePoapSeriesReq) (res *v1.CreatePoapSeriesRes, err error) {
+	res = &v1.CreatePoapSeriesRes{}
+	user := service.Session().GetUser(ctx)
+	err = service.Poap().CreatePoapSeries(ctx, req, user.Uid)
+	return
+}
+
+func (c *cPoap) GetPoapSeries(ctx context.Context, req *v1.GetPoapSeriesReq) (res *v1.GetPoapSeriesRes, err error) {
+	res = &v1.GetPoapSeriesRes{}
+	user := service.Session().GetUser(ctx)
+	res.Res = service.Poap().GetPoapSeries(ctx, req, user.Uid)
+	return
+}
+
+func (c *cPoap) GetPoapSeriesDetail(ctx context.Context, req *v1.GetPoapSeriesDetailReq) (res *v1.GetPoapSeriesDetailRes, err error) {
+	res = &v1.GetPoapSeriesDetailRes{}
+	res.SeriesDeatil = service.Poap().GetPoapSeriesDetail(ctx, req)
+	return
+}

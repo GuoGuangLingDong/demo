@@ -17,6 +17,9 @@ type IPoap interface {
 	Favor(ctx context.Context, in *v1.FavorReq) (err error)
 	GetHolders(ctx context.Context, in *v1.GetHoldersReq) []*v1.HolderInfo
 	PublishPoap(ctx context.Context, userId string, poapId string, num int) (err error)
+	CreatePoapSeries(ctx context.Context, in *v1.CreatePoapSeriesReq, userId string) (err error)
+	GetPoapSeries(ctx context.Context, in *v1.GetPoapSeriesReq, userId string) []*v1.SeriesDeatil
+	GetPoapSeriesDetail(ctx context.Context, in *v1.GetPoapSeriesDetailReq) *v1.SeriesDeatil
 }
 
 var (

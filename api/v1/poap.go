@@ -109,3 +109,40 @@ type HolderInfo struct {
 type GetHodlersRes struct {
 	Res []*HolderInfo `json:"list,omitempty"`
 }
+
+type CreatePoapSeriesReq struct {
+	g.Meta      `path:"/poap/series" method:"post" tags:"PoapSeriesService" summary:"Create poap series"`
+	SeriesName  string `json:"series_name,omitempty"`
+	SeriesType  int    `json:"series_type,omitempty"`
+	SeriesIntro string `json:"series_intro,omitempty"`
+	SeriesNum   int    `json:"series_num,omitempty"`
+}
+
+type CreatePoapSeriesRes struct {
+}
+
+type GetPoapSeriesReq struct {
+	g.Meta `path:"/poap/series_list" method:"get" tags:"PoapSeriesService" summary:"Get poap series"`
+}
+
+type GetPoapSeriesRes struct {
+	Res []*SeriesDeatil `json:"list,omitempty"`
+}
+
+type SeriesDeatil struct {
+	SeriesId      string `json:"series_id,omitempty"`
+	SeriesName    string `json:"series_name,omitempty"`
+	SeriesType    int    `json:"series_type,omitempty"`
+	SeriesIntro   string `json:"series_intro,omitempty"`
+	SeriesNum     int    `json:"series_num,omitempty"`
+	SeriesNumLeft int    `json:"series_num_left,omitempty"`
+}
+
+type GetPoapSeriesDetailReq struct {
+	g.Meta   `path:"/poap/series_detail" method:"get" tags:"PoapSeriesService" summary:"Get poap series detail"`
+	SeriesId string `json:"series_id,omitempty"`
+}
+
+type GetPoapSeriesDetailRes struct {
+	*SeriesDeatil
+}
