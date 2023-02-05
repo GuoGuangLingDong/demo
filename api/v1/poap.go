@@ -69,6 +69,8 @@ type PoapMintReq struct {
 	PoapIntro   string `json:"poap_intro" v:"required"`
 	MintPlat    int    `json:"mint_plat" v:"required"`
 	CollectList string `json:"collect_list" v:"required-if:receive_cond,2"`
+	PoapType    int    `json:"poap_type"`
+	SeriesId    string `json:"series_id" v:"required"`
 }
 
 type PoapMintRes struct{}
