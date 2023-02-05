@@ -32,4 +32,5 @@ type MintPoapInput struct {
 	Type        int
 	Status      int
 	Miner       string
+	SeriesId    string
 }

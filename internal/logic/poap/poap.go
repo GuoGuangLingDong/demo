@@ -360,6 +360,21 @@ func (S SPoap) MintPoap(ctx context.Context, in model.MintPoapInput) (poapId str
 		CollectList: in.CollectList,
 		Status:      in.Status,
 		Type:        in.Type,
+		Seriesid:    in.SeriesId,
+	}
+	series := []*v1.SeriesDeatil(nil)
+	dao.Poapseries.Ctx(ctx).Where("series_id", in.SeriesId).Scan(&series)
+	if len(series) <= 0 {
+		err = fmt.Errorf("不存在这个徽章系列")
+		return
+	}
+	if series[0].SeriesNumLeft < int(in.PoapSum) {
+		err = fmt.Errorf("徽章系列剩余可铸造数量为：%d，不足", series[0].SeriesNumLeft)
+		return
+	}
+	_, err = dao.Poapseries.Ctx(ctx).Where("series_id", in.SeriesId).Data(g.Map{"series_num_left": series[0].SeriesNumLeft - int(in.PoapSum)}).Update()
+	if err != nil {
+		return
 	}
 	_, err = dao.Poap.Ctx(ctx).Insert(newPoap)
 	if err != nil {
@@ -518,7 +533,20 @@ func (S SPoap) CreatePoapSeries(ctx context.Context, req *v1.CreatePoapSeriesReq
 		"series_num_left":  req.SeriesNum,
 		"series_createrid": userId,
 	}).Insert()
-	return err
+	if err != nil {
+		return err
+	}
+	if _, err = S.MintPoap(ctx, model.MintPoapInput{
+		PoapName:  req.SeriesName,
+		PoapIntro: req.SeriesIntro,
+		MintPlat:  1,
+		Type:      req.SeriesType,
+		SeriesId:  series_id,
+	}); err != nil {
+		return err
+	}
+	return nil
+
 }
 
 // 获取当前用户持有的徽章系列
