@@ -60,6 +60,7 @@ func (c *cPoap) MintPoap(ctx context.Context, req *v1.PoapMintReq) (res *v1.Poap
 		MintPlat:    req.MintPlat,
 		CollectList: req.CollectList,
 		Type:        1,
+		SeriesId:    req.SeriesId,
 	})
 	return
 }
