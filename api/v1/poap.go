@@ -45,6 +45,7 @@ type PoapDetailPoapRes struct {
 	Chain        *Chain `json:"chain"`
 	Avatar       string `json:"avatar"`
 	*Miner
+	*SeriesDeatil
 }
 
 type Miner struct {

@@ -193,7 +193,9 @@ func (S SPoap) GetPoapDetail(ctx context.Context, poapId, uid string) *v1.PoapDe
 		MinerName: miner.Username,
 		MinerIcon: miner.Avatar,
 	}
-
+	poapSeries := &v1.SeriesDeatil{}
+	dao.Poapseries.Ctx(ctx).Where("series_id", res.Poap.Seriesid).Scan(&poapSeries)
+	res.SeriesDeatil = poapSeries
 	var favour int
 	var follow int
 	if uid == "tempUser" {
