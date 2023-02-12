@@ -45,6 +45,7 @@ type PoapDetailPoapRes struct {
 	Chain        *Chain `json:"chain"`
 	Avatar       string `json:"avatar"`
 	*Miner
+	*SeriesDeatil
 }
 
 type Miner struct {
@@ -54,8 +55,10 @@ type Miner struct {
 }
 
 type PoapCollectReq struct {
-	g.Meta `path:"/poap/collect" method:"post" tags:"PoapService" summary:"Collect a poap"`
-	PoapId string `json:"poap_id" v:"required"`
+	g.Meta     `path:"/poap/collect" method:"post" tags:"PoapService" summary:"Collect a poap"`
+	PoapId     string `json:"poap_id" v:"required"`
+	Endorse    string `json:"endorse"`
+	EndorsePic string `json:"endorse_pic"`
 }
 
 type PoapCollectRes struct{}
@@ -147,4 +150,31 @@ type GetPoapSeriesDetailReq struct {
 
 type GetPoapSeriesDetailRes struct {
 	*SeriesDeatil
+}
+
+type GetEndorseReq struct {
+	g.Meta `path:"/poap/endorse" method:"get" tags:"PoapEndorseService" summary:"Get poap endorse"`
+	PoapId string `json:"poap_id,omitempty"`
+}
+
+type GetEndorseRes struct {
+	Res []*EndorseDetail
+}
+
+type EndorseDetail struct {
+	*entity.Endorse
+	LikeNumber int    `json:"likeNumber,omitempty"`
+	LikeAble   bool   `json:"likeable"`
+	Liked      bool   `json:"liked"`
+	Did        string `json:"did,omitempty"`
+	UserName   string `json:"username,omitempty"`
+	Avatar     string `json:"avatar,omitempty"`
+}
+
+type LikeEndorseReq struct {
+	g.Meta    `path:"/poap/like_endorse" method:"post" tags:"PoapEndorseService" summary:"Like poap endorse"`
+	EndorseId string `json:"endorse_id,omitempty"`
+}
+
+type LikeEndorseRes struct {
 }

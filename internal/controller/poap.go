@@ -44,7 +44,7 @@ func (c *cPoap) GetPoapDetail(ctx context.Context, req *v1.PoapDetailReq) (res *
 // CollectPoap poap领取
 func (c *cPoap) CollectPoap(ctx context.Context, req *v1.PoapCollectReq) (res *v1.PoapCollectRes, err error) {
 	res = &v1.PoapCollectRes{}
-	err = service.Poap().CollectPoap(ctx, model.CollectPoapInput{PoapId: req.PoapId})
+	err = service.Poap().CollectPoap(ctx, model.CollectPoapInput{PoapId: req.PoapId, Endorse: req.Endorse, EndorsePic: req.EndorsePic})
 	return
 }
 
@@ -101,5 +101,19 @@ func (c *cPoap) GetPoapSeries(ctx context.Context, req *v1.GetPoapSeriesReq) (re
 func (c *cPoap) GetPoapSeriesDetail(ctx context.Context, req *v1.GetPoapSeriesDetailReq) (res *v1.GetPoapSeriesDetailRes, err error) {
 	res = &v1.GetPoapSeriesDetailRes{}
 	res.SeriesDeatil = service.Poap().GetPoapSeriesDetail(ctx, req)
+	return
+}
+
+func (c *cPoap) GetEndorse(ctx context.Context, req *v1.GetEndorseReq) (res *v1.GetEndorseRes, err error) {
+	res = &v1.GetEndorseRes{}
+	user := service.Session().GetUser(ctx)
+	res.Res = service.Poap().GetEndorse(ctx, req, user.Uid)
+	return
+}
+
+func (c *cPoap) LikeEndorse(ctx context.Context, req *v1.LikeEndorseReq) (res *v1.LikeEndorseRes, err error) {
+	user := service.Session().GetUser(ctx)
+	res = &v1.LikeEndorseRes{}
+	err = service.Poap().LikeEndorse(ctx, req, user.Uid)
 	return
 }
