@@ -18,7 +18,9 @@ type GetMainPagePoap struct {
 }
 
 type CollectPoapInput struct {
-	PoapId string
+	PoapId     string
+	Endorse    string
+	EndorsePic string
 }
 
 type MintPoapInput struct {

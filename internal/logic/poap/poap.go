@@ -11,6 +11,7 @@ import (
 	"demo/internal/service"
 	"errors"
 	"fmt"
+	"github.com/gogf/gf/v2/os/gtime"
 	"strings"
 	"sync"
 
@@ -320,6 +321,16 @@ func (S SPoap) CollectPoap(ctx context.Context, in model.CollectPoapInput) (err 
 				return fmt.Errorf("领取poap时赠送积分失败")
 			}
 		}
+		endorse_id := S.generatePoapId(ctx)
+		if _, err = dao.Endorse.Ctx(ctx).Insert(&entity.Endorse{
+			EndorseId: endorse_id,
+			PoapId:    in.PoapId,
+			Uid:       userId,
+			Text:      in.Endorse,
+			Img:       in.EndorsePic,
+		}); err != nil {
+			return err
+		}
 	}
 	//更新缓存
 	key := fmt.Sprintf("poapid-%s-uid-%s", in.PoapId, userId)
@@ -562,6 +573,70 @@ func (S SPoap) GetPoapSeriesDetail(ctx context.Context, in *v1.GetPoapSeriesDeta
 	res := &v1.SeriesDeatil{}
 	dao.Poapseries.Ctx(ctx).Where("series_id", in.SeriesId).Scan(&res)
 	return res
+}
+
+// 查看签名墙，按照签名的点赞数排序
+func (S SPoap) GetEndorse(ctx context.Context, in *v1.GetEndorseReq, userId string) []*v1.EndorseDetail {
+	res := ([]*v1.EndorseDetail)(nil)
+	all, err := dao.Endorse.Ctx(ctx).LeftJoin("`endorselike` el", "endorse.endorse_id = el.endorse_id").Fields("endorse.*, count(el.uid) as likeNum").Where("endorse.poap_id = ", in.PoapId).Group("el.endorse_id").Order("count(el.uid) desc").All()
+	if err != nil {
+		return nil
+	}
+	for _, endorse := range all {
+		m := endorse.Map()
+		id, _ := m["id"]
+		endorse_id, _ := m["endorse_id"]
+		poap_id, _ := m["poap_id"]
+		uid, _ := m["uid"]
+		text, _ := m["text"]
+		img, _ := m["img"]
+		createAt, _ := m["create_at"]
+		updateAt, _ := m["update_at"]
+		likeNum, _ := m["likeNum"]
+		end := &entity.Endorse{
+			Id:        uint(id.(int)),
+			EndorseId: endorse_id.(string),
+			PoapId:    poap_id.(string),
+			Uid:       uid.(string),
+			Text:      text.(string),
+			Img:       img.(string),
+			CreateAt:  createAt.(*gtime.Time),
+			UpdateAt:  updateAt.(*gtime.Time),
+		}
+		liked := S.isLikeEndorse(ctx, endorse_id.(string), userId)
+		user := (*entity.User)(nil)
+		dao.User.Ctx(ctx).Where("uid", uid.(string)).Scan(&user)
+		res = append(res, &v1.EndorseDetail{
+			Endorse:    end,
+			LikeNumber: int(likeNum.(int64)),
+			LikeAble:   !liked,
+			Liked:      liked,
+			Did:        user.Did,
+			UserName:   user.Username,
+			Avatar:     user.Avatar,
+		})
+	}
+	return res
+}
+
+// 点赞签名
+func (S SPoap) LikeEndorse(ctx context.Context, in *v1.LikeEndorseReq, userId string) (err error) {
+	if liked := S.isLikeEndorse(ctx, in.EndorseId, userId); liked {
+		return fmt.Errorf("已点赞，不可重复点赞")
+	}
+	_, err = dao.Endorselike.Ctx(ctx).Insert(&entity.Endorselike{
+		EndorseId: in.EndorseId,
+		Uid:       userId,
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (S SPoap) isLikeEndorse(ctx context.Context, endorseId, userId string) bool {
+	count, _ := dao.Endorselike.Ctx(ctx).Where("endorse_id", endorseId).Where("uid", userId).Count()
+	return count > 0
 }
 
 func init() {
