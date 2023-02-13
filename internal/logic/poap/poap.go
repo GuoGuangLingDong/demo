@@ -30,9 +30,7 @@ func (S SPoap) UpChainAll(ctx context.Context, req *v1.UpChainAllReq) error {
 	dao.Poap.Ctx(ctx).Scan(&poaps)
 	for _, poap := range poaps {
 		err := UpChain(poap.PoapId)
-		fmt.Println("err: ", err)
 		if err != nil {
-			fmt.Println("err: ", err)
 			return err
 		}
 	}
