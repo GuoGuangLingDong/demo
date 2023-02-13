@@ -25,6 +25,20 @@ type (
 	SPoap struct{}
 )
 
+func (S SPoap) UpChainAll(ctx context.Context, req *v1.UpChainAllReq) error {
+	poaps := []*entity.Poap(nil)
+	dao.Poap.Ctx(ctx).Scan(&poaps)
+	for _, poap := range poaps {
+		err := UpChain(poap.PoapId)
+		fmt.Println("err: ", err)
+		if err != nil {
+			fmt.Println("err: ", err)
+			return err
+		}
+	}
+	return nil
+}
+
 func (S SPoap) Favor(ctx context.Context, in *v1.FavorReq) (err error) {
 	uid := service.Session().GetUser(ctx).Uid
 	count, err := dao.Like.Ctx(ctx).Where("uid = ? and poap_id = ?", uid, in.PoapId).Count()

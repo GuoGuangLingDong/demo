@@ -117,3 +117,9 @@ func (c *cPoap) LikeEndorse(ctx context.Context, req *v1.LikeEndorseReq) (res *v
 	err = service.Poap().LikeEndorse(ctx, req, user.Uid)
 	return
 }
+
+func (c *cPoap) UpChainAll(ctx context.Context, req *v1.UpChainAllReq) (res *v1.UpChainAllRes, err error) {
+	res = &v1.UpChainAllRes{}
+	err = service.Poap().UpChainAll(ctx, req)
+	return
+}

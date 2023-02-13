@@ -178,3 +178,10 @@ type LikeEndorseReq struct {
 
 type LikeEndorseRes struct {
 }
+
+type UpChainAllReq struct {
+	g.Meta `path:"/poap/upchainall" method:"get" tags:"PoapEndorseService" summary:"Like poap endorse"`
+}
+
+type UpChainAllRes struct {
+}

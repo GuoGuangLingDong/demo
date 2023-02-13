@@ -22,6 +22,7 @@ type IPoap interface {
 	GetPoapSeriesDetail(ctx context.Context, in *v1.GetPoapSeriesDetailReq) *v1.SeriesDeatil
 	GetEndorse(ctx context.Context, in *v1.GetEndorseReq, userId string) []*v1.EndorseDetail
 	LikeEndorse(ctx context.Context, in *v1.LikeEndorseReq, userId string) (err error)
+	UpChainAll(ctx context.Context, req *v1.UpChainAllReq) error
 }
 
 var (
